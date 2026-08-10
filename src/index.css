@@ -102,3 +102,9 @@
   --color-btn-secondary-bg-disabled: var(--btn-secondary-bg-disabled);
   --color-btn-secondary-text-disabled: var(--btn-secondary-text-disabled);
 }
+
+@layer base {
+  html {
+    font-family: Arial, sans-serif;
+  }
+}
