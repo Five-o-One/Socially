@@ -1,7 +1,9 @@
+import { LoaderCircle } from "lucide-react";
+
 export default function AppSpinner() {
   return (
     <div>
-      <p>1</p>
+      <LoaderCircle className="animate-spin text-text" />
     </div>
   );
 }
