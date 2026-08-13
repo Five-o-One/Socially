@@ -13,7 +13,9 @@ export type NameIcon =
   | "Person"
   | "Post"
   | "Send"
-  | "Trash";
+  | "Trash"
+  | "Menu"
+  | "Close";
 
 export interface AppIconProps {
   nameIcon: NameIcon;
