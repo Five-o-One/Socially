@@ -1,9 +1,5 @@
-import { LoaderCircle } from "lucide-react";
+import AppIcon from "../AppIcon/AppIcon";
 
 export default function AppSpinner() {
-  return (
-    <div>
-      <LoaderCircle className="animate-spin text-text" />
-    </div>
-  );
+  return <AppIcon nameIcon="Loader" className="animate-spin text-text" size={24} />;
 }
