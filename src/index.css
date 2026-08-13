@@ -2,74 +2,74 @@
 
 :root {
   /* Layout */
-  --bg: #ffffff;
-  --header: rgb(255 255 255 / 0.6);
-  --card: #ffffff;
-  --border: #e5e5e5;
+  --bg: oklch(100% 0.00011 271.152);
+  --header: oklch(100% 0.00011 271.152 / 0.6);
+  --card: oklch(100% 0.00011 271.152);
+  --border: oklch(92.191% 0.0001 271.152);
 
   /* Text */
-  --text: #171717;
-  --text-secondary: #737373;
-  --text-tertiary: #a6a6a6;
-  --text-opposite: #fafafa;
-  --danger: #ef4444;
+  --text: oklch(20.463% 0.00002 271.152);
+  --text-secondary: oklch(55.553% 0.00006 271.152);
+  --text-tertiary: oklch(72.516% 0.00008 271.152);
+  --text-opposite: oklch(98.511% 0.00011 271.152);
+  --danger: oklch(63.681% 0.20784 25.315);
 
   /* Brand */
-  --brand: #3b82f6;
-  --brand-secondary: #7e97c0;
-  --brand-tertiary: #8d9cb5;
+  --brand: oklch(62.31% 0.1881 259.83);
+  --brand-secondary: oklch(67.241% 0.06752 260.207);
+  --brand-tertiary: oklch(68.943% 0.04076 260.68);
 
   /* Button Primary */
-  --btn-primary-bg: #0a0a0a;
-  --btn-primary-text: #fafafa;
-  --btn-primary-bg-hover: #171717;
-  --btn-primary-text-hover: rgb(250 250 250 / 0.9);
-  --btn-primary-bg-disabled: rgb(23 23 23 / 0.5);
-  --btn-primary-text-disabled: rgb(250 250 250 / 0.5);
+  --btn-primary-bg: oklch(14.479% 0.00002 271.152);
+  --btn-primary-text: oklch(98.511% 0.00011 271.152);
+  --btn-primary-bg-hover: oklch(20.463% 0.00002 271.152);
+  --btn-primary-text-hover: oklch(98.511% 0.00011 271.152 / 0.9);
+  --btn-primary-bg-disabled: oklch(20.463% 0.00002 271.152 / 0.5);
+  --btn-primary-text-disabled: oklch(98.511% 0.00011 271.152 / 0.5);
 
   /* Button Secondary */
-  --btn-secondary-bg: #ffffff;
-  --btn-secondary-text: #0a0a0a;
-  --btn-secondary-bg-hover: #fafafa;
-  --btn-secondary-text-hover: #171717;
-  --btn-secondary-bg-disabled: #8b8b8b;
-  --btn-secondary-text-disabled: rgb(23 23 23 / 0.5);
+  --btn-secondary-bg: oklch(100% 0.00011 271.152);
+  --btn-secondary-text: oklch(14.479% 0.00002 271.152);
+  --btn-secondary-bg-hover: oklch(98.511% 0.00011 271.152);
+  --btn-secondary-text-hover: oklch(20.463% 0.00002 271.152);
+  --btn-secondary-bg-disabled: oklch(63.676% 0.00007 271.152);
+  --btn-secondary-text-disabled: oklch(20.463% 0.00002 271.152 / 0.5);
 }
 
 .dark {
   /* Layout */
-  --bg: #0a0a0a;
-  --header: rgb(10 10 10 / 0.6);
-  --card: #0a0a0a;
-  --border: #262626;
+  --bg: oklch(14.479% 0.00002 271.152);
+  --header: oklch(14.479% 0.00002 271.152 / 0.6);
+  --card: oklch(14.479% 0.00002 271.152);
+  --border: oklch(26.862% 0.00003 271.152);
 
   /* Text */
-  --text: #fafafa;
-  --text-secondary: #a3a3a3;
-  --text-tertiary: #575757;
-  --text-opposite: #171717;
-  --danger: #ef4444;
+  --text: oklch(98.511% 0.00011 271.152);
+  --text-secondary: oklch(71.547% 0.00008 271.152);
+  --text-tertiary: oklch(45.678% 0.00005 271.152);
+  --text-opposite: oklch(20.463% 0.00002 271.152);
+  --danger: oklch(63.681% 0.20784 25.315);
 
   /* Brand */
-  --brand: #3b82f6;
-  --brand-secondary: #7e97c0;
-  --brand-tertiary: #8d9cb5;
+  --brand: oklch(62.31% 0.1881 259.83);
+  --brand-secondary: oklch(67.241% 0.06752 260.207);
+  --brand-tertiary: oklch(68.943% 0.04076 260.68);
 
   /* Button Primary */
-  --btn-primary-bg: #fafafa;
-  --btn-primary-text: #0a0a0a;
-  --btn-primary-bg-hover: rgb(250 250 250 / 0.9);
-  --btn-primary-text-hover: #171717;
-  --btn-primary-bg-disabled: rgb(250 250 250 / 0.5);
-  --btn-primary-text-disabled: rgb(23 23 23 / 0.5);
+  --btn-primary-bg: oklch(98.511% 0.00011 271.152);
+  --btn-primary-text: oklch(14.479% 0.00002 271.152);
+  --btn-primary-bg-hover: oklch(98.511% 0.00011 271.152 / 0.9);
+  --btn-primary-text-hover: oklch(20.463% 0.00002 271.152);
+  --btn-primary-bg-disabled: oklch(98.511% 0.00011 271.152 / 0.5);
+  --btn-primary-text-disabled: oklch(20.463% 0.00002 271.152 / 0.5);
 
   /* Button Secondary */
-  --btn-secondary-bg: #0a0a0a;
-  --btn-secondary-text: #ffffff;
-  --btn-secondary-bg-hover: #171717;
-  --btn-secondary-text-hover: #fafafa;
-  --btn-secondary-bg-disabled: rgb(23 23 23 / 0.5);
-  --btn-secondary-text-disabled: #8b8b8b;
+  --btn-secondary-bg: oklch(14.479% 0.00002 271.152);
+  --btn-secondary-text: oklch(100% 0.00011 271.152);
+  --btn-secondary-bg-hover: oklch(20.463% 0.00002 271.152);
+  --btn-secondary-text-hover: oklch(98.511% 0.00011 271.152);
+  --btn-secondary-bg-disabled: oklch(20.463% 0.00002 271.152 / 0.5);
+  --btn-secondary-text-disabled: oklch(63.676% 0.00007 271.152);
 }
 
 @theme inline {
