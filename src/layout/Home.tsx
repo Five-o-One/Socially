@@ -1,3 +1,11 @@
+// this is for test the confirm modal.
+import ConfirmModal from "../components/modals/ConfirmModal";
 export default function Home() {
-  return <h1 className="text-3xl font-bold underline">Home</h1>;
+  return (
+    <ConfirmModal
+      isOpen={true}
+      type="unfollow"
+      onConfirm={() => console.log("confirmed")}
+    />
+  );
 }
