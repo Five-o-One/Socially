@@ -13,7 +13,6 @@ function App() {
     {
       id: 1,
       user: {
-        imageURL: "https://i.pravatar.cc/150?img=1",
         username: "f.e.h.farshad",
         name: "Farshad Hosseini",
       },
@@ -25,7 +24,6 @@ function App() {
         {
           id: 1,
           user: {
-            imageURL: "https://i.pravatar.cc/150?img=2",
             username: "a.mousavi8",
             name: "Ali Mousavi",
           },
@@ -35,7 +33,6 @@ function App() {
         {
           id: 2,
           user: {
-            imageURL: "https://i.pravatar.cc/150?img=3",
             username: "samb.1376",
             name: "Seyed Ali Mousavi",
           },
@@ -45,7 +42,6 @@ function App() {
         {
           id: 3,
           user: {
-            imageURL: "https://i.pravatar.cc/150?img=4",
             username: "mohammadfallah.w",
             name: "Mohammad Fallah",
           },
@@ -57,7 +53,6 @@ function App() {
     {
       id: 2,
       user: {
-        imageURL: "https://i.pravatar.cc/150?img=2",
         username: "a.mousavi8",
         name: "Ali Mousavi",
       },
@@ -70,7 +65,6 @@ function App() {
         {
           id: 4,
           user: {
-            imageURL: "https://i.pravatar.cc/150?img=1",
             username: "f.e.h.farshad",
             name: "Farshad Hosseini",
           },
@@ -82,7 +76,6 @@ function App() {
     {
       id: 3,
       user: {
-        imageURL: "https://i.pravatar.cc/150?img=3",
         username: "samb.1376",
         name: "Seyed Ali Mousavi",
       },
@@ -96,7 +89,6 @@ function App() {
 
   // Test data for user profiles
   const userData = {
-    imageURL: "https://i.pravatar.cc/150?img=1",
     username: "f.e.h.farshad",
     name: "Farshad Hosseini",
     followers: 1234,
@@ -258,7 +250,6 @@ function App() {
             <UserInfoCard
               user={{
                 ...userData,
-                imageURL: "https://i.pravatar.cc/150?img=2",
                 username: "a.mousavi8",
                 name: "Ali Mousavi",
                 followers: 892,

@@ -10,9 +10,8 @@ import { AppModal } from "../AppModal";
  * @description Post card component with like and comment functionality
  *
  * @prop {Object} user - User information
- * @prop {string} user.imageURL - Profile image URL
- * @prop {string} user.username - Username
- * @prop {string} user.name - Full name
+ * @prop {string} user.username - Username (used for placeholder)
+ * @prop {string} user.name - Full name (used for placeholder)
  * @prop {number} postId - Post ID
  * @prop {string} message - Post text content
  * @prop {string|Date} date - Post date
@@ -26,7 +25,6 @@ import { AppModal } from "../AppModal";
  */
 interface PostCardProps {
   user: {
-    imageURL: string;
     username: string;
     name: string;
   };
@@ -38,7 +36,6 @@ interface PostCardProps {
   commentsList?: Array<{
     id: number;
     user: {
-      imageURL: string;
       username: string;
       name: string;
     };
@@ -92,7 +89,6 @@ export function PostCard({
       const newComment = {
         id: Date.now(),
         user: {
-          imageURL: "https://i.pravatar.cc/150?img=1",
           username: "current.user",
           name: "Current User",
         },
@@ -144,7 +140,7 @@ export function PostCard({
           {/* Header: User info */}
           <div className="flex items-start gap-3">
             <AppImage
-              src={user.imageURL}
+              src="" // Empty src, AppImage will show placeholder
               alt={user.name || user.username}
               variant="circle"
               size="md"
@@ -202,7 +198,7 @@ export function PostCard({
                       className="flex items-start gap-2 group"
                     >
                       <AppImage
-                        src={comment.user.imageURL}
+                        src="" // Empty src, AppImage will show placeholder
                         alt={comment.user.name || comment.user.username}
                         variant="circle"
                         size="sm"
@@ -249,7 +245,7 @@ export function PostCard({
                 className="flex items-center gap-2"
               >
                 <AppImage
-                  src="https://i.pravatar.cc/150?img=1"
+                  src="" // Empty src, AppImage will show placeholder
                   alt="User"
                   variant="circle"
                   size="sm"
@@ -261,13 +257,24 @@ export function PostCard({
                   placeholder="Write a comment..."
                   className="flex-1 bg-border/30 rounded-full px-4 py-2 text-sm text-text placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-brand/50"
                 />
-                <AppButton
-                  variant="primary"
-                  size="sm"
+                <button
+                  type="submit"
                   disabled={!commentText.trim()}
+                  className={`
+                    px-4 py-2 text-sm font-medium rounded-full
+                    transition-all duration-200 ease-in-out
+                    focus:outline-none focus:ring-2 focus:ring-brand/50
+                    disabled:opacity-50 disabled:cursor-not-allowed
+                    active:scale-95
+                    ${
+                      commentText.trim()
+                        ? "bg-btn-primary-bg text-btn-primary-text hover:bg-btn-primary-bg-hover hover:text-btn-primary-text-hover"
+                        : "bg-btn-primary-bg-disabled text-btn-primary-text-disabled cursor-not-allowed"
+                    }
+                  `}
                 >
                   Post
-                </AppButton>
+                </button>
               </form>
             </div>
           )}
