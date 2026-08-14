@@ -1,4 +1,6 @@
 import { type ReactNode } from "react";
+import type { NameIcon } from "../../types/AppIcon";
+import AppIcon from "../AppIcon/AppIcon";
 
 /**
  * @component AppButton
@@ -26,8 +28,8 @@ import { type ReactNode } from "react";
  * <AppButton variant="danger" fullWidth>Delete Account</AppButton>
  */
 interface AppButtonProps {
-  children: ReactNode;
-  icon?: any;
+  children?: ReactNode;
+  icon?: NameIcon
   variant?: "primary" | "secondary" | "danger" | "ghost";
   size?: "sm" | "md" | "lg";
   fullWidth?: boolean;
@@ -38,7 +40,7 @@ interface AppButtonProps {
 
 export function AppButton({
   children,
-  icon: Icon,
+  icon,
   variant = "primary",
   size = "md",
   fullWidth = false,
@@ -49,7 +51,7 @@ export function AppButton({
   // Base button styles applied to all variants
   const baseClasses = `
     inline-flex items-center justify-center gap-2
-    font-medium rounded-full
+    font-medium rounded-md
     transition-all duration-200 ease-in-out
     focus:outline-none focus:ring-2 focus:ring-brand/50
     disabled:opacity-50 disabled:cursor-not-allowed
@@ -78,7 +80,7 @@ export function AppButton({
 
   // Size-specific padding and text styles
   const sizeClasses = {
-    sm: "px-3 py-1.5 text-xs",
+    sm: "px-2 py-1.5 text-xs",
     md: "px-4 py-2 text-sm",
     lg: "px-6 py-3 text-base",
   };
@@ -101,8 +103,8 @@ export function AppButton({
       onClick={onClick}
       type="button"
     >
+      {icon && <AppIcon nameIcon={icon} size={16} />}
       {children}
-      {Icon && <Icon className="text-lg" />}
     </button>
   );
 }
