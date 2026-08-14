@@ -1,7 +1,29 @@
-// components/modals/ConfirmModal.tsx
 import { CONFIRM_ACTION_CONFIG } from "../../constants";
 import type { ConfirmModalProps } from "../../types/Modals";
+import { AppButton } from "../AppButton";
 
+/**
+ * @component ConfirmModal
+ * @description Modal content for confirming an irreversible action (delete,
+ * unfollow, block). Fully self-styled (own bg-card, rounded, padding) so
+ * it works standalone or nested inside AppModal without a doubled box —
+ * pass no `title`/`footer` to AppModal when rendering this as its children.
+ *
+ * @prop {ConfirmActionType} type - Which action is being confirmed;
+ *   determines the title/message/confirmText shown, sourced from
+ *   CONFIRM_ACTION_CONFIG in constants
+ * @prop {() => void} onConfirm - Called when the confirm button is clicked
+ * @prop {() => void} onCancel - Called when Cancel is clicked
+ *
+ * @example
+ * <AppModal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+ *   <ConfirmModal
+ *     type="delete"
+ *     onConfirm={() => deletePost(postId)}
+ *     onCancel={() => setIsOpen(false)}
+ *   />
+ * </AppModal>
+ */
 export default function ConfirmModal({
   type,
   onConfirm,
@@ -15,21 +37,13 @@ export default function ConfirmModal({
       <p className="text-text-secondary">{message}</p>
 
       <div className="flex justify-end gap-3">
-        {/* TODO: replace with <AppButton variant="secondary" /> */}
-        <button
-          onClick={onCancel}
-          className="px-4 py-2 rounded-lg border border-border bg-btn-secondary-bg text-btn-secondary-text hover:bg-btn-secondary-bg-hover hover:text-btn-secondary-text-hover transition"
-        >
+        <AppButton variant="secondary" onClick={onCancel}>
           Cancel
-        </button>
+        </AppButton>
 
-        {/* TODO: replace with <AppButton variant="danger" /> */}
-        <button
-          onClick={onConfirm}
-          className="px-4 py-2 rounded-lg bg-danger text-text-opposite hover:opacity-90 transition"
-        >
+        <AppButton variant="danger" onClick={onConfirm}>
           {confirmText}
-        </button>
+        </AppButton>
       </div>
     </div>
   );

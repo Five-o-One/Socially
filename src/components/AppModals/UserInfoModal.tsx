@@ -1,6 +1,28 @@
 import { useForm } from "react-hook-form";
 import type { User, UserInfoModalProps } from "../../types/Modals";
+import AppButton from "../AppButton/AppButton";
 
+/**
+ * @component UserInfoModal
+ * @description Modal content for editing the current user's profile info
+ * (name, bio, location, website). Fully self-styled (own bg-card, border,
+ * rounded, shadow, padding) so it works standalone or nested inside
+ * AppModal without a doubled box — pass no `title`/`footer` to AppModal
+ * when rendering this as its children.
+ *
+ * @prop {Partial<User>} [user] - Existing user values used as form defaults
+ * @prop {(data: User) => void} onSubmit - Called with form values on Save Changes
+ * @prop {() => void} onCancel - Called when Cancel or the close (X) button is clicked
+ *
+ * @example
+ * <AppModal isOpen={isOpen} onClose={() => setIsOpen(false)}>
+ *   <UserInfoModal
+ *     user={currentUser}
+ *     onSubmit={(values) => updateProfile(values)}
+ *     onCancel={() => setIsOpen(false)}
+ *   />
+ * </AppModal>
+ */
 export default function UserInfoModal({
   user,
   onSubmit,
@@ -20,34 +42,13 @@ export default function UserInfoModal({
       {/* Header Section */}
       <div className="flex justify-between items-center mb-4 max-w-125 w-full">
         <h2 className="text-text text-lg font-bold">Edit Profile</h2>
-        {/* TODO: replace with <AppButton variant="pure"> once ready, keep the X icon as its icon prop maybeeee*/}
-        <button
-          type="button"
-          className="text-text-secondary hover:text-text cursor-pointer transition-colors"
-          onClick={onCancel}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="currentColor"
-            strokeWidth="2"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-          >
-            <path d="M18 6 6 18" />
-            <path d="m6 6 12 12" />
-          </svg>
-        </button>
+        <AppButton variant="ghost" size="sm" icon="Close" onClick={onCancel} />
       </div>
 
       <form
         onSubmit={handleSubmit(onSubmit)}
         className="flex flex-col flex-1 min-h-0"
       >
-        {/* TODO: replace the <input>/<textarea> fields below with <AppInput> / <AppTextarea> once ready maybeeee */}
         <div className="flex flex-col gap-4 flex-1 pr-1">
           {/* Name Field */}
           <div className="flex flex-col gap-2">
@@ -95,21 +96,13 @@ export default function UserInfoModal({
         </div>
 
         {/* Footer */}
-        {/* TODO: replace with <AppButton variant="secondary" /> and <AppButton variant="primary" /> maybeee */}
         <div className="flex justify-end gap-3 pt-4 mt-auto">
-          <button
-            type="button"
-            onClick={onCancel}
-            className="px-5 py-2.5 rounded-md text-btn-secondary-text bg-btn-secondary-bg hover:bg-btn-secondary-bg-hover border border-border transition-all font-medium cursor-pointer"
-          >
+          <AppButton variant="secondary" onClick={onCancel}>
             Cancel
-          </button>
-          <button
-            type="submit"
-            className="px-5 py-2.5 rounded-md text-btn-primary-text bg-btn-primary-bg hover:bg-btn-primary-bg-hover transition-all font-medium cursor-pointer"
-          >
+          </AppButton>
+          <AppButton variant="primary" onClick={handleSubmit(onSubmit)}>
             Save Changes
-          </button>
+          </AppButton>
         </div>
       </form>
     </div>
