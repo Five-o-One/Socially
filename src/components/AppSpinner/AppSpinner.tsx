@@ -1,7 +1,5 @@
+import AppIcon from "../AppIcon/AppIcon";
+
 export default function AppSpinner() {
-  return (
-    <div>
-      <p>1</p>
-    </div>
-  );
+  return <AppIcon nameIcon="Loader" className="animate-spin text-text" size={24} />;
 }
