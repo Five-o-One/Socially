@@ -1,4 +1,3 @@
-import React from "react";
 import type { HTMLAttributes } from "react";
 
 export interface UserInfoStringProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
@@ -44,7 +43,7 @@ const labelClasses = "mt-1 text-sm leading-5 text-slate-500 dark:text-slate-400"
  * <UserInfoString label="وب‌سایت" value="" fallback="ثبت نشده" />
  * ```
  */
-export function UserInfoString({
+export default function UserInfoString({
   label,
   value,
   fallback = "—",
