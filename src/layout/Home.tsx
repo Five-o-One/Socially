@@ -1,13 +1,15 @@
 import UserInfoModal, { type User } from "../components/modals/UserInfoModal";
+import { UserContextProvider } from "../contexts";
+
+const testUser: User = {
+  name: "John Doe",
+  bio: "I am a software engineer from Tehran.",
+  location: "Tehran, Iran",
+  website: "https://my-portfolio.com",
+};
+
 //test data
 export default function Home() {
-  const testUser = {
-    name: "John Doe",
-    bio: "I am a software engineer from Tehran.",
-    location: "Tehran, Iran",
-    website: "https://my-portfolio.com",
-  };
-
   const handleSave = (updatedData: User) => {
     console.log("Data saved successfully:", updatedData);
   };
@@ -18,11 +20,9 @@ export default function Home() {
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-black/10">
-      <UserInfoModal
-        user={testUser}
-        onCancel={handleCancel}
-        onSubmit={handleSave}
-      />
+      <UserContextProvider user={testUser}>
+        <UserInfoModal onCancel={handleCancel} onSubmit={handleSave} />
+      </UserContextProvider>
     </div>
   );
 }

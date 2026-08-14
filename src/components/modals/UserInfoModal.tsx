@@ -1,4 +1,5 @@
 import { useForm } from "react-hook-form";
+import { useUserContext } from "../../contexts";
 
 export interface User {
   name: string;
@@ -8,22 +9,22 @@ export interface User {
 }
 
 interface UserInfoModalProps {
-  user: User;
   onSubmit: (data: User) => void;
   onCancel: () => void;
 }
 
 export default function UserInfoModal({
-  user,
   onSubmit,
   onCancel,
 }: UserInfoModalProps) {
+  const user = useUserContext();
+
   const { register, handleSubmit } = useForm<User>({
     defaultValues: {
-      name: user.name,
-      bio: user.bio,
-      location: user.location,
-      website: user.website,
+      name: user?.name,
+      bio: user?.bio,
+      location: user?.location,
+      website: user?.website,
     },
   });
 
