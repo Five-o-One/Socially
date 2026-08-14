@@ -1,3 +1,4 @@
 import AppIcon from "./AppIcon/AppIcon";
+import AppSpinner from './AppSpinner/AppSpinner.tsx'
 
-export {AppIcon}
+export {AppIcon , AppSpinner}
