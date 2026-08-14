@@ -13,6 +13,9 @@ import Person from "../../assets/icons/Person.svg?raw";
 import Post from "../../assets/icons/Post.svg?raw";
 import Send from "../../assets/icons/Send.svg?raw";
 import Trash from "../../assets/icons/Trash.svg?raw";
+import Menu from "../../assets/icons/menu.svg?raw";
+import Close from "../../assets/icons/x.svg?raw";
+import Loader from "../../assets/icons/Loader.svg?raw";
 import type { AppIconProps, NameIcon } from "../../types/AppIcon";
 
 const icons = {
@@ -31,6 +34,9 @@ const icons = {
   Post,
   Send,
   Trash,
+  Menu,
+  Close,
+  Loader,
 } satisfies Record<NameIcon, string>;
 
 function transformSvg(
