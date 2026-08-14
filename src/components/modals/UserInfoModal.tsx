@@ -1,17 +1,5 @@
 import { useForm } from "react-hook-form";
-
-export interface User {
-  name: string;
-  bio: string;
-  location: string;
-  website: string;
-}
-
-interface UserInfoModalProps {
-  user: User;
-  onSubmit: (data: User) => void;
-  onCancel: () => void;
-}
+import type { User, UserInfoModalProps } from "../../types/Modals";
 
 export default function UserInfoModal({
   user,
@@ -20,10 +8,10 @@ export default function UserInfoModal({
 }: UserInfoModalProps) {
   const { register, handleSubmit } = useForm<User>({
     defaultValues: {
-      name: user.name,
-      bio: user.bio,
-      location: user.location,
-      website: user.website,
+      name: user?.name,
+      bio: user?.bio,
+      location: user?.location,
+      website: user?.website,
     },
   });
 

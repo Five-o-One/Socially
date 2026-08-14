@@ -1,11 +1,6 @@
 // components/modals/ConfirmModal.tsx
-import { CONFIRM_ACTION_CONFIG, type ConfirmActionType } from "../../constants";
-
-interface ConfirmModalProps {
-  type: ConfirmActionType;
-  onConfirm: () => void;
-  onCancel: () => void;
-}
+import { CONFIRM_ACTION_CONFIG } from "../../constants";
+import type { ConfirmModalProps } from "../../types/Modals";
 
 export default function ConfirmModal({
   type,
