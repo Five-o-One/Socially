@@ -1,4 +1,3 @@
-import React from "react";
 import type { HTMLAttributes } from "react";
 
 export interface UserInfoNumberProps extends Omit<HTMLAttributes<HTMLDivElement>, "children"> {
@@ -39,7 +38,7 @@ const labelClasses = "mt-1 text-sm leading-5 text-slate-500 dark:text-slate-400"
  * <UserInfoNumber label="دنبال‌کننده‌ها" value={1280} compact />
  * ```
  */
-export function UserInfoNumber({
+export default function UserInfoNumber({
   label,
   value,
   compact = false,
