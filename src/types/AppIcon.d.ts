@@ -16,6 +16,7 @@ export type NameIcon =
   | "Trash"
   | "Menu"
   | "Close";
+  |"Loader";
 
 export interface AppIconProps {
   nameIcon: NameIcon;
