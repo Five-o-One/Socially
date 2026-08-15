@@ -1,42 +1,72 @@
 // export default function Home() {
 //   return <div>Home</div>;
 // }
-//it is for see what we did in userrow
-import UserRow from "../components/UserInfo/UserRow";
+//it is for see what we did in notifecard
 
-const mockUsers = [
+import NotifeCard from "../components/notifications/NotifeCard";
+
+const mockNotifications = [
   {
+    type: "comment" as const,
+    isRead: false,
+    name: "Ali Mousavi",
     avatarSrc: "",
-    username: "@mohammadfallah.w",
-    followers: 1,
+    time: "3 minutes ago",
+    postText: "test post",
+    commentText: "tests",
   },
   {
+    type: "like" as const,
+    isRead: false,
+    name: "Ali Mousavi",
     avatarSrc: "",
-    username: "@mohammadfallah.w",
-    followers: 1,
+    time: "3 minutes ago",
+    postText: "test post",
   },
   {
+    type: "follow" as const,
+    isRead: false,
+    name: "Ali Mousavi",
     avatarSrc: "",
-    name: "Farshad Hosseini",
-    username: "@f.e.h.farshad",
-    followers: 1,
+    time: "10 minutes ago",
+  },
+  {
+    type: "comment" as const,
+    isRead: true,
+    name: "Ali Mousavi",
+    avatarSrc: "",
+    time: "3 minutes ago",
+    postText: "test post",
+    commentText: "tests",
+  },
+  {
+    type: "like" as const,
+    isRead: true,
+    name: "Ali Mousavi",
+    avatarSrc: "",
+    time: "3 minutes ago",
+    postText: "test post",
+  },
+  {
+    type: "follow" as const,
+    isRead: true,
+    name: "Ali Mousavi",
+    avatarSrc: "",
+    time: "1 hour ago",
   },
 ];
 
 export default function Home() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-bg">
-      <div className="w-full max-w-sm flex flex-col divide-y divide-border rounded-lg border border-border p-4">
-        {mockUsers.map((user, index) => (
-          <div key={index} className={index !== 0 ? "pt-4" : "pb-4"}>
-            <UserRow
-              avatarSrc={user.avatarSrc}
-              name={user.name}
-              username={user.username}
-              followers={user.followers}
-              onFollow={() => console.log(`followed ${user.username}`)}
-            />
-          </div>
+    <div className="min-h-screen flex items-center justify-center bg-bg p-8">
+      <div className="w-full max-w-2xl border border-border rounded-lg">
+        <div className="flex items-center justify-between px-4 py-3 border-b border-border">
+          <h2 className="text-text font-bold">Notifications</h2>
+          <span className="text-text-tertiary text-xs">2 unread</span>
+        </div>
+
+        {mockNotifications.map((n, index) => (
+          <NotifeCard key={index} {...n} />
         ))}
       </div>
     </div>
