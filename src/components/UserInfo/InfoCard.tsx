@@ -1,4 +1,3 @@
-// components/user-info/InfoCard.tsx
 import { AppImage } from "../AppImage";
 import AppIcon from "../AppIcon/AppIcon";
 import { UserInfoNumber } from "./UserInfoNumber";
