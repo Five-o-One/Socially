@@ -1,6 +1,4 @@
-// constants/confirmModal.ts
-
-export type ConfirmActionType = "unfollow" | "block" | "delete";
+import type { ConfirmActionType } from "../types/Modals";
 
 export const CONFIRM_ACTION_CONFIG: Record<
   ConfirmActionType,
