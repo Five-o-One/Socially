@@ -3,7 +3,7 @@ interface UserInfoNumberProps {
   label: string;
 }
 
-export function UserInfoNumber({ value, label }: UserInfoNumberProps) {
+export default function UserInfoNumber({ value, label }: UserInfoNumberProps) {
   return (
     <div className="flex flex-col items-center justify-center gap-1">
       <span className="text-base font-semibold leading-6 text-text">

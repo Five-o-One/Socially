@@ -5,7 +5,7 @@ interface UserInfoStringProps {
   value: string;
 }
 
-export function UserInfoString({ icon, value }: UserInfoStringProps) {
+export default function UserInfoString({ icon, value }: UserInfoStringProps) {
   return (
     <div className="flex items-center gap-2 text-text-secondary">
       {icon}
