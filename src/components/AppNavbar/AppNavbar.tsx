@@ -5,7 +5,7 @@ import { NavLink } from "react-router";
 
 export default function AppNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn] = useState(false);
   return (
     <div className="flex flex-row items-center justify-between w-full h-17 bg-header border border-border lg:px-60 md:px-3 px-2">
       <a className="text-xl font-mono font-bold" href="/">
