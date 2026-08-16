@@ -1,7 +1,7 @@
 import { AppImage } from "../AppImage";
 import AppIcon from "../AppIcon/AppIcon";
-import { UserInfoNumber } from "./UserInfoNumber";
-import { UserInfoString } from "./UserInfoString";
+import UserInfoNumber from "./UserInfoNumber";
+import UserInfoString from "./UserInfoString";
 
 /**
  * @component InfoCard
