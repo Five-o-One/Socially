@@ -1,55 +1,8 @@
-// export default function Home() {
-//   return <div>Home</div>;
-// }
-//it is for see what we did in notifecard
-
 import { useState } from "react";
 import { AppButton } from "../components/AppButton";
 import { AppCard } from "../components/AppCard";
-import { PostCard } from "../components/PostCard";
 import { AppImage } from "../components/AppImage";
-
-const mockPosts = [
-  {
-    postId: 1,
-    user: {
-      imageURL: "",
-      username: "f.e.h.farshad",
-      name: "Farshad Hosseini",
-    },
-    message: "This is my first post on Socially!",
-    date: "8 days ago",
-    likes: 1,
-    isLiked: false,
-    commentsList: [],
-  },
-  {
-    postId: 2,
-    user: {
-      imageURL: "",
-      username: "samb.1376",
-      name: "Seyed Ali Mousavi",
-    },
-    message: "Working on something new.",
-    date: "5 days ago",
-    likes: 1,
-    isLiked: false,
-    commentsList: [],
-  },
-  {
-    postId: 3,
-    user: {
-      imageURL: "",
-      username: "mohammadfallah.w",
-      name: "Mohammad Fallah",
-    },
-    message: "salam",
-    date: "2 days ago",
-    likes: 1,
-    isLiked: false,
-    commentsList: [],
-  },
-];
+import { PostCard } from "../components/PostCard";
 
 export default function Home() {
   const [postText, setPostText] = useState("");
@@ -58,7 +11,6 @@ export default function Home() {
     if (!postText.trim()) return;
 
     console.log("New post:", postText);
-
     setPostText("");
   };
 
@@ -68,7 +20,6 @@ export default function Home() {
         {/* Create Post */}
         <AppCard className="mb-6">
           <div className="space-y-4">
-            {/* User avatar + Post input */}
             <div className="flex items-start gap-3">
               <AppImage src="" alt="Current User" variant="circle" size="md" />
 
@@ -78,21 +29,19 @@ export default function Home() {
                 placeholder="What's on your mind?"
                 rows={3}
                 className="
-          flex-1
-          resize-none
-          bg-transparent
-          text-text
-          placeholder:text-text-secondary
-          outline-none
-          pt-1
-        "
+                  flex-1
+                  resize-none
+                  bg-transparent
+                  text-text
+                  placeholder:text-text-secondary
+                  outline-none
+                  pt-1
+                "
               />
             </div>
 
-            {/* Separator */}
             <div className="mx-2 border-b border-border" />
 
-            {/* Post button */}
             <div className="flex justify-end">
               <AppButton
                 icon="Post"
@@ -107,14 +56,7 @@ export default function Home() {
 
         {/* Posts Feed */}
         <section className="space-y-4">
-          {mockPosts.map((post) => (
-            <PostCard
-              key={post.postId}
-              {...post}
-              onLike={() => console.log("Like:", post.postId)}
-              onComment={(text) => console.log("Comment:", post.postId, text)}
-            />
-          ))}
+          {/* Posts will be rendered here */}
         </section>
       </div>
     </main>
