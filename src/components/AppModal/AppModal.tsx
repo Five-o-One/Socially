@@ -96,7 +96,7 @@ export function AppModal({
     >
       <div
         className={`
-          bg-card rounded-3xl shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto
+          bg-card rounded-lg shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto
           animate-in fade-in slide-in-from-bottom-4 duration-300 ease-out
           ${className}
         `
