@@ -28,10 +28,16 @@ export default function AppNavbar() {
           className="md:hidden"
         />
       </div>
-      {/* add btn componenet and it will be showed */}
-      <div className="hidden md:flex flex-row gap-4">
+      {/* desktop nav */}
+      <div className="hidden md:flex flex-row items-center gap-4">
         {isLoggedIn ? (
           <>
+            <AppButton
+              icon="Light"
+              size="md"
+              variant="ghost"
+              className="border border-border shadow-sm cursor-pointer"
+            ></AppButton>
             <NavLink to="/">
               <AppButton
                 size="md"
@@ -61,6 +67,9 @@ export default function AppNavbar() {
               >
                 Profile
               </AppButton>
+            </NavLink>
+            <NavLink to="/">
+              <AppButton icon="LogOut" variant="ghost"></AppButton>
             </NavLink>
           </>
         ) : (
@@ -105,33 +114,49 @@ export default function AppNavbar() {
               <AppIcon nameIcon="Close" size={24} />
             </button>
           </div>
-          <div className="flex flex-col items-center gap-5 px-5">
+          {/* mobile nav */}
+          <div className="flex flex-col items-center gap-5">
             {isLoggedIn ? (
               <>
                 <NavLink to="/">
-                  <AppButton className="flex items-center gap-2">
+                  <AppButton
+                    icon="Home"
+                    variant="ghost"
+                    className="flex items-center gap-2 text-sm font-medium"
+                  >
                     Home
                   </AppButton>
                 </NavLink>
                 <NavLink to="/notifications">
-                  <AppButton className="flex items-center gap-2">
-                    <AppIcon nameIcon="Bell" size={20} /> Notifications
+                  <AppButton
+                    icon="Bell"
+                    variant="ghost"
+                    className="flex items-center gap-2"
+                  >
+                    Notifications
                   </AppButton>
                 </NavLink>
                 <NavLink to="/profile/:username">
-                  <AppButton className="flex items-center gap-2">
-                    <AppIcon nameIcon="Person" size={20} /> Profile
+                  <AppButton
+                    icon="Person"
+                    variant="ghost"
+                    className="flex items-center gap-2"
+                  >
+                    Profile
                   </AppButton>
+                </NavLink>
+                <NavLink to="/">
+                  <AppButton icon="LogOut" variant="ghost"></AppButton>
                 </NavLink>
               </>
             ) : (
               <>
                 <NavLink to="/">
-                  <AppButton className="flex items-center gap-2">
+                  <AppButton icon="Home" className="flex items-center gap-2">
                     Home
                   </AppButton>
                 </NavLink>
-                <NavLink to="/">
+                <NavLink to="/profile/:username">
                   <AppButton className="flex items-center gap-2">
                     Sign In
                   </AppButton>
