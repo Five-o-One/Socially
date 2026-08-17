@@ -29,12 +29,13 @@ import AppIcon from "../AppIcon/AppIcon";
  */
 interface AppButtonProps {
   children?: ReactNode;
-  icon?: NameIcon
+  icon?: NameIcon;
   variant?: "primary" | "secondary" | "danger" | "ghost";
   size?: "sm" | "md" | "lg";
   fullWidth?: boolean;
   disabled?: boolean;
   onClick?: () => void;
+  type?: "button" | "submit" | "reset";
   className?: string;
 }
 
@@ -46,6 +47,7 @@ export function AppButton({
   fullWidth = false,
   disabled = false,
   onClick,
+  type = "button",
   className = "",
 }: AppButtonProps) {
   // Base button styles applied to all variants
@@ -61,21 +63,25 @@ export function AppButton({
   // Variant-specific styles
   const variantClasses = {
     primary: `
-      bg-btn-primary-bg text-btn-primary-text
-      hover:bg-btn-primary-bg-hover hover:text-btn-primary-text-hover
-    `,
+    bg-btn-primary-bg text-btn-primary-text
+    border border-transparent
+    hover:bg-btn-primary-bg-hover hover:text-btn-primary-text-hover
+  `,
     secondary: `
-      bg-btn-secondary-bg text-btn-secondary-text
-      hover:bg-btn-secondary-bg-hover hover:text-btn-secondary-text-hover
-    `,
+    bg-btn-secondary-bg text-btn-secondary-text
+    border border-border
+    hover:bg-btn-secondary-bg-hover hover:text-btn-secondary-text-hover
+  `,
     danger: `
-      bg-danger text-text-opposite
-      hover:bg-danger/90
-    `,
+    bg-danger text-text-opposite
+    border border-transparent
+    hover:bg-danger/90
+  `,
     ghost: `
-      bg-transparent text-text
-      hover:bg-border/50
-    `,
+    bg-transparent text-text
+    border border-transparent
+    hover:bg-border/50
+  `,
   };
 
   // Size-specific padding and text styles
@@ -101,7 +107,7 @@ export function AppButton({
       className={combinedClassName}
       disabled={disabled}
       onClick={onClick}
-      type="button"
+      type={type}
     >
       {icon && <AppIcon nameIcon={icon} size={16} />}
       {children}

@@ -1,62 +1,100 @@
 import { useState } from "react";
 import AppIcon from "../AppIcon/AppIcon";
+import { AppButton } from "../AppButton";
+import { NavLink } from "react-router";
 
 export default function AppNavbar() {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn] = useState(false);
   return (
     <div className="flex flex-row items-center justify-between w-full h-17 bg-header border border-border lg:px-60 md:px-3 px-2">
       <a className="text-xl font-mono font-bold" href="/">
         Socially
       </a>
       <div className="flex flex-row gap-4">
-        <div className="md:hidden bg-btn-primary-bg p-2 rounded-xl">
-          <AppIcon
-            className="text-btn-primary-text"
-            nameIcon="Moon"
-            size={24}
+        <div className="md:hidden">
+          <AppButton
+            icon="Light"
+            size="md"
+            variant="ghost"
+            className="md:hidden border border-border shadow-sm"
           />
         </div>
-        <div
-          className="md:hidden bg-btn-primary-bg p-2 rounded-xl"
+        <AppButton
+          icon="Menu"
+          size="md"
+          variant="primary"
           onClick={() => setIsMenuOpen(true)}
-        >
-          <AppIcon
-            className="text-btn-primary-text"
-            nameIcon="Menu"
-            size={24}
-          />
-        </div>
+          className="md:hidden"
+        />
       </div>
-      {/* add btn componenet and it will be showed */}
-      <div className="hidden md:flex flex-row gap-4">
+      {/* desktop nav */}
+      <div className="hidden md:flex flex-row items-center gap-4">
         {isLoggedIn ? (
           <>
-            <button className="py-2 px-4 flex flex-row rounded-sm cursor-pointer">
-              <AppIcon nameIcon="Home" />
-              <p>Home</p>
-            </button>
-            <button className="py-2 px-4 flex flex-row rounded-sm cursor-pointer">
-              <AppIcon nameIcon="Bell" />
-              <p>Notification</p>
-            </button>
-            <button className="py-2 px-4 flex flex-row rounded-sm cursor-pointer">
-              <AppIcon nameIcon="Person" />
-              <p>Profile</p>
-            </button>
+            <AppButton
+              icon="Light"
+              size="md"
+              variant="ghost"
+              className="border border-border shadow-sm cursor-pointer"
+            ></AppButton>
+            <NavLink to="/">
+              <AppButton
+                size="md"
+                icon="Home"
+                variant="ghost"
+                className="cursor-pointer"
+              >
+                Home
+              </AppButton>
+            </NavLink>
+            <NavLink to="/notifications">
+              <AppButton
+                size="md"
+                icon="Bell"
+                variant="ghost"
+                className="cursor-pointer"
+              >
+                Notification
+              </AppButton>
+            </NavLink>
+            <NavLink to="/profile/:username">
+              <AppButton
+                size="md"
+                icon="Person"
+                variant="ghost"
+                className="cursor-pointer"
+              >
+                Profile
+              </AppButton>
+            </NavLink>
+            <NavLink to="/">
+              <AppButton icon="LogOut" variant="ghost"></AppButton>
+            </NavLink>
           </>
         ) : (
           <>
-            <button className="p-2 rounded-xl cursor-pointer">
-              <AppIcon nameIcon="Moon" size={24} />
-            </button>
-            <button className="py-2 px-4 flex flex-row rounded-sm cursor-pointer">
-              <AppIcon nameIcon="Home" />
-              <p>Home</p>
-            </button>
-            <button className="px-4 py-2 rounded-xl bg-btn-primary-bg text-btn-primary-text cursor-pointer">
-              Sign in
-            </button>
+            <AppButton
+              icon="Light"
+              size="md"
+              variant="ghost"
+              className="border border-border shadow-sm cursor-pointer"
+            ></AppButton>
+            <NavLink to={"/"}>
+              <AppButton
+                size="md"
+                icon="Home"
+                variant="ghost"
+                className="cursor-pointer"
+              >
+                Home
+              </AppButton>
+            </NavLink>
+            <NavLink to="/profile/:username">
+              <AppButton size="md" className="cursor-pointer">
+                Sign in
+              </AppButton>
+            </NavLink>
           </>
         )}
       </div>
@@ -76,25 +114,53 @@ export default function AppNavbar() {
               <AppIcon nameIcon="Close" size={24} />
             </button>
           </div>
-          <div className="flex flex-col items-center gap-5 px-5">
+          {/* mobile nav */}
+          <div className="flex flex-col items-center gap-5">
             {isLoggedIn ? (
               <>
-                <button className="flex items-center gap-2">
-                  <AppIcon nameIcon="Home" size={20} /> Home
-                </button>
-                <button className="flex items-center gap-2">
-                  <AppIcon nameIcon="Bell" size={20} /> Notifications
-                </button>
-                <button className="flex items-center gap-2">
-                  <AppIcon nameIcon="Person" size={20} /> Profile
-                </button>
+                <NavLink to="/">
+                  <AppButton
+                    icon="Home"
+                    variant="ghost"
+                    className="flex items-center gap-2 text-sm font-medium"
+                  >
+                    Home
+                  </AppButton>
+                </NavLink>
+                <NavLink to="/notifications">
+                  <AppButton
+                    icon="Bell"
+                    variant="ghost"
+                    className="flex items-center gap-2"
+                  >
+                    Notifications
+                  </AppButton>
+                </NavLink>
+                <NavLink to="/profile/:username">
+                  <AppButton
+                    icon="Person"
+                    variant="ghost"
+                    className="flex items-center gap-2"
+                  >
+                    Profile
+                  </AppButton>
+                </NavLink>
+                <NavLink to="/">
+                  <AppButton icon="LogOut" variant="ghost"></AppButton>
+                </NavLink>
               </>
             ) : (
               <>
-                <button className="flex items-center gap-2">
-                  <AppIcon nameIcon="Home" size={20} /> Home
-                </button>
-                <button className="flex items-center gap-2">Sign in</button>
+                <NavLink to="/">
+                  <AppButton icon="Home" className="flex items-center gap-2">
+                    Home
+                  </AppButton>
+                </NavLink>
+                <NavLink to="/profile/:username">
+                  <AppButton className="flex items-center gap-2">
+                    Sign In
+                  </AppButton>
+                </NavLink>
               </>
             )}
           </div>

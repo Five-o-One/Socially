@@ -16,6 +16,7 @@ import Trash from "../../assets/icons/Trash.svg?raw";
 import Menu from "../../assets/icons/menu.svg?raw";
 import Close from "../../assets/icons/x.svg?raw";
 import Loader from "../../assets/icons/Loader.svg?raw";
+import LogOut from "../../assets/icons/LogOut.svg?raw";
 import type { AppIconProps, NameIcon } from "../../types/AppIcon";
 
 const icons = {
@@ -37,6 +38,7 @@ const icons = {
   Menu,
   Close,
   Loader,
+  LogOut,
 } satisfies Record<NameIcon, string>;
 
 function transformSvg(
