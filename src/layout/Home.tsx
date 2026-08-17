@@ -2,7 +2,6 @@ import { useState } from "react";
 import { AppButton } from "../components/AppButton";
 import { AppCard } from "../components/AppCard";
 import { AppImage } from "../components/AppImage";
-import { PostCard } from "../components/PostCard";
 
 export default function Home() {
   const [postText, setPostText] = useState("");
