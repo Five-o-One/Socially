@@ -1,56 +1,21 @@
 import { useState } from "react";
-import { FaMapMarkerAlt, FaLink, FaCalendarAlt } from "react-icons/fa";
-import { AppCard } from "../AppCard";
-import { AppImage } from "../AppImage";
-import { AppButton } from "../AppButton";
+import { AppCard } from "@/components/AppCard";
+import { AppImage } from "@/components/AppImage";
+import { AppButton } from "@/components/AppButton";
+import AppIcon from "@/components/AppIcon/AppIcon";
 
-/**
- * @component UserInfoCard
- * @description User profile card with follow functionality
- *
- * @prop {Object} user - User information
- * @prop {string} user.imageURL - Profile image URL
- * @prop {string} user.username - Username
- * @prop {string} user.name - Full name
- * @prop {number} user.followers - Number of followers
- * @prop {number} user.following - Number of following
- * @prop {boolean} user.isFollow - Follow status
- * @prop {string} [user.location] - Location (optional)
- * @prop {string} [user.website] - Website URL (optional)
- * @prop {string} [user.joinedDate] - Join date (optional)
- * @prop {string} [user.bio] - User bio (optional)
- * @prop {() => void} [onFollow] - Follow handler
- * @prop {() => void} [onUnfollow] - Unfollow handler
- * @prop {string} [className] - Additional CSS classes
- *
- * @example
- * <UserInfoCard
- *   user={{
- *     imageURL: '/avatar.jpg',
- *     username: 'ali',
- *     name: 'Ali Mohammadi',
- *     followers: 1200,
- *     following: 350,
- *     isFollow: false,
- *     location: 'Tehran',
- *     website: 'https://example.com',
- *     joinedDate: 'November 2025',
- *     bio: 'React Developer'
- *   }}
- * />
- */
 interface UserInfoCardProps {
   user: {
-    imageURL: string;
+    imageURL?: string | null;
     username: string;
     name: string;
     followers: number;
     following: number;
-    isFollow: boolean;
-    location?: string;
-    website?: string;
-    joinedDate?: string;
-    bio?: string;
+    isFollow?: boolean;
+    location?: string | null;
+    website?: string | null;
+    joinedDate?: string | null;
+    bio?: string | null;
   };
   onFollow?: () => void;
   onUnfollow?: () => void;
@@ -63,15 +28,15 @@ export function UserInfoCard({
   onUnfollow,
   className = "",
 }: UserInfoCardProps) {
-  const [isFollowing, setIsFollowing] = useState(user.isFollow);
+  const [isFollowing, setIsFollowing] = useState(Boolean(user.isFollow));
   const [followersCount, setFollowersCount] = useState(user.followers);
 
   const handleFollowToggle = () => {
     if (isFollowing) {
-      setFollowersCount(followersCount - 1);
+      setFollowersCount((prev) => Math.max(0, prev - 1));
       onUnfollow?.();
     } else {
-      setFollowersCount(followersCount + 1);
+      setFollowersCount((prev) => prev + 1);
       onFollow?.();
     }
     setIsFollowing(!isFollowing);
@@ -80,10 +45,10 @@ export function UserInfoCard({
   return (
     <AppCard className={className}>
       <div className="space-y-4">
-        {/* Header: Avatar and name */}
+        {/* Header: Avatar and Name */}
         <div className="flex items-start gap-4">
           <AppImage
-            src={user.imageURL}
+            src={user.imageURL || ""}
             alt={user.name || user.username}
             variant="circle"
             size="xl"
@@ -111,19 +76,31 @@ export function UserInfoCard({
           <p className="text-text text-sm leading-relaxed">{user.bio}</p>
         )}
 
-        {/* Additional info */}
-        <div className="space-y-1.5 text-sm text-text-secondary">
+        {/* Info Rows */}
+        <div className="space-y-2 text-sm text-text-secondary">
           {user.location && (
             <div className="flex items-center gap-2">
-              <FaMapMarkerAlt className="text-sm" />
+              <AppIcon
+                nameIcon="Location"
+                size={16}
+                className="text-text-secondary"
+              />
               <span>{user.location}</span>
             </div>
           )}
           {user.website && (
             <div className="flex items-center gap-2">
-              <FaLink className="text-sm" />
+              <AppIcon
+                nameIcon="Link"
+                size={16}
+                className="text-text-secondary"
+              />
               <a
-                href={user.website}
+                href={
+                  user.website.startsWith("http")
+                    ? user.website
+                    : `https://${user.website}`
+                }
                 target="_blank"
                 rel="noopener noreferrer"
                 className="text-brand hover:underline truncate"
@@ -134,13 +111,17 @@ export function UserInfoCard({
           )}
           {user.joinedDate && (
             <div className="flex items-center gap-2">
-              <FaCalendarAlt className="text-sm" />
+              <AppIcon
+                nameIcon="Calendar"
+                size={16}
+                className="text-text-secondary"
+              />
               <span>Joined {user.joinedDate}</span>
             </div>
           )}
         </div>
 
-        {/* Follow button */}
+        {/* Action Button */}
         <div className="pt-2">
           <AppButton
             variant={isFollowing ? "secondary" : "primary"}
