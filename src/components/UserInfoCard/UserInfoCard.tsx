@@ -1,135 +1,80 @@
-import { useState } from "react";
 import { AppCard } from "@/components/AppCard";
 import { AppImage } from "@/components/AppImage";
-import { AppButton } from "@/components/AppButton";
 import AppIcon from "@/components/AppIcon/AppIcon";
 
-interface UserInfoCardProps {
+interface UserSummaryProps {
   user: {
     imageURL?: string | null;
     username: string;
     name: string;
     followers: number;
     following: number;
-    isFollow?: boolean;
     location?: string | null;
     website?: string | null;
-    joinedDate?: string | null;
-    bio?: string | null;
   };
-  onFollow?: () => void;
-  onUnfollow?: () => void;
   className?: string;
 }
 
-export function UserInfoCard({
-  user,
-  onFollow,
-  onUnfollow,
-  className = "",
-}: UserInfoCardProps) {
-  const [isFollowing, setIsFollowing] = useState(Boolean(user.isFollow));
-  const [followersCount, setFollowersCount] = useState(user.followers);
-
-  const handleFollowToggle = () => {
-    if (isFollowing) {
-      setFollowersCount((prev) => Math.max(0, prev - 1));
-      onUnfollow?.();
-    } else {
-      setFollowersCount((prev) => prev + 1);
-      onFollow?.();
-    }
-    setIsFollowing(!isFollowing);
-  };
-
+export function UserInfoCard({ user, className = "" }: UserSummaryProps) {
   return (
     <AppCard className={className}>
-      <div className="space-y-4">
-        {/* Header: Avatar and Name */}
-        <div className="flex items-start gap-4">
-          <AppImage
-            src={user.imageURL || ""}
-            alt={user.name || user.username}
-            variant="circle"
-            size="xl"
+      <div className="flex flex-col items-center gap-1 text-center">
+        <AppImage
+          src={user.imageURL || ""}
+          alt={user.name || user.username}
+          variant="circle"
+          size="xl"
+        />
+        <h3 className="mt-2 text-lg font-bold text-text truncate max-w-full">
+          {user.name}
+        </h3>
+        <p className="text-sm text-text-secondary truncate max-w-full">
+          @{user.username}
+        </p>
+      </div>
+
+      <div className="mt-4 flex items-center justify-around border-t border-border pt-4">
+        <div className="flex flex-col items-center">
+          <span className="text-base font-bold text-text">
+            {user.following}
+          </span>
+          <span className="text-xs text-text-secondary">Following</span>
+        </div>
+        <div className="flex flex-col items-center">
+          <span className="text-base font-bold text-text">
+            {user.followers}
+          </span>
+          <span className="text-xs text-text-secondary">Followers</span>
+        </div>
+      </div>
+
+      <div className="mt-4 space-y-2 border-t border-border pt-4 text-xs text-text-secondary">
+        <div className="flex items-center gap-2">
+          <AppIcon
+            nameIcon="Location"
+            size={14}
+            className="text-text-tertiary"
           />
-          <div className="flex-1 min-w-0">
-            <h3 className="text-xl font-bold text-text truncate">
-              {user.name}
-            </h3>
-            <p className="text-text-secondary text-sm">@{user.username}</p>
-            <div className="flex items-center gap-4 mt-2 text-sm">
-              <span className="text-text-secondary">
-                <strong className="text-text">{followersCount}</strong>{" "}
-                Followers
-              </span>
-              <span className="text-text-secondary">
-                <strong className="text-text">{user.following}</strong>{" "}
-                Following
-              </span>
-            </div>
-          </div>
+          <span>{user.location || "No location"}</span>
         </div>
-
-        {/* Bio */}
-        {user.bio && (
-          <p className="text-text text-sm leading-relaxed">{user.bio}</p>
-        )}
-
-        {/* Info Rows */}
-        <div className="space-y-2 text-sm text-text-secondary">
-          {user.location && (
-            <div className="flex items-center gap-2">
-              <AppIcon
-                nameIcon="Location"
-                size={16}
-                className="text-text-secondary"
-              />
-              <span>{user.location}</span>
-            </div>
+        <div className="flex items-center gap-2">
+          <AppIcon nameIcon="Link" size={14} className="text-text-tertiary" />
+          {user.website ? (
+            <a
+              href={
+                user.website.startsWith("http")
+                  ? user.website
+                  : `https://${user.website}`
+              }
+              target="_blank"
+              rel="noopener noreferrer"
+              className="truncate text-brand hover:underline"
+            >
+              {user.website.replace(/^https?:\/\//, "")}
+            </a>
+          ) : (
+            <span>No website</span>
           )}
-          {user.website && (
-            <div className="flex items-center gap-2">
-              <AppIcon
-                nameIcon="Link"
-                size={16}
-                className="text-text-secondary"
-              />
-              <a
-                href={
-                  user.website.startsWith("http")
-                    ? user.website
-                    : `https://${user.website}`
-                }
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-brand hover:underline truncate"
-              >
-                {user.website.replace(/^https?:\/\//, "")}
-              </a>
-            </div>
-          )}
-          {user.joinedDate && (
-            <div className="flex items-center gap-2">
-              <AppIcon
-                nameIcon="Calendar"
-                size={16}
-                className="text-text-secondary"
-              />
-              <span>Joined {user.joinedDate}</span>
-            </div>
-          )}
-        </div>
-
-        {/* Action Button */}
-        <div className="pt-2">
-          <AppButton
-            variant={isFollowing ? "secondary" : "primary"}
-            fullWidth
-            onClick={handleFollowToggle}
-          >
-            {isFollowing ? "Unfollow" : "Follow"}
-          </AppButton>
         </div>
       </div>
     </AppCard>
