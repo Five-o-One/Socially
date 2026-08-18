@@ -1,305 +1,241 @@
 import { useState } from "react";
-import { FaHeart, FaRegHeart, FaComment, FaTrashAlt } from "react-icons/fa";
-import { AppCard } from "../AppCard";
-import { AppImage } from "../AppImage";
-import { AppButton } from "../AppButton";
-import { AppModal } from "../AppModal";
+import { AppCard } from "@/components/AppCard";
+import { AppImage } from "@/components/AppImage";
+import { AppButton } from "@/components/AppButton";
+import AppIcon from "@/components/AppIcon/AppIcon";
+import { ConfirmModal } from "@/components/AppModal/ConfirmModal";
+import type { Post } from "@/types/GetAllPost";
 
-/**
- * @component PostCard
- * @description Post card component with like and comment functionality
- *
- * @prop {Object} user - User information
- * @prop {string} user.imageURL - Profile image URL
- * @prop {string} user.username - Username
- * @prop {string} user.name - Full name
- * @prop {number} postId - Post ID
- * @prop {string} message - Post text content
- * @prop {string|Date} date - Post date
- * @prop {number} likes - Number of likes
- * @prop {boolean} [isLiked] - Like status
- * @prop {Array} [commentsList] - List of comments
- * @prop {() => void} [onLike] - Like handler
- * @prop {(text: string) => void} [onComment] - Comment handler
- * @prop {(commentId: number) => void} [onDeleteComment] - Delete comment handler
- * @prop {string} [className] - Additional CSS classes
- */
 interface PostCardProps {
-  user: {
-    imageURL: string;
-    username: string;
-    name: string;
-  };
-  postId: number;
-  message: string;
-  date: string | Date;
-  likes: number;
-  isLiked?: boolean;
-  commentsList?: Array<{
-    id: number;
-    user: {
-      imageURL: string;
-      username: string;
-      name: string;
-    };
-    message: string;
-    date: string | Date;
-  }>;
-  onLike?: () => void;
-  onComment?: (text: string) => void;
-  onDeleteComment?: (commentId: number) => void;
+  post: Post;
+  currentUserId?: string;
+  onLike?: (postId: string) => void;
+  onComment?: (postId: string, content: string) => void;
+  onDeletePost?: (postId: string) => void;
   className?: string;
 }
 
 export function PostCard({
-  user,
-  postId: _postId,
-  message,
-  date,
-  likes,
-  isLiked = false,
-  commentsList = [],
+  post,
+  currentUserId = "current-user-id",
   onLike,
   onComment,
-  onDeleteComment,
+  onDeletePost,
   className = "",
 }: PostCardProps) {
-  const [liked, setLiked] = useState(isLiked);
-  const [likeCount, setLikeCount] = useState(likes);
+  const isLikedInitial =
+    post.likes?.some((like) => like.userId === currentUserId) || false;
+  const isAuthor = post.authorId === currentUserId;
+
+  const [isLiked, setIsLiked] = useState(isLikedInitial);
+  const [likesCount, setLikesCount] = useState(
+    post._count?.likes || post.likes?.length || 0,
+  );
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState("");
-  const [localComments, setLocalComments] = useState(commentsList);
+  const [comments, setComments] = useState(post.comments || []);
+  const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
-  // State for delete confirmation modal
-  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
-  const [commentToDelete, setCommentToDelete] = useState<number | null>(null);
-
-  const commentCount = localComments.length;
-
-  const handleLike = () => {
-    if (liked) {
-      setLikeCount(likeCount - 1);
+  const handleLikeToggle = () => {
+    if (isLiked) {
+      setLikesCount((prev) => Math.max(0, prev - 1));
     } else {
-      setLikeCount(likeCount + 1);
+      setLikesCount((prev) => prev + 1);
     }
-    setLiked(!liked);
-    onLike?.();
+    setIsLiked(!isLiked);
+    onLike?.(post.id);
   };
 
   const handleCommentSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (commentText.trim() && onComment) {
-      const newComment = {
-        id: Date.now(),
-        user: {
-          imageURL: "https://i.pravatar.cc/150?img=1",
-          username: "current.user",
-          name: "Current User",
-        },
-        message: commentText.trim(),
-        date: "Just now",
-      };
+    if (!commentText.trim()) return;
 
-      setLocalComments([...localComments, newComment]);
-      onComment(commentText.trim());
-      setCommentText("");
-    }
+    const newComment = {
+      id: Date.now().toString(),
+      content: commentText.trim(),
+      createdAt: "Just now",
+      author: {
+        id: currentUserId,
+        name: "Seyed Ali Mousavi",
+        username: "samb.1376",
+        image: null,
+      },
+    };
+
+    setComments((prev) => [...prev, newComment]);
+    onComment?.(post.id, commentText.trim());
+    setCommentText("");
   };
 
-  // Open delete confirmation modal
-  const handleDeleteClick = (commentId: number) => {
-    setCommentToDelete(commentId);
-    setDeleteModalOpen(true);
-  };
-
-  // Confirm delete
   const handleConfirmDelete = () => {
-    if (commentToDelete !== null) {
-      setLocalComments(
-        localComments.filter((comment) => comment.id !== commentToDelete),
-      );
-      onDeleteComment?.(commentToDelete);
-      setCommentToDelete(null);
-      setDeleteModalOpen(false);
-    }
+    onDeletePost?.(post.id);
+    setIsDeleteModalOpen(false);
   };
-
-  // Cancel delete
-  const handleCancelDelete = () => {
-    setCommentToDelete(null);
-    setDeleteModalOpen(false);
-  };
-
-  const handleToggleComments = () => {
-    setShowComments(!showComments);
-  };
-
-  const formattedDate =
-    typeof date === "string" ? date : date.toLocaleDateString("en-US");
 
   return (
     <>
-      <AppCard className={className} hoverable>
+      <AppCard className={`transition-shadow duration-200 ${className}`}>
         <div className="space-y-3">
-          {/* Header: User info */}
-          <div className="flex items-start gap-3">
-            <AppImage
-              src={user.imageURL}
-              alt={user.name || user.username}
-              variant="circle"
-              size="md"
-            />
-            <div className="flex-1 min-w-0">
-              <p className="font-bold text-text truncate">{user.name}</p>
-              <div className="flex items-center gap-2 text-sm text-text-secondary">
-                <span>@{user.username}</span>
-                <span className="w-1 h-1 rounded-full bg-text-secondary/50" />
-                <span>{formattedDate}</span>
+          {/* Header: Author info & Delete action */}
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex items-center gap-3 min-w-0">
+              <AppImage
+                src={post.author.image || ""}
+                alt={post.author.name}
+                variant="circle"
+                size="md"
+              />
+              <div className="min-w-0">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="font-bold text-text text-sm truncate">
+                    {post.author.name}
+                  </span>
+                  <span className="text-text-secondary text-xs truncate">
+                    @
+                    {post.author.username ||
+                      post.author.name.toLowerCase().replace(/\s+/g, "")}
+                  </span>
+                  <span className="text-text-tertiary text-xs">
+                    • {post.createdAt}
+                  </span>
+                </div>
               </div>
             </div>
+
+            {/* Trash icon for post author */}
+            {isAuthor && (
+              <button
+                type="button"
+                onClick={() => setIsDeleteModalOpen(true)}
+                className="rounded-lg p-1.5 text-text-tertiary hover:bg-danger/10 hover:text-danger transition-colors"
+                aria-label="Delete Post"
+              >
+                <AppIcon nameIcon="Trash" size={18} />
+              </button>
+            )}
           </div>
 
-          {/* Post content */}
-          <p className="text-text leading-relaxed break-words">{message}</p>
+          {/* Post Content */}
+          <p className="text-text text-sm sm:text-base leading-relaxed wrap-break-word whitespace-pre-line">
+            {post.content}
+          </p>
 
-          {/* Interaction buttons */}
-          <div className="flex items-center gap-6 pt-2 border-t border-border">
+          {/* Action Row */}
+          <div className="flex items-center gap-3 pt-2">
+            {/* Like Button */}
             <button
-              onClick={handleLike}
-              className={`
-                flex items-center gap-2 text-sm transition-colors
-                ${liked ? "text-danger" : "text-text-secondary hover:text-danger"}
-              `}
-              aria-label={liked ? "Unlike" : "Like"}
+              type="button"
+              onClick={handleLikeToggle}
+              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
+                isLiked
+                  ? "bg-danger/10 text-danger"
+                  : "text-text-secondary hover:bg-border/30 hover:text-text"
+              }`}
             >
-              {liked ? (
-                <FaHeart className="text-lg" />
-              ) : (
-                <FaRegHeart className="text-lg" />
-              )}
-              <span>{likeCount}</span>
+              <AppIcon nameIcon="Heart" size={16} isFilled={isLiked} />
+              <span>{likesCount}</span>
             </button>
 
+            {/* Comment Toggle Button */}
             <button
-              onClick={handleToggleComments}
-              className="flex items-center gap-2 text-sm text-text-secondary hover:text-brand transition-colors"
-              aria-label="Comments"
+              type="button"
+              onClick={() => setShowComments(!showComments)}
+              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
+                showComments
+                  ? "bg-brand/10 text-brand"
+                  : "text-text-secondary hover:bg-border/30 hover:text-text"
+              }`}
             >
-              <FaComment className="text-lg" />
-              <span>{commentCount}</span>
+              <AppIcon nameIcon="Chat" size={16} isFilled={showComments} />
+              <span>{comments.length}</span>
             </button>
           </div>
 
-          {/* Comments section */}
+          {/* Comments Section */}
           {showComments && (
-            <div className="pt-3 border-t border-border space-y-3">
-              {/* Comments list */}
-              {localComments.length > 0 ? (
-                <div className="space-y-3 max-h-60 overflow-y-auto">
-                  {localComments.map((comment) => (
+            <div className="space-y-4 pt-3 border-t border-border">
+              {/* Comments List */}
+              {comments.length > 0 ? (
+                <div className="space-y-3">
+                  {comments.map((comment) => (
                     <div
                       key={comment.id}
-                      className="flex items-start gap-2 group"
+                      className="flex items-start gap-3 text-sm"
                     >
                       <AppImage
-                        src={comment.user.imageURL}
-                        alt={comment.user.name || comment.user.username}
+                        src={comment.author.image || ""}
+                        alt={comment.author.name}
                         variant="circle"
                         size="sm"
                       />
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 flex-wrap">
-                          <span className="font-bold text-text text-sm">
-                            {comment.user.name}
-                          </span>
-                          <span className="text-text-secondary text-xs">
-                            @{comment.user.username}
-                          </span>
-                          <span className="text-text-tertiary text-xs">
-                            ·{" "}
-                            {typeof comment.date === "string"
-                              ? comment.date
-                              : comment.date.toLocaleDateString("en-US")}
-                          </span>
+                      <div className="flex-1 rounded-xl bg-border/20 p-3">
+                        <div className="flex items-center justify-between gap-2">
+                          <div className="flex items-center gap-2">
+                            <span className="font-semibold text-text text-xs">
+                              {comment.author.name}
+                            </span>
+                            <span className="text-text-tertiary text-xs">
+                              @{comment.author.username || "user"}
+                            </span>
+                            <span className="text-text-tertiary text-xs">
+                              • {comment.createdAt}
+                            </span>
+                          </div>
                         </div>
-                        <p className="text-text text-sm break-words">
-                          {comment.message}
+                        <p className="mt-1 text-text text-sm wrap-break-word">
+                          {comment.content}
                         </p>
                       </div>
-                      {/* Delete button - only shows on hover */}
-                      <button
-                        onClick={() => handleDeleteClick(comment.id)}
-                        className="opacity-0 group-hover:opacity-100 transition-opacity p-1.5 rounded-full hover:bg-danger/10 text-text-tertiary hover:text-danger"
-                        aria-label="Delete comment"
-                      >
-                        <FaTrashAlt className="text-xs" />
-                      </button>
                     </div>
                   ))}
                 </div>
-              ) : (
-                <p className="text-text-secondary text-sm text-center py-2">
-                  No comments yet
-                </p>
-              )}
+              ) : null}
 
-              {/* Comment input form */}
-              <form
-                onSubmit={handleCommentSubmit}
-                className="flex items-center gap-2"
-              >
-                <AppImage
-                  src="https://i.pravatar.cc/150?img=1"
-                  alt="User"
-                  variant="circle"
-                  size="sm"
-                />
-                <input
-                  type="text"
-                  value={commentText}
-                  onChange={(e) => setCommentText(e.target.value)}
-                  placeholder="Write a comment..."
-                  className="flex-1 bg-border/30 rounded-full px-4 py-2 text-sm text-text placeholder-text-tertiary focus:outline-none focus:ring-2 focus:ring-brand/50"
-                />
-                <AppButton
-                  variant="primary"
-                  size="sm"
-                  disabled={!commentText.trim()}
-                >
-                  Post
-                </AppButton>
+              {/* Create Comment Form */}
+              <form onSubmit={handleCommentSubmit} className="space-y-3 pt-2">
+                <div className="flex items-start gap-3">
+                  <AppImage
+                    src=""
+                    alt="Current User"
+                    variant="circle"
+                    size="sm"
+                  />
+                  <div className="flex-1 rounded-xl border border-border bg-card p-2.5 focus-within:border-brand">
+                    <textarea
+                      value={commentText}
+                      onChange={(e) => setCommentText(e.target.value)}
+                      placeholder="Write a comment..."
+                      rows={2}
+                      className="w-full resize-none bg-transparent text-sm text-text placeholder:text-text-tertiary outline-none"
+                    />
+                    <div className="flex justify-end pt-1">
+                      <AppButton
+                        type="submit"
+                        variant="primary"
+                        size="sm"
+                        icon="Send"
+                        disabled={!commentText.trim()}
+                      >
+                        Comment
+                      </AppButton>
+                    </div>
+                  </div>
+                </div>
               </form>
             </div>
           )}
         </div>
       </AppCard>
 
-      {/* Delete Confirmation Modal */}
-      <AppModal
-        isOpen={deleteModalOpen}
-        onClose={handleCancelDelete}
-        title="Delete Comment"
-        footer={
-          <>
-            <AppButton variant="ghost" onClick={handleCancelDelete}>
-              Cancel
-            </AppButton>
-            <AppButton variant="danger" onClick={handleConfirmDelete}>
-              Delete
-            </AppButton>
-          </>
-        }
-      >
-        <div className="space-y-3">
-          <p className="text-text">
-            Are you sure you want to delete this comment?
-          </p>
-          <p className="text-text-secondary text-sm">
-            This action cannot be undone. The comment will be permanently
-            removed.
-          </p>
-        </div>
-      </AppModal>
+      {/* Post Delete Confirmation Modal */}
+      <ConfirmModal
+        isOpen={isDeleteModalOpen}
+        title="Delete Post"
+        description="This action cannot be undone."
+        confirmText="Delete"
+        onConfirm={handleConfirmDelete}
+        onClose={() => setIsDeleteModalOpen(false)}
+      />
     </>
   );
 }
