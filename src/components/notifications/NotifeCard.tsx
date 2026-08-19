@@ -1,7 +1,6 @@
 import { AppImage } from "@/components/AppImage";
 import AppIcon from "@/components/AppIcon/AppIcon";
-import type { NameIcon } from "@/types/AppIcon";
-import type { NotificationType } from "@/types/notification";
+import type { NameIcon, NotificationType } from "@/types";
 
 interface NotificationCardProps {
   type: NotificationType | "like" | "comment" | "follow";

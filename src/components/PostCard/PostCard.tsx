@@ -4,7 +4,7 @@ import { AppImage } from "@/components/AppImage";
 import { AppButton } from "@/components/AppButton";
 import AppIcon from "@/components/AppIcon/AppIcon";
 import { ConfirmModal } from "@/components/AppModal/ConfirmModal";
-import type { Post } from "@/types/GetAllPost";
+import type { Post } from "@/types";
 
 interface PostCardProps {
   post: Post;
@@ -107,7 +107,7 @@ export function PostCard({
               <button
                 type="button"
                 onClick={() => setIsDeleteModalOpen(true)}
-                className="rounded-lg p-1.5 text-text-tertiary hover:bg-danger/10 hover:text-danger transition-colors"
+                className="rounded-lg p-1.5 text-text-tertiary hover:bg-danger/10 hover:text-danger transition-colors cursor-pointer"
                 aria-label="Delete Post"
               >
                 <AppIcon nameIcon="Trash" size={18} />
@@ -126,7 +126,7 @@ export function PostCard({
             <button
               type="button"
               onClick={handleLikeToggle}
-              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
+              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
                 isLiked
                   ? "bg-danger/10 text-danger"
                   : "text-text-secondary hover:bg-border/30 hover:text-text"
@@ -140,7 +140,7 @@ export function PostCard({
             <button
               type="button"
               onClick={() => setShowComments(!showComments)}
-              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
+              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
                 showComments
                   ? "bg-brand/10 text-brand"
                   : "text-text-secondary hover:bg-border/30 hover:text-text"
