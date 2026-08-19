@@ -17,6 +17,11 @@ export interface Like {
   userId: string;
 }
 
+export interface PostCount {
+  likes: number;
+  comments: number;
+}
+
 export interface Post {
   id: string;
   authorId: string;
@@ -26,16 +31,8 @@ export interface Post {
   author: Author;
   likes: Like[];
   comments: Comment[];
-  _count: {
-    likes: number;
-    comments: number;
-  };
-}
-
-export interface GetAllPostsResponse {
-  message: string;
-  success: boolean;
-  data: Post[];
+  _count?: PostCount;
+  count?: PostCount;
 }
 
 export interface CreatePostDto {
@@ -44,5 +41,13 @@ export interface CreatePostDto {
 
 export interface CreateCommentDto {
   content: string;
+  postId?: string;
+}
+
+export interface LikedPostRecord {
+  id: string;
+  userId: string;
   postId: string;
+  createdAt: string;
+  post: Post;
 }

@@ -1,0 +1,37 @@
+export interface UserCount {
+  followers: number;
+  following?: number;
+  followings?: number;
+  posts?: number;
+}
+
+export interface FollowerRef {
+  followerId: string;
+}
+
+export interface User {
+  id: string;
+  name: string;
+  username?: string;
+  email: string;
+  emailVerified?: boolean;
+  image: string | null;
+  bio: string | null;
+  location: string | null;
+  website: string | null;
+  createdAt: string;
+  updatedAt?: string;
+  count?: UserCount;
+  _count?: UserCount;
+  followers?: FollowerRef[];
+  isFollowing?: boolean;
+}
+
+export interface UpdateProfileRequest {
+  name?: string;
+  bio?: string;
+  location?: string;
+  website?: string;
+}
+
+export type UpdateUserProfileDto = UpdateProfileRequest;
