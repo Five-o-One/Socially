@@ -5,42 +5,53 @@ import type {
   GetUserProfileResponse,
   GetUserResponse,
 } from "../../types/Users";
-import __BASE__ from "../base";
 import type { GetAllPostsResponse } from "../../types/GetAllPost";
+import __BASE__ from "../base";
 
 export const GetUserById = async (
   id: string,
 ): Promise<AxiosResponse<GetUserResponse>> => {
-  const response = __BASE__(`/api/users/${id}`, { method: "GET" });
+  const response = await __BASE__.get<GetUserResponse>(`/api/users/${id}`);
+
   return response;
 };
 
 export const GetUserByUsername = async (
   username: string,
 ): Promise<AxiosResponse<GetUserProfileResponse>> => {
-  const response = __BASE__(`/api/users/${username}/profile`, {
-    method: "GET",
-  });
+  const response = await __BASE__.get<GetUserProfileResponse>(
+    `/api/users/${username}/profile`,
+  );
+
   return response;
 };
 
 export const GetRecommendedUsers = async (): Promise<
   AxiosResponse<GetRecommendedUsersResponse>
 > => {
-  const response = __BASE__(`/api/users/recommend`, { method: "GET" });
+  const response = await __BASE__.get<GetRecommendedUsersResponse>(
+    "/api/users/recommend",
+  );
+
   return response;
 };
 
 export const GetUserPosts = async (
   id: string,
 ): Promise<AxiosResponse<GetAllPostsResponse>> => {
-  const response = __BASE__(`/api/users/${id}/posts`, { method: "GET" });
+  const response = await __BASE__.get<GetAllPostsResponse>(
+    `/api/users/${id}/posts`,
+  );
+
   return response;
 };
 
-export const GetUserByPost = async (
+export const GetUserLikedPosts = async (
   id: string,
 ): Promise<AxiosResponse<GetUserLikedPostsResponse>> => {
-  const response = __BASE__(`api/users/${id}/likes`, { method: "GET" });
+  const response = await __BASE__.get<GetUserLikedPostsResponse>(
+    `/api/users/${id}/likes`,
+  );
+
   return response;
 };
