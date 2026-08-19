@@ -1,40 +1,5 @@
 import { type ReactNode } from "react";
 
-/**
- * @component AppCard
- * @description Container card component with optional header, footer, and interactive states
- *
- * @prop {ReactNode} children - Main content of the card
- * @prop {ReactNode} [header] - Optional header section content
- * @prop {ReactNode} [footer] - Optional footer section content
- * @prop {boolean} [hoverable=false] - Whether the card has hover effects (shadow and scale)
- * @prop {boolean} [noPadding=false] - Removes internal padding from the card
- * @prop {boolean} [borderless=false] - Removes the card border
- * @prop {() => void} [onClick] - Click handler for the entire card
- * @prop {string} [className] - Additional Tailwind CSS classes
- *
- * @example
- * // Basic card with default padding and border
- * <AppCard>
- *   <p>Card content</p>
- * </AppCard>
- *
- * @example
- * // Card with header, footer, and hover effect
- * <AppCard
- *   header={<h3>Title</h3>}
- *   footer={<button>Read More</button>}
- *   hoverable
- * >
- *   <p>Card content goes here</p>
- * </AppCard>
- *
- * @example
- * // Card without padding and border
- * <AppCard noPadding borderless>
- *   <div className="p-4">Custom content with internal padding</div>
- * </AppCard>
- */
 interface AppCardProps {
   children: ReactNode;
   header?: ReactNode;
@@ -56,7 +21,6 @@ export function AppCard({
   onClick,
   className = "",
 }: AppCardProps) {
-  // Base card styles
   const baseClasses = `
     bg-card rounded-2xl
     transition-all duration-200 ease-in-out
@@ -65,10 +29,8 @@ export function AppCard({
     ${onClick ? "cursor-pointer" : ""}
   `;
 
-  // Padding class - removed when noPadding is true
   const paddingClass = noPadding ? "p-0" : "p-4 sm:p-5";
 
-  // Combine all classes
   const combinedClassName = `
     ${baseClasses}
     ${paddingClass}
@@ -79,7 +41,6 @@ export function AppCard({
 
   return (
     <div className={combinedClassName} onClick={onClick}>
-      {/* Card Header - displayed if provided */}
       {header && (
         <div
           className={`
@@ -91,10 +52,8 @@ export function AppCard({
         </div>
       )}
 
-      {/* Card Main Content */}
       <div>{children}</div>
 
-      {/* Card Footer - displayed if provided */}
       {footer && (
         <div
           className={`

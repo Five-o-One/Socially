@@ -1,13 +1,7 @@
 import { useState } from "react";
 
-/**
- * @component AppImage
- * @description Reusable image component with dynamic avatar placeholders,
- * gradient support, multiple sizes and image loading states.
- */
-
 interface AppImageProps {
-  src: string;
+  src?: string | null;
   alt: string;
   variant?: "circle" | "rounded" | "square";
   size?: "xs" | "sm" | "md" | "lg" | "xl" | "full";
@@ -36,11 +30,9 @@ const placeholderGradients = [
 
 function getColorIndex(value: string, colorsLength: number) {
   let hash = 0;
-
   for (let index = 0; index < value.length; index++) {
     hash = value.charCodeAt(index) + ((hash << 5) - hash);
   }
-
   return Math.abs(hash) % colorsLength;
 }
 
@@ -51,7 +43,7 @@ export function AppImage({
   size = "md",
   className = "",
   lazyLoad = true,
-  showRealImage = false,
+  showRealImage = true,
   placeholderStyle = "gradient",
 }: AppImageProps) {
   const [hasError, setHasError] = useState(false);
@@ -73,11 +65,13 @@ export function AppImage({
   };
 
   const sizeClass = size === "full" ? "w-full h-auto" : sizeClasses[size];
+  const firstLetter = alt ? alt.trim().charAt(0).toUpperCase() : "?";
 
-  const firstLetter = alt ? alt.charAt(0).toUpperCase() : "?";
-
-  const colorIndex = getColorIndex(alt, placeholderColors.length);
-  const gradientIndex = getColorIndex(alt, placeholderGradients.length);
+  const colorIndex = getColorIndex(alt || "user", placeholderColors.length);
+  const gradientIndex = getColorIndex(
+    alt || "user",
+    placeholderGradients.length,
+  );
 
   const placeholderColor =
     placeholderStyle === "gradient"
@@ -85,8 +79,8 @@ export function AppImage({
       : placeholderColors[colorIndex];
 
   const placeholderClasses = `
-    flex items-center justify-center
-    font-bold
+    flex items-center justify-center flex-shrink-0
+    font-bold select-none
     ${placeholderColor}
     ${variantClasses[variant]}
     ${sizeClass}
@@ -104,7 +98,7 @@ export function AppImage({
   }
 
   const imageClasses = `
-    object-cover
+    object-cover flex-shrink-0
     bg-border/30
     transition-opacity duration-300
     ${isLoaded ? "opacity-100" : "opacity-0"}
