@@ -1,14 +1,16 @@
 import { useState } from "react";
 import { useParams } from "react-router";
-import { AppCard } from "@/components/AppCard";
-import { AppImage } from "@/components/AppImage";
-import { AppButton } from "@/components/AppButton";
-import AppIcon from "@/components/AppIcon/AppIcon";
-import { PostCard } from "@/components/PostCard";
-import { UserInfoModal } from "@/components/AppModal/UserInfoModal";
-import { AppTab, type TabItem } from "@/components/AppTab/AppTab";
-import type { Post } from "@/types/GetAllPost";
-import type { UpdateUserProfileDto } from "@/types/Modals";
+import {
+  AppCard,
+  AppImage,
+  AppButton,
+  AppIcon,
+  PostCard,
+  UserInfoModal,
+  AppTab,
+} from "@/components";
+import type { Post, UpdateUserProfileDto } from "@/types";
+import type { TabItem } from "@/components/AppTab/AppTab";
 
 export default function Profile() {
   const { username = "samb.1376" } = useParams();
@@ -54,15 +56,15 @@ export default function Profile() {
     },
   ];
 
-  const likedPosts: Post[] = []; // لیست خالی برای تست Empty State فیگما
+  const likedPosts: Post[] = [];
 
   const handleProfileUpdate = (updatedValues: UpdateUserProfileDto) => {
     setUserData((prev) => ({
       ...prev,
-      name: updatedValues.name,
-      bio: updatedValues.bio || prev.bio,
-      location: updatedValues.location || prev.location,
-      website: updatedValues.website || prev.website,
+      name: updatedValues.name || prev.name,
+      bio: updatedValues.bio ?? prev.bio,
+      location: updatedValues.location ?? prev.location,
+      website: updatedValues.website ?? prev.website,
     }));
     setIsEditModalOpen(false);
   };

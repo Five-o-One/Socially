@@ -1,9 +1,6 @@
 import { useState } from "react";
-import { AppCard } from "@/components/AppCard";
-import { AppImage } from "@/components/AppImage";
-import { AppButton } from "@/components/AppButton";
-import { PostCard } from "@/components/PostCard";
-import type { Post } from "@/types/GetAllPost";
+import { AppCard, AppImage, AppButton, PostCard } from "@/components";
+import type { Post } from "@/types";
 
 const INITIAL_POSTS: Post[] = [
   {
@@ -84,7 +81,7 @@ export default function Home() {
   };
 
   const handleDeletePost = (postId: string) => {
-    setPosts(posts.filter((p) => p.id !== postId));
+    setPosts((prev) => prev.filter((p) => p.id !== postId));
   };
 
   return (

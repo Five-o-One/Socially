@@ -1,14 +1,16 @@
 import { Outlet, useLocation } from "react-router";
-import { AppNavbar } from "@/components";
-import { UserInfoCard } from "@/components/UserInfoCard";
-import { AppCard } from "@/components/AppCard";
-import { AppButton } from "@/components/AppButton";
+import {
+  AppNavbar,
+  UserInfoCard,
+  AppCard,
+  AppButton,
+  UserRow,
+} from "@/components";
 
 export default function Layout() {
   const location = useLocation();
-  const isAuth = true; // در فازهای بعدی به Zustand/AuthStore متصل می‌شود
+  const isAuth = true;
 
-  // داده‌های موقت کاربر جاری برای نمایش در سایدبار
   const currentUser = {
     name: "Seyed Ali Mousavi",
     username: "samb.1376",
@@ -18,6 +20,11 @@ export default function Layout() {
     location: "No location",
     website: "No website",
   };
+
+  const recommendedUsers = [
+    { username: "mohammadfallah.w", name: "Mohammad Fallah", followers: 1 },
+    { username: "f.e.h.farshad", name: "Farshad Hosseini", followers: 1 },
+  ];
 
   const isNotificationsPage = location.pathname.startsWith("/notifications");
 
@@ -51,7 +58,7 @@ export default function Layout() {
             </div>
           </aside>
 
-          {/* ستون میانی: محتوای اصلی هر صفحه */}
+          {/* ستون میانی: محتوای صفحات */}
           <section
             className={`col-span-12 ${
               isNotificationsPage ? "lg:col-span-9" : "lg:col-span-6"
@@ -60,7 +67,7 @@ export default function Layout() {
             <Outlet />
           </section>
 
-          {/* ستون راست: پیشنهادات دنبال‌کردن (Who to Follow) */}
+          {/* ستون راست: Who to Follow */}
           {!isNotificationsPage && (
             <aside className="hidden lg:col-span-3 lg:block">
               <div className="sticky top-22">
@@ -70,25 +77,14 @@ export default function Layout() {
                   }
                 >
                   <div className="space-y-4">
-                    {/* لیست آیتم‌های کاربر پیشنهادی */}
-                    <div className="flex items-center justify-between gap-2">
-                      <div className="flex items-center gap-2 min-w-0">
-                        <div className="h-9 w-9 rounded-full bg-brand/20 flex items-center justify-center font-bold text-brand">
-                          M
-                        </div>
-                        <div className="min-w-0">
-                          <p className="truncate text-sm font-semibold text-text">
-                            @mohammadfallah.w
-                          </p>
-                          <p className="text-xs text-text-secondary">
-                            1 followers
-                          </p>
-                        </div>
-                      </div>
-                      <AppButton variant="secondary" size="sm">
-                        Follow
-                      </AppButton>
-                    </div>
+                    {recommendedUsers.map((user) => (
+                      <UserRow
+                        key={user.username}
+                        username={user.username}
+                        name={user.name}
+                        followers={user.followers}
+                      />
+                    ))}
                   </div>
                 </AppCard>
               </div>

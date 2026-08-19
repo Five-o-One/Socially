@@ -1,6 +1,5 @@
 import { useState } from "react";
-import { AppCard } from "@/components/AppCard";
-import NotificationCard from "@/components/notifications/NotifeCard";
+import { AppCard, NotificationCard } from "@/components";
 
 interface NotificationItem {
   id: string;
