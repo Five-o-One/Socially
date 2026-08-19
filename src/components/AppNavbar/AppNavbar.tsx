@@ -1,171 +1,161 @@
 import { useState } from "react";
-import AppIcon from "../AppIcon/AppIcon";
-import { AppButton } from "../AppButton";
-import { NavLink } from "react-router";
+import { Link, NavLink } from "react-router";
+import AppIcon from "@/components/AppIcon/AppIcon";
+import { AppButton } from "@/components/AppButton";
 
-export default function AppNavbar() {
+interface AppNavbarProps {
+  isLoggedIn?: boolean;
+  username?: string;
+}
+
+export function AppNavbar({ isLoggedIn = true, username = "samb.1376" }: AppNavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn] = useState(false);
+  const [isDarkMode, setIsDarkMode] = useState(false);
+
+  const toggleTheme = () => {
+    setIsDarkMode((prev) => !prev);
+    document.documentElement.classList.toggle("dark");
+  };
+
+  const navItemClass = ({ isActive }: { isActive: boolean }) =>
+    `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+      isActive
+        ? "text-text font-bold bg-border/40"
+        : "text-text-secondary hover:text-text hover:bg-border/20"
+    }`;
+
   return (
-    <div className="flex flex-row items-center justify-between w-full h-17 bg-header border border-border lg:px-60 md:px-3 px-2">
-      <a className="text-xl font-mono font-bold" href="/">
-        Socially
-      </a>
-      <div className="flex flex-row gap-4">
-        <div className="md:hidden">
-          <AppButton
-            icon="Light"
-            size="md"
-            variant="ghost"
-            className="md:hidden border border-border shadow-sm"
-          />
-        </div>
-        <AppButton
-          icon="Menu"
-          size="md"
-          variant="primary"
-          onClick={() => setIsMenuOpen(true)}
-          className="md:hidden"
-        />
-      </div>
-      {/* desktop nav */}
-      <div className="hidden md:flex flex-row items-center gap-4">
-        {isLoggedIn ? (
-          <>
-            <AppButton
-              icon="Light"
-              size="md"
-              variant="ghost"
-              className="border border-border shadow-sm cursor-pointer"
-            ></AppButton>
-            <NavLink to="/">
-              <AppButton
-                size="md"
-                icon="Home"
-                variant="ghost"
-                className="cursor-pointer"
-              >
-                Home
+    <header className="sticky top-0 z-40 w-full border-b border-border bg-header backdrop-blur-md">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Logo */}
+        <Link to="/" className="text-xl font-mono font-bold tracking-tight text-text">
+          Socially
+        </Link>
+
+        {/* Desktop Navigation */}
+        <div className="hidden md:flex md:items-center md:gap-3">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Toggle Theme"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-text transition-colors hover:bg-border/30"
+          >
+            <AppIcon nameIcon={isDarkMode ? "Moon" : "Light"} size={18} />
+          </button>
+
+          <NavLink to="/" className={navItemClass}>
+            <AppIcon nameIcon="Home" size={18} />
+            <span>Home</span>
+          </NavLink>
+
+          {isLoggedIn ? (
+            <>
+              <NavLink to="/notifications" className={navItemClass}>
+                <AppIcon nameIcon="Bell" size={18} />
+                <span>Notifications</span>
+              </NavLink>
+
+              <NavLink to={`/profile/${username}`} className={navItemClass}>
+                <AppIcon nameIcon="Person" size={18} />
+                <span>Profile</span>
+              </NavLink>
+
+              <AppButton variant="ghost" size="sm" icon="LogOut" className="text-text-secondary hover:text-danger">
+                LogOut
               </AppButton>
-            </NavLink>
-            <NavLink to="/notifications">
-              <AppButton
-                size="md"
-                icon="Bell"
-                variant="ghost"
-                className="cursor-pointer"
-              >
-                Notification
-              </AppButton>
-            </NavLink>
-            <NavLink to="/profile/:username">
-              <AppButton
-                size="md"
-                icon="Person"
-                variant="ghost"
-                className="cursor-pointer"
-              >
-                Profile
-              </AppButton>
-            </NavLink>
-            <NavLink to="/">
-              <AppButton icon="LogOut" variant="ghost"></AppButton>
-            </NavLink>
-          </>
-        ) : (
-          <>
-            <AppButton
-              icon="Light"
-              size="md"
-              variant="ghost"
-              className="border border-border shadow-sm cursor-pointer"
-            ></AppButton>
-            <NavLink to={"/"}>
-              <AppButton
-                size="md"
-                icon="Home"
-                variant="ghost"
-                className="cursor-pointer"
-              >
-                Home
-              </AppButton>
-            </NavLink>
-            <NavLink to="/profile/:username">
-              <AppButton size="md" className="cursor-pointer">
+            </>
+          ) : (
+            <Link to="/login">
+              <AppButton variant="primary" size="md">
                 Sign in
               </AppButton>
-            </NavLink>
-          </>
-        )}
+            </Link>
+          )}
+        </div>
+
+        {/* Mobile Buttons */}
+        <div className="flex items-center gap-2 md:hidden">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Toggle Theme"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-text"
+          >
+            <AppIcon nameIcon={isDarkMode ? "Moon" : "Light"} size={18} />
+          </button>
+
+          <AppButton
+            icon="Menu"
+            size="md"
+            variant="ghost"
+            onClick={() => setIsMenuOpen(true)}
+            className="border border-border"
+          />
+        </div>
       </div>
+
+      {/* Mobile Drawer Overlay */}
       <div
-        className={`fixed inset-0 bg-black/40 transition-opacity duration-300 z-40 ${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
+        className={`fixed inset-0 z-50 bg-black/50 transition-opacity duration-300 md:hidden ${
+          isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        }`}
         onClick={() => setIsMenuOpen(false)}
-      ></div>
+      />
+
+      {/* Mobile Drawer Content */}
       <div
-        className={`fixed top-0 right-0 h-full w-4/6 bg-card border-l border-border z-50 transition-transform duration-300 ease-in-out ${
+        className={`fixed top-0 right-0 z-50 h-full w-3/4 max-w-xs border-l border-border bg-card p-6 shadow-2xl transition-transform duration-300 ease-in-out md:hidden ${
           isMenuOpen ? "translate-x-0" : "translate-x-full"
         }`}
       >
-        <div className="flex flex-col gap-4 p-4">
-          <div className="flex flex-row justify-between">
-            <h2 className="font-semibold">Menu</h2>
-            <button onClick={() => setIsMenuOpen(false)}>
-              <AppIcon nameIcon="Close" size={24} />
-            </button>
-          </div>
-          {/* mobile nav */}
-          <div className="flex flex-col items-center gap-5">
-            {isLoggedIn ? (
-              <>
-                <NavLink to="/">
-                  <AppButton
-                    icon="Home"
-                    variant="ghost"
-                    className="flex items-center gap-2 text-sm font-medium"
-                  >
-                    Home
-                  </AppButton>
-                </NavLink>
-                <NavLink to="/notifications">
-                  <AppButton
-                    icon="Bell"
-                    variant="ghost"
-                    className="flex items-center gap-2"
-                  >
-                    Notifications
-                  </AppButton>
-                </NavLink>
-                <NavLink to="/profile/:username">
-                  <AppButton
-                    icon="Person"
-                    variant="ghost"
-                    className="flex items-center gap-2"
-                  >
-                    Profile
-                  </AppButton>
-                </NavLink>
-                <NavLink to="/">
-                  <AppButton icon="LogOut" variant="ghost"></AppButton>
-                </NavLink>
-              </>
-            ) : (
-              <>
-                <NavLink to="/">
-                  <AppButton icon="Home" className="flex items-center gap-2">
-                    Home
-                  </AppButton>
-                </NavLink>
-                <NavLink to="/profile/:username">
-                  <AppButton className="flex items-center gap-2">
-                    Sign In
-                  </AppButton>
-                </NavLink>
-              </>
-            )}
-          </div>
+        <div className="flex items-center justify-between pb-6 border-b border-border">
+          <span className="font-bold text-text">Menu</span>
+          <button
+            onClick={() => setIsMenuOpen(false)}
+            aria-label="Close menu"
+            className="text-text-secondary hover:text-text"
+          >
+            <AppIcon nameIcon="Close" size={20} />
+          </button>
         </div>
+
+        <nav className="mt-6 flex flex-col gap-3">
+          <NavLink to="/" onClick={() => setIsMenuOpen(false)} className={navItemClass}>
+            <AppIcon nameIcon="Home" size={18} />
+            <span>Home</span>
+          </NavLink>
+
+          {isLoggedIn ? (
+            <>
+              <NavLink to="/notifications" onClick={() => setIsMenuOpen(false)} className={navItemClass}>
+                <AppIcon nameIcon="Bell" size={18} />
+                <span>Notifications</span>
+              </NavLink>
+
+              <NavLink to={`/profile/${username}`} onClick={() => setIsMenuOpen(false)} className={navItemClass}>
+                <AppIcon nameIcon="Person" size={18} />
+                <span>Profile</span>
+              </NavLink>
+
+              <button
+                type="button"
+                className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-danger hover:bg-danger/10 rounded-lg transition-colors mt-2"
+              >
+                <AppIcon nameIcon="LogOut" size={18} />
+                <span>Log Out</span>
+              </button>
+            </>
+          ) : (
+            <Link to="/login" onClick={() => setIsMenuOpen(false)} className="mt-4">
+              <AppButton variant="primary" fullWidth>
+                Sign In
+              </AppButton>
+            </Link>
+          )}
+        </nav>
       </div>
-    </div>
+    </header>
   );
 }
+
+export default AppNavbar;

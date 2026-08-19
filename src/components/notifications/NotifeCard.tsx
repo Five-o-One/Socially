@@ -1,61 +1,89 @@
-// components/notifications/NotifeCard.tsx
-import { AppImage } from "../AppImage";
-import AppIcon from "../AppIcon/AppIcon";
-import {
-  ICON_BY_TYPE,
-  NOTIFICATION_MESSAGES,
-} from "../../constants/Notifiction";
+import { AppImage } from "@/components/AppImage";
+import AppIcon from "@/components/AppIcon/AppIcon";
+import type { NameIcon } from "@/types/AppIcon";
+import type { NotificationType } from "@/types/notification";
 
-type NotificationType = "follow" | "like" | "comment";
-
-interface NotifeCardProps {
-  type: NotificationType;
-  isRead: boolean;
+interface NotificationCardProps {
+  type: NotificationType | "like" | "comment" | "follow";
+  isRead?: boolean;
   name: string;
-  avatarSrc: string;
+  avatarSrc?: string | null;
   time: string;
-  postText?: string;
-  commentText?: string;
+  postText?: string | null;
+  commentText?: string | null;
 }
 
-export default function NotifeCard({
+const NOTIFICATION_ICONS: Record<
+  string,
+  { icon: NameIcon; className: string }
+> = {
+  LIKE: { icon: "Heart", className: "text-danger" },
+  like: { icon: "Heart", className: "text-danger" },
+  COMMENT: { icon: "Chat", className: "text-brand" },
+  comment: { icon: "Chat", className: "text-brand" },
+  FOLLOW: { icon: "Person", className: "text-text" },
+  follow: { icon: "Person", className: "text-text" },
+};
+
+export function NotificationCard({
   type,
-  isRead,
+  isRead = false,
   name,
   avatarSrc,
   time,
   postText,
   commentText,
-}: NotifeCardProps) {
-  const message = NOTIFICATION_MESSAGES[type](name);
-  const { icon, className } = ICON_BY_TYPE[type];
+}: NotificationCardProps) {
+  const config = NOTIFICATION_ICONS[type] || {
+    icon: "Bell",
+    className: "text-brand",
+  };
+
+  const getNotificationText = () => {
+    const normalizedType = type.toLowerCase();
+    if (normalizedType === "like") return `${name} liked your post`;
+    if (normalizedType === "comment") return `${name} commented on your post`;
+    if (normalizedType === "follow") return `${name} started following you`;
+    return `${name} interacted with your profile`;
+  };
 
   return (
-    <div className="w-full flex items-start gap-4 border-b border-border pt-4 pb-4.25 px-4">
-      <AppImage src={avatarSrc} alt={name} variant="circle" size="sm" />
+    <div className="flex w-full items-start gap-3.5 border-b border-border p-4 transition-colors hover:bg-border/10">
+      <AppImage src={avatarSrc || ""} alt={name} variant="circle" size="md" />
 
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5">
-          <AppIcon nameIcon={icon} size={16} className={className} />
-          <p className="text-text text-sm">{message}</p>
+        <div className="flex items-center gap-2">
+          <AppIcon
+            nameIcon={config.icon}
+            size={16}
+            className={config.className}
+            isFilled={type.toLowerCase() === "like"}
+          />
+          <p className="text-sm font-medium text-text">
+            {getNotificationText()}
+          </p>
         </div>
 
         {postText && (
-          <div className="w-full mt-2 bg-border/40 rounded-md p-2 text-text-secondary text-sm">
+          <div className="mt-2 rounded-lg bg-border/30 p-2.5 text-xs sm:text-sm text-text-secondary">
             {postText}
           </div>
         )}
 
-        {type === "comment" && commentText && (
-          <div className="w-full mt-2 bg-border/80 rounded-md p-2 text-text text-sm">
+        {commentText && (
+          <div className="mt-2 rounded-lg bg-border/60 p-2.5 text-xs sm:text-sm text-text">
             {commentText}
           </div>
         )}
 
-        <p className="text-text-tertiary text-xs mt-1">{time}</p>
+        <p className="mt-2 text-xs text-text-tertiary">{time}</p>
       </div>
 
-      {!isRead && <span className="size-2 rounded-full bg-brand mt-1" />}
+      {!isRead && (
+        <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand" />
+      )}
     </div>
   );
 }
+
+export default NotificationCard;

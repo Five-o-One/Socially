@@ -1,39 +1,48 @@
-export interface GetAllPostsResponse {
-    message: string;
-    success: boolean;
-    data:    Datum[];
-}
-
-export interface Datum {
-    id:        string;
-    authorId:  string;
-    content:   string;
-    createdAt: Date;
-    updatedAt: Date;
-    author:    Author;
-    likes:     Like[];
-    comments:  Comment[];
-    _count:    Count;
-}
-
-export interface Count {
-    likes:    number;
-    comments: number;
-}
-
 export interface Author {
-    name:  string;
-    email: string;
-    image: null;
+  id?: string;
+  name: string;
+  email?: string;
+  username?: string;
+  image: string | null;
 }
 
 export interface Comment {
-    id:        string;
-    content:   string;
-    createdAt: Date;
-    author:    Author;
+  id: string;
+  content: string;
+  createdAt: string;
+  author: Author;
 }
 
 export interface Like {
-    userId: string;
+  userId: string;
+}
+
+export interface Post {
+  id: string;
+  authorId: string;
+  content: string;
+  createdAt: string;
+  updatedAt: string;
+  author: Author;
+  likes: Like[];
+  comments: Comment[];
+  _count: {
+    likes: number;
+    comments: number;
+  };
+}
+
+export interface GetAllPostsResponse {
+  message: string;
+  success: boolean;
+  data: Post[];
+}
+
+export interface CreatePostDto {
+  content: string;
+}
+
+export interface CreateCommentDto {
+  content: string;
+  postId: string;
 }
