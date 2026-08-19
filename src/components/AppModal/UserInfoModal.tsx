@@ -1,7 +1,8 @@
+import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { AppModal } from "./AppModal";
 import { AppButton } from "@/components/AppButton";
-import type { UpdateUserProfileDto } from "@/types/Modals";
+import type { UpdateUserProfileDto } from "@/types";
 
 interface UserInfoModalProps {
   isOpen: boolean;
@@ -27,6 +28,12 @@ export function UserInfoModal({
     },
   });
 
+  useEffect(() => {
+    if (initialData && isOpen) {
+      reset(initialData);
+    }
+  }, [initialData, isOpen, reset]);
+
   const handleFormSubmit = (data: UpdateUserProfileDto) => {
     onSubmit(data);
   };
@@ -44,7 +51,7 @@ export function UserInfoModal({
           <input
             {...register("name", { required: true })}
             type="text"
-            className="w-full rounded-lg border border-border bg-transparent px-3.5 py-2 text-sm text-text placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+            className="w-full rounded-lg border border-border bg-transparent px-3.5 py-2 text-sm text-text placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
             placeholder="Your full name"
           />
         </div>
@@ -54,7 +61,7 @@ export function UserInfoModal({
           <textarea
             {...register("bio")}
             rows={4}
-            className="w-full resize-none rounded-lg border border-border bg-transparent px-3.5 py-2 text-sm text-text placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+            className="w-full resize-none rounded-lg border border-border bg-transparent px-3.5 py-2 text-sm text-text placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
             placeholder="Tell us about yourself..."
           />
         </div>
@@ -64,7 +71,7 @@ export function UserInfoModal({
           <input
             {...register("location")}
             type="text"
-            className="w-full rounded-lg border border-border bg-transparent px-3.5 py-2 text-sm text-text placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+            className="w-full rounded-lg border border-border bg-transparent px-3.5 py-2 text-sm text-text placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
             placeholder="Where you are at"
           />
         </div>
@@ -74,7 +81,7 @@ export function UserInfoModal({
           <input
             {...register("website")}
             type="text"
-            className="w-full rounded-lg border border-border bg-transparent px-3.5 py-2 text-sm text-text placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand"
+            className="w-full rounded-lg border border-border bg-transparent px-3.5 py-2 text-sm text-text placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
             placeholder="https://yourwebsite.com"
           />
         </div>
@@ -83,8 +90,8 @@ export function UserInfoModal({
           <AppButton type="button" variant="secondary" onClick={handleCancel}>
             Cancel
           </AppButton>
-          <AppButton type="submit" variant="primary" disabled={isLoading}>
-            {isLoading ? "Saving..." : "Save Changes"}
+          <AppButton type="submit" variant="primary" isLoading={isLoading}>
+            Save Changes
           </AppButton>
         </div>
       </form>

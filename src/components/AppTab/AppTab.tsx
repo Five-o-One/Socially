@@ -1,5 +1,5 @@
 import AppIcon from "@/components/AppIcon/AppIcon";
-import type { NameIcon } from "@/types/AppIcon";
+import type { NameIcon } from "@/types";
 
 export interface TabItem {
   id: string;
@@ -30,7 +30,7 @@ export function AppTab({
             key={tab.id}
             type="button"
             onClick={() => onChange(tab.id)}
-            className={`relative flex flex-1 items-center justify-center gap-2 py-3.5 text-sm font-semibold transition-colors ${
+            className={`relative flex flex-1 items-center justify-center gap-2 py-3.5 text-sm font-semibold transition-colors cursor-pointer ${
               isActive ? "text-text" : "text-text-secondary hover:text-text"
             }`}
           >

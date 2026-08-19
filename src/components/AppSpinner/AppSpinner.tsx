@@ -1,5 +1,19 @@
-import AppIcon from "../AppIcon/AppIcon";
+import AppIcon from "@/components/AppIcon/AppIcon";
 
-export default function AppSpinner() {
-  return <AppIcon nameIcon="Loader" className="animate-spin text-text" size={24} />;
+interface AppSpinnerProps {
+  size?: number;
+  className?: string;
+}
+
+export default function AppSpinner({
+  size = 24,
+  className = "text-brand",
+}: AppSpinnerProps) {
+  return (
+    <AppIcon
+      nameIcon="Loader"
+      size={size}
+      className={`animate-spin ${className}`}
+    />
+  );
 }
