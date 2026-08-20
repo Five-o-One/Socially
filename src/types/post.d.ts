@@ -1,3 +1,7 @@
+import type { ApiResponse } from "./api";
+
+export type GetAllPostsResponse = ApiResponse<Post[]>;
+
 export interface Author {
   id?: string;
   name: string;

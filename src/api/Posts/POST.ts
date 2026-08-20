@@ -1,6 +1,7 @@
 import type { AxiosResponse } from "axios";
-import type { Datum } from "../../types/GetAllPost";
-import type { ApiMessageResponse, ApiResponse } from "../../types/Users";
+import type { ApiMessageResponse } from "../../types/api";
+import type { ApiResponse } from "../../types/api";
+import type { Post } from "../../types/post";
 import __BASE__ from "../base";
 
 export interface CreatePostRequest {
@@ -9,8 +10,8 @@ export interface CreatePostRequest {
 
 export const CreatePost = async (
   data: CreatePostRequest,
-): Promise<AxiosResponse<ApiResponse<Datum>>> => {
-  const response = await __BASE__.post<ApiResponse<Datum>>("/api/posts", data);
+): Promise<AxiosResponse<ApiResponse<Post>>> => {
+  const response = await __BASE__.post<ApiResponse<Post>>("/api/posts", data);
 
   return response;
 };

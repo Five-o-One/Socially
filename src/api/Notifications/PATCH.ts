@@ -1,6 +1,6 @@
 import type { AxiosResponse } from "axios";
 import type { MarkNotificationsAsReadRequest } from "../../types/Notifications";
-import type { ApiMessageResponse } from "../../types/Users";
+import type { ApiMessageResponse } from "../../types/api";
 import __BASE__ from "../base";
 
 export const MarkNotificationsAsRead = async (
