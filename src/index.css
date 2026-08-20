@@ -101,6 +101,9 @@
   --color-btn-secondary-text-hover: var(--btn-secondary-text-hover);
   --color-btn-secondary-bg-disabled: var(--btn-secondary-bg-disabled);
   --color-btn-secondary-text-disabled: var(--btn-secondary-text-disabled);
+
+  --shadow-card:
+    0px 1px 3px 0px rgba(0, 0, 0, 0.1), 0px 1px 2px -1px rgba(0, 0, 0, 0.1);
 }
 
 @layer base {

@@ -22,6 +22,7 @@ export function AppCard({
   className = "",
 }: AppCardProps) {
   const baseClasses = `
+    shadow-card
     bg-card rounded-2xl
     transition-all duration-200 ease-in-out
     ${!borderless ? "border border-border" : ""}
