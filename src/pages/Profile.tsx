@@ -68,8 +68,7 @@ const MOCK_PROFILES: Record<
   },
 };
 
-export default function Profile() {
-  const { username = "samb.1376" } = useParams();
+function ProfileContent({ username }: { username: string }) {
   const currentAuthUsername = "samb.1376";
   const isOwnProfile = username === currentAuthUsername;
 
@@ -110,7 +109,7 @@ export default function Profile() {
       content:
         username === "f.e.h.farshad"
           ? "سوشالی؛ پروژه‌ای برای محک زدن مهارت‌های فرانت‌اند و کار تیمی 🚀\nپیاده‌سازی تمیز دیزاین توییتر با ری‌اکت و تیلویند."
-          : "این یک پست تستی در صفحه پروفایل کاربر است.",
+          : `این یک پست تستی در صفحه پروفایل @${username} است.`,
       createdAt: "8 days ago",
       updatedAt: "8 days ago",
       author: {
@@ -180,6 +179,7 @@ export default function Profile() {
             </div>
           </div>
 
+          {/* Action Button */}
           <div className="mt-5 w-full max-w-xs">
             {isOwnProfile ? (
               <AppButton
@@ -201,6 +201,7 @@ export default function Profile() {
             )}
           </div>
 
+          {/* Additional Info */}
           <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-xs text-text-secondary">
             {userData.location && (
               <div className="flex items-center gap-1.5">
@@ -229,12 +230,14 @@ export default function Profile() {
         </div>
       </AppCard>
 
+      {/* Tabs */}
       <AppTab
         tabs={profileTabs}
         activeTab={activeTab}
         onChange={(tabId) => setActiveTab(tabId)}
       />
 
+      {/* Tab Content */}
       <section className="space-y-4">
         {activeTab === "posts" && (
           <>
@@ -267,6 +270,7 @@ export default function Profile() {
         )}
       </section>
 
+      {/* Edit Profile Modal */}
       {isOwnProfile && (
         <UserInfoModal
           isOpen={isEditModalOpen}
@@ -282,4 +286,9 @@ export default function Profile() {
       )}
     </div>
   );
+}
+
+export default function Profile() {
+  const { username = "samb.1376" } = useParams();
+  return <ProfileContent key={username} username={username} />;
 }

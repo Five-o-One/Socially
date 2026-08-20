@@ -1,3 +1,4 @@
+import { Link } from "react-router";
 import { AppCard } from "@/components/AppCard";
 import { AppImage } from "@/components/AppImage";
 import AppIcon from "@/components/AppIcon/AppIcon";
@@ -16,22 +17,27 @@ interface UserSummaryProps {
 }
 
 export function UserInfoCard({ user, className = "" }: UserSummaryProps) {
+  const cleanUsername = user.username.replace(/^@/, "");
+
   return (
     <AppCard className={className}>
-      <div className="flex flex-col items-center gap-1 text-center">
+      <Link
+        to={`/profile/${cleanUsername}`}
+        className="flex flex-col items-center gap-1 text-center group cursor-pointer"
+      >
         <AppImage
           src={user.imageURL || ""}
           alt={user.name || user.username}
           variant="circle"
           size="xl"
         />
-        <h3 className="mt-2 text-lg font-bold text-text truncate max-w-full">
+        <h3 className="mt-2 text-lg font-bold text-text truncate max-w-full group-hover:underline">
           {user.name}
         </h3>
         <p className="text-sm text-text-secondary truncate max-w-full">
-          @{user.username}
+          @{cleanUsername}
         </p>
-      </div>
+      </Link>
 
       <div className="mt-4 flex items-center justify-around border-t border-border pt-4">
         <div className="flex flex-col items-center">

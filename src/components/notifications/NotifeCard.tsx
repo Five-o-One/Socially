@@ -1,11 +1,13 @@
+import { Link } from "react-router";
 import { AppImage } from "@/components/AppImage";
 import AppIcon from "@/components/AppIcon/AppIcon";
-import type { NameIcon, NotificationType } from "@/types";
+import type { NameIcon } from "@/types";
 
 interface NotificationCardProps {
-  type: NotificationType | "like" | "comment" | "follow";
+  type: "like" | "comment" | "follow";
   isRead?: boolean;
   name: string;
+  username?: string;
   avatarSrc?: string | null;
   time: string;
   postText?: string | null;
@@ -28,6 +30,7 @@ export function NotificationCard({
   type,
   isRead = false,
   name,
+  username,
   avatarSrc,
   time,
   postText,
@@ -38,17 +41,23 @@ export function NotificationCard({
     className: "text-brand",
   };
 
+  const targetUsername = (
+    username || name.toLowerCase().replace(/\s+/g, "")
+  ).replace(/^@/, "");
+
   const getNotificationText = () => {
     const normalizedType = type.toLowerCase();
-    if (normalizedType === "like") return `${name} liked your post`;
-    if (normalizedType === "comment") return `${name} commented on your post`;
-    if (normalizedType === "follow") return `${name} started following you`;
-    return `${name} interacted with your profile`;
+    if (normalizedType === "like") return "liked your post";
+    if (normalizedType === "comment") return "commented on your post";
+    if (normalizedType === "follow") return "started following you";
+    return "interacted with your profile";
   };
 
   return (
     <div className="flex w-full items-start gap-3.5 border-b border-border p-4 transition-colors hover:bg-border/10">
-      <AppImage src={avatarSrc || ""} alt={name} variant="circle" size="md" />
+      <Link to={`/profile/${targetUsername}`}>
+        <AppImage src={avatarSrc || ""} alt={name} variant="circle" size="md" />
+      </Link>
 
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
@@ -59,6 +68,12 @@ export function NotificationCard({
             isFilled={type.toLowerCase() === "like"}
           />
           <p className="text-sm font-medium text-text">
+            <Link
+              to={`/profile/${targetUsername}`}
+              className="font-bold hover:underline"
+            >
+              {name}
+            </Link>{" "}
             {getNotificationText()}
           </p>
         </div>

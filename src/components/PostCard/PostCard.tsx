@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import { AppCard } from "@/components/AppCard";
 import { AppImage } from "@/components/AppImage";
 import { AppButton } from "@/components/AppButton";
@@ -35,6 +36,10 @@ export function PostCard({
   const [commentText, setCommentText] = useState("");
   const [comments, setComments] = useState(post.comments || []);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+
+  const authorUsername = (
+    post.author.username || post.author.name.toLowerCase().replace(/\s+/g, "")
+  ).replace(/^@/, "");
 
   const handleLikeToggle = () => {
     if (isLiked) {
@@ -76,9 +81,12 @@ export function PostCard({
     <>
       <AppCard className={`transition-shadow duration-200 ${className}`}>
         <div className="space-y-3">
-          {/* Header: Author info & Delete action */}
+          {/* Header: Author info (Clickable Link) & Delete action */}
           <div className="flex items-start justify-between gap-3">
-            <div className="flex items-center gap-3 min-w-0">
+            <Link
+              to={`/profile/${authorUsername}`}
+              className="flex items-center gap-3 min-w-0 group cursor-pointer"
+            >
               <AppImage
                 src={post.author.image || ""}
                 alt={post.author.name}
@@ -87,20 +95,18 @@ export function PostCard({
               />
               <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-bold text-text text-sm truncate">
+                  <span className="font-bold text-text text-sm truncate group-hover:underline">
                     {post.author.name}
                   </span>
                   <span className="text-text-secondary text-xs truncate">
-                    @
-                    {post.author.username ||
-                      post.author.name.toLowerCase().replace(/\s+/g, "")}
+                    @{authorUsername}
                   </span>
                   <span className="text-text-tertiary text-xs">
                     • {post.createdAt}
                   </span>
                 </div>
               </div>
-            </div>
+            </Link>
 
             {/* Trash icon for post author */}
             {isAuthor && (
@@ -122,7 +128,6 @@ export function PostCard({
 
           {/* Action Row */}
           <div className="flex items-center gap-3 pt-2">
-            {/* Like Button */}
             <button
               type="button"
               onClick={handleLikeToggle}
@@ -136,7 +141,6 @@ export function PostCard({
               <span>{likesCount}</span>
             </button>
 
-            {/* Comment Toggle Button */}
             <button
               type="button"
               onClick={() => setShowComments(!showComments)}
@@ -157,37 +161,49 @@ export function PostCard({
               {/* Comments List */}
               {comments.length > 0 ? (
                 <div className="space-y-3">
-                  {comments.map((comment) => (
-                    <div
-                      key={comment.id}
-                      className="flex items-start gap-3 text-sm"
-                    >
-                      <AppImage
-                        src={comment.author.image || ""}
-                        alt={comment.author.name}
-                        variant="circle"
-                        size="sm"
-                      />
-                      <div className="flex-1 rounded-xl bg-border/20 p-3">
-                        <div className="flex items-center justify-between gap-2">
-                          <div className="flex items-center gap-2">
-                            <span className="font-semibold text-text text-xs">
-                              {comment.author.name}
-                            </span>
-                            <span className="text-text-tertiary text-xs">
-                              @{comment.author.username || "user"}
-                            </span>
-                            <span className="text-text-tertiary text-xs">
-                              • {comment.createdAt}
-                            </span>
+                  {comments.map((comment) => {
+                    const commentUsername = (
+                      comment.author.username ||
+                      comment.author.name.toLowerCase().replace(/\s+/g, "")
+                    ).replace(/^@/, "");
+
+                    return (
+                      <div
+                        key={comment.id}
+                        className="flex items-start gap-3 text-sm"
+                      >
+                        <Link to={`/profile/${commentUsername}`}>
+                          <AppImage
+                            src={comment.author.image || ""}
+                            alt={comment.author.name}
+                            variant="circle"
+                            size="sm"
+                          />
+                        </Link>
+                        <div className="flex-1 rounded-xl bg-border/20 p-3">
+                          <div className="flex items-center justify-between gap-2">
+                            <Link
+                              to={`/profile/${commentUsername}`}
+                              className="flex items-center gap-2 group cursor-pointer"
+                            >
+                              <span className="font-semibold text-text text-xs group-hover:underline">
+                                {comment.author.name}
+                              </span>
+                              <span className="text-text-tertiary text-xs">
+                                @{commentUsername}
+                              </span>
+                              <span className="text-text-tertiary text-xs">
+                                • {comment.createdAt}
+                              </span>
+                            </Link>
                           </div>
+                          <p className="mt-1 text-text text-sm wrap-break-word">
+                            {comment.content}
+                          </p>
                         </div>
-                        <p className="mt-1 text-text text-sm wrap-break-word">
-                          {comment.content}
-                        </p>
                       </div>
-                    </div>
-                  ))}
+                    );
+                  })}
                 </div>
               ) : null}
 

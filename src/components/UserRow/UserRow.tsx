@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router";
 import { AppButton } from "@/components/AppButton";
 import { AppImage } from "@/components/AppImage";
 
@@ -22,6 +23,7 @@ export function UserRow({
   isInitiallyFollowing = false,
 }: UserRowProps) {
   const [isFollowing, setIsFollowing] = useState(isInitiallyFollowing);
+  const cleanUsername = username.replace(/^@/, "");
 
   const handleToggle = () => {
     if (isFollowing) {
@@ -34,7 +36,11 @@ export function UserRow({
 
   return (
     <div className="flex items-center justify-between gap-3">
-      <div className="flex items-center gap-2.5 min-w-0">
+      {/* Clickable Profile Link */}
+      <Link
+        to={`/profile/${cleanUsername}`}
+        className="flex items-center gap-2.5 min-w-0 group cursor-pointer"
+      >
         <AppImage
           src={avatarSrc || ""}
           alt={name || username}
@@ -42,14 +48,14 @@ export function UserRow({
           size="md"
         />
         <div className="min-w-0">
-          <p className="truncate text-sm font-semibold text-text">
-            {name || `@${username}`}
+          <p className="truncate text-sm font-semibold text-text group-hover:underline">
+            {name || `@${cleanUsername}`}
           </p>
           <p className="truncate text-xs text-text-secondary">
             {followers} followers
           </p>
         </div>
-      </div>
+      </Link>
 
       <AppButton
         variant={isFollowing ? "primary" : "secondary"}
