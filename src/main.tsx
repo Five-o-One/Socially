@@ -8,6 +8,8 @@ import {
   NotificationsPage,
   ProfilePage,
   NotFoundPage,
+  LoginPage,
+  RegisterPage,
 } from "@/pages";
 
 const router = createBrowserRouter([
@@ -18,8 +20,19 @@ const router = createBrowserRouter([
       { index: true, Component: HomePage },
       { path: "notifications", Component: NotificationsPage },
       { path: "profile/:username", Component: ProfilePage },
-      { path: "*", Component: NotFoundPage },
     ],
+  },
+  {
+    path: "/login",
+    Component: LoginPage,
+  },
+  {
+    path: "/register",
+    Component: RegisterPage,
+  },
+  {
+    path: "*",
+    Component: NotFoundPage,
   },
 ]);
 
