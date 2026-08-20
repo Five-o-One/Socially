@@ -61,7 +61,7 @@ const INITIAL_POSTS: Post[] = [
   },
 ];
 
-export default function Home({ isAuth = false }: HomeProps) {
+export default function Home({ isAuth = true }: HomeProps) {
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
   const [postContent, setPostContent] = useState("");
 

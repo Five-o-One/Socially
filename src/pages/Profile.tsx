@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useMemo } from "react";
 import { useParams } from "react-router";
 import {
   AppCard,
@@ -12,25 +12,91 @@ import {
 import type { Post, UpdateUserProfileDto } from "@/types";
 import type { TabItem } from "@/components/AppTab/AppTab";
 
-export default function Profile() {
-  const { username = "samb.1376" } = useParams();
-  const isOwnProfile = username === "samb.1376";
-
-  const [activeTab, setActiveTab] = useState("posts");
-  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
-  const [isFollowing, setIsFollowing] = useState(false);
-
-  const [userData, setUserData] = useState({
+const MOCK_PROFILES: Record<
+  string,
+  {
+    name: string;
+    username: string;
+    image: string | null;
+    bio: string | null;
+    location: string | null;
+    website: string | null;
+    joinedDate: string;
+    followers: number;
+    following: number;
+    postsCount: number;
+    isFollowedByMe?: boolean;
+  }
+> = {
+  "samb.1376": {
     name: "Seyed Ali Mousavi",
     username: "samb.1376",
+    image: null,
     bio: "Frontend Developer working on Socially project.",
     location: "Mashhad, Iran",
     website: "https://github.com",
     joinedDate: "November 2025",
-    followers: 12,
-    following: 5,
-    postsCount: 2,
-  });
+    followers: 0,
+    following: 0,
+    postsCount: 1,
+  },
+  "f.e.h.farshad": {
+    name: "Farshad Hosseini",
+    username: "f.e.h.farshad",
+    image: null,
+    bio: null,
+    location: null,
+    website: null,
+    joinedDate: "November 2025",
+    followers: 0,
+    following: 1,
+    postsCount: 1,
+    isFollowedByMe: false,
+  },
+  "mohammadfallah.w": {
+    name: "Mohammad Fallah",
+    username: "mohammadfallah.w",
+    image: null,
+    bio: "Frontend Engineer",
+    location: "Tehran, Iran",
+    website: "https://mohammadfallah.ir",
+    joinedDate: "November 2025",
+    followers: 1,
+    following: 2,
+    postsCount: 3,
+    isFollowedByMe: true,
+  },
+};
+
+export default function Profile() {
+  const { username = "samb.1376" } = useParams();
+  const currentAuthUsername = "samb.1376";
+  const isOwnProfile = username === currentAuthUsername;
+
+  const initialUser = useMemo(() => {
+    return (
+      MOCK_PROFILES[username] || {
+        name: username,
+        username: username,
+        image: null,
+        bio: null,
+        location: null,
+        website: null,
+        joinedDate: "November 2025",
+        followers: 0,
+        following: 0,
+        postsCount: 0,
+        isFollowedByMe: false,
+      }
+    );
+  }, [username]);
+
+  const [userData, setUserData] = useState(initialUser);
+  const [isFollowing, setIsFollowing] = useState(
+    Boolean(initialUser.isFollowedByMe),
+  );
+  const [activeTab, setActiveTab] = useState("posts");
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const profileTabs: TabItem[] = [
     { id: "posts", label: "Posts", icon: "Post" },
@@ -39,24 +105,38 @@ export default function Profile() {
 
   const userPosts: Post[] = [
     {
-      id: "p-101",
-      authorId: "current-user-id",
-      content: "اولین پست منتشر شده در صفحه پروفایل شخصی.",
+      id: `p-${username}`,
+      authorId: username,
+      content:
+        username === "f.e.h.farshad"
+          ? "سوشالی؛ پروژه‌ای برای محک زدن مهارت‌های فرانت‌اند و کار تیمی 🚀\nپیاده‌سازی تمیز دیزاین توییتر با ری‌اکت و تیلویند."
+          : "این یک پست تستی در صفحه پروفایل کاربر است.",
       createdAt: "8 days ago",
       updatedAt: "8 days ago",
       author: {
-        id: "current-user-id",
+        id: username,
         name: userData.name,
         username: userData.username,
-        image: null,
+        image: userData.image,
       },
-      likes: [{ userId: "current-user-id" }],
+      likes: [{ userId: "1" }],
       comments: [],
-      _count: { likes: 1, comments: 0 },
+      _count: { likes: 1, comments: 1 },
     },
   ];
 
   const likedPosts: Post[] = [];
+
+  const handleFollowToggle = () => {
+    setIsFollowing((prev) => {
+      const next = !prev;
+      setUserData((u) => ({
+        ...u,
+        followers: next ? u.followers + 1 : Math.max(0, u.followers - 1),
+      }));
+      return next;
+    });
+  };
 
   const handleProfileUpdate = (updatedValues: UpdateUserProfileDto) => {
     setUserData((prev) => ({
@@ -75,7 +155,7 @@ export default function Profile() {
       <AppCard>
         <div className="flex flex-col items-center text-center">
           <AppImage
-            src=""
+            src={userData.image || ""}
             alt={userData.name}
             variant="circle"
             size="xl"
@@ -100,7 +180,6 @@ export default function Profile() {
             </div>
           </div>
 
-          {/* Action Button */}
           <div className="mt-5 w-full max-w-xs">
             {isOwnProfile ? (
               <AppButton
@@ -115,15 +194,33 @@ export default function Profile() {
               <AppButton
                 variant={isFollowing ? "secondary" : "primary"}
                 fullWidth
-                onClick={() => setIsFollowing(!isFollowing)}
+                onClick={handleFollowToggle}
               >
                 {isFollowing ? "Unfollow" : "Follow"}
               </AppButton>
             )}
           </div>
 
-          {/* Additional Info */}
           <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-xs text-text-secondary">
+            {userData.location && (
+              <div className="flex items-center gap-1.5">
+                <AppIcon nameIcon="Location" size={14} />
+                <span>{userData.location}</span>
+              </div>
+            )}
+            {userData.website && (
+              <div className="flex items-center gap-1.5">
+                <AppIcon nameIcon="Link" size={14} />
+                <a
+                  href={userData.website}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-brand hover:underline truncate"
+                >
+                  {userData.website.replace(/^https?:\/\//, "")}
+                </a>
+              </div>
+            )}
             <div className="flex items-center gap-1.5">
               <AppIcon nameIcon="Calendar" size={14} />
               <span>Joined {userData.joinedDate}</span>
@@ -132,14 +229,12 @@ export default function Profile() {
         </div>
       </AppCard>
 
-      {/* Tabs */}
       <AppTab
         tabs={profileTabs}
         activeTab={activeTab}
         onChange={(tabId) => setActiveTab(tabId)}
       />
 
-      {/* Tab Content */}
       <section className="space-y-4">
         {activeTab === "posts" && (
           <>
@@ -147,7 +242,7 @@ export default function Profile() {
               <PostCard
                 key={post.id}
                 post={post}
-                currentUserId="current-user-id"
+                currentUserId={currentAuthUsername}
               />
             ))}
           </>
@@ -160,7 +255,7 @@ export default function Profile() {
                 <PostCard
                   key={post.id}
                   post={post}
-                  currentUserId="current-user-id"
+                  currentUserId={currentAuthUsername}
                 />
               ))
             ) : (
@@ -172,18 +267,19 @@ export default function Profile() {
         )}
       </section>
 
-      {/* Edit Profile Modal */}
-      <UserInfoModal
-        isOpen={isEditModalOpen}
-        initialData={{
-          name: userData.name,
-          bio: userData.bio,
-          location: userData.location,
-          website: userData.website,
-        }}
-        onSubmit={handleProfileUpdate}
-        onClose={() => setIsEditModalOpen(false)}
-      />
+      {isOwnProfile && (
+        <UserInfoModal
+          isOpen={isEditModalOpen}
+          initialData={{
+            name: userData.name,
+            bio: userData.bio || "",
+            location: userData.location || "",
+            website: userData.website || "",
+          }}
+          onSubmit={handleProfileUpdate}
+          onClose={() => setIsEditModalOpen(false)}
+        />
+      )}
     </div>
   );
 }

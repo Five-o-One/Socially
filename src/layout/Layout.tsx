@@ -9,7 +9,7 @@ import {
 
 export default function Layout() {
   const location = useLocation();
-  const isAuth = false; // برای تست حالت Sign-out روی false قرار دهید
+  const isAuth = true; // برای تست حالت Sign-out روی false قرار دهید
 
   const currentUser = {
     name: "Seyed Ali Mousavi",
