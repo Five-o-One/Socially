@@ -1,3 +1,6 @@
+import type { ApiResponse } from "./api";
+import type { Post } from "./post";
+
 export interface UserCount {
   followers: number;
   following?: number;
@@ -35,3 +38,17 @@ export interface UpdateProfileRequest {
 }
 
 export type UpdateUserProfileDto = UpdateProfileRequest;
+
+export type GetUserResponse = ApiResponse<User>;
+
+export type GetUserProfileResponse = ApiResponse<User>;
+
+export type GetRecommendedUsersResponse = ApiResponse<User[]>;
+
+export type GetUserLikedPostsResponse = ApiResponse<Post[]>;
+
+export type ToggleFollowResponse = ApiResponse<{
+  isFollowing: boolean;
+}>;
+
+export type UpdateProfileResponse = ApiResponse<User>;

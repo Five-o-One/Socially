@@ -1,5 +1,5 @@
 import type { AxiosResponse } from "axios";
-import type { GetAllPostsResponse } from "../../types/GetAllPost";
+import type { GetAllPostsResponse } from "../../types/post";
 import __BASE__ from "../base";
 
 export const GetAllPosts = async (): Promise<
