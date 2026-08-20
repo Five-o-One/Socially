@@ -1,4 +1,4 @@
-import { Outlet, useLocation } from "react-router";
+import { Outlet, useLocation, Link } from "react-router";
 import {
   AppNavbar,
   UserInfoCard,
@@ -9,7 +9,7 @@ import {
 
 export default function Layout() {
   const location = useLocation();
-  const isAuth = true;
+  const isAuth = false; // برای تست حالت Sign-out روی false قرار دهید
 
   const currentUser = {
     name: "Seyed Ali Mousavi",
@@ -34,7 +34,6 @@ export default function Layout() {
 
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-12">
-          {/* ستون چپ: مشخصات کاربر یا باکس ورود */}
           <aside className="hidden lg:col-span-3 lg:block">
             <div className="sticky top-22">
               {isAuth ? (
@@ -46,29 +45,27 @@ export default function Layout() {
                     Login to access your profile and connect with others.
                   </p>
                   <div className="mt-6 flex flex-col gap-3">
-                    <AppButton variant="primary" fullWidth>
-                      Log In
-                    </AppButton>
-                    <AppButton variant="secondary" fullWidth>
-                      Sign Up
-                    </AppButton>
+                    <Link to="/login">
+                      <AppButton variant="primary" fullWidth>
+                        Log In
+                      </AppButton>
+                    </Link>
+                    <Link to="/register">
+                      <AppButton variant="secondary" fullWidth>
+                        Sign Up
+                      </AppButton>
+                    </Link>
                   </div>
                 </AppCard>
               )}
             </div>
           </aside>
 
-          {/* ستون میانی: محتوای صفحات */}
-          <section
-            className={`col-span-12 ${
-              isNotificationsPage ? "lg:col-span-9" : "lg:col-span-6"
-            }`}
-          >
+          <section className="col-span-12 lg:col-span-6">
             <Outlet />
           </section>
 
-          {/* ستون راست: Who to Follow */}
-          {!isNotificationsPage && (
+          {isAuth && !isNotificationsPage && (
             <aside className="hidden lg:col-span-3 lg:block">
               <div className="sticky top-22">
                 <AppCard

@@ -2,6 +2,10 @@ import { useState } from "react";
 import { AppCard, AppImage, AppButton, PostCard } from "@/components";
 import type { Post } from "@/types";
 
+interface HomeProps {
+  isAuth?: boolean;
+}
+
 const INITIAL_POSTS: Post[] = [
   {
     id: "1",
@@ -34,24 +38,30 @@ const INITIAL_POSTS: Post[] = [
   },
   {
     id: "2",
-    authorId: "current-user-id",
-    content:
-      "این یک پست تستی از طرف کاربر جاری است تا دکمه حذف و عملکرد مودال تست شود.",
-    createdAt: "Just now",
-    updatedAt: "Just now",
+    authorId: "user-farshad",
+    content: "نمونه پست دوم در حالت خروج از حساب کاربری.",
+    createdAt: "8 days ago",
+    updatedAt: "8 days ago",
     author: {
-      id: "current-user-id",
-      name: "Seyed Ali Mousavi",
-      username: "samb.1376",
+      id: "user-farshad",
+      name: "Farshad Hosseini",
+      username: "f.e.h.farshad",
       image: null,
     },
-    likes: [],
-    comments: [],
-    _count: { likes: 0, comments: 0 },
+    likes: [{ userId: "1" }],
+    comments: [
+      {
+        id: "c2",
+        content: "تست کامنت",
+        createdAt: "1 hour ago",
+        author: { name: "Ali", image: null },
+      },
+    ],
+    _count: { likes: 1, comments: 1 },
   },
 ];
 
-export default function Home() {
+export default function Home({ isAuth = false }: HomeProps) {
   const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
   const [postContent, setPostContent] = useState("");
 
@@ -86,38 +96,40 @@ export default function Home() {
 
   return (
     <div className="space-y-4">
-      {/* Create Post Card */}
-      <AppCard>
-        <form onSubmit={handleCreatePost} className="space-y-3">
-          <div className="flex items-start gap-3">
-            <AppImage
-              src=""
-              alt="Seyed Ali Mousavi"
-              variant="circle"
-              size="md"
-            />
-            <textarea
-              value={postContent}
-              onChange={(e) => setPostContent(e.target.value)}
-              placeholder="What's on your mind?"
-              rows={3}
-              className="flex-1 resize-none bg-transparent pt-1 text-sm text-text placeholder:text-text-secondary focus:outline-none"
-            />
-          </div>
+      {/* Create Post Card - Only visible when logged in */}
+      {isAuth && (
+        <AppCard>
+          <form onSubmit={handleCreatePost} className="space-y-3">
+            <div className="flex items-start gap-3">
+              <AppImage
+                src=""
+                alt="Seyed Ali Mousavi"
+                variant="circle"
+                size="md"
+              />
+              <textarea
+                value={postContent}
+                onChange={(e) => setPostContent(e.target.value)}
+                placeholder="What's on your mind?"
+                rows={3}
+                className="flex-1 resize-none bg-transparent pt-1 text-sm text-text placeholder:text-text-secondary focus:outline-none"
+              />
+            </div>
 
-          <div className="border-t border-border pt-3 flex justify-end">
-            <AppButton
-              type="submit"
-              variant="primary"
-              size="md"
-              icon="Send"
-              disabled={!postContent.trim()}
-            >
-              Post
-            </AppButton>
-          </div>
-        </form>
-      </AppCard>
+            <div className="border-t border-border pt-3 flex justify-end">
+              <AppButton
+                type="submit"
+                variant="primary"
+                size="md"
+                icon="Send"
+                disabled={!postContent.trim()}
+              >
+                Post
+              </AppButton>
+            </div>
+          </form>
+        </AppCard>
+      )}
 
       {/* Posts Feed */}
       <section className="space-y-4">
@@ -125,8 +137,8 @@ export default function Home() {
           <PostCard
             key={post.id}
             post={post}
-            currentUserId="current-user-id"
-            onDeletePost={handleDeletePost}
+            currentUserId={isAuth ? "current-user-id" : undefined}
+            onDeletePost={isAuth ? handleDeletePost : undefined}
           />
         ))}
       </section>
