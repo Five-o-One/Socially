@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { createPortal } from "react-dom";
+import AppPortal from "@/components/AppPortal/AppPortal";
 import { Link, NavLink } from "react-router";
 import AppIcon from "@/components/AppIcon/AppIcon";
 import { AppButton } from "@/components/AppButton";
+import { useAppStore } from "@/store";
 
 interface AppNavbarProps {
   isLoggedIn?: boolean;
@@ -16,37 +17,37 @@ export function AppNavbar({
   onLogout,
 }: AppNavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isDarkMode, setIsDarkMode] = useState(() => {
-    return (
-      localStorage.getItem("theme") === "dark" ||
-      (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-    );
-  });
-
   useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-      localStorage.setItem("theme", "dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-      localStorage.setItem("theme", "light");
-    }
-  }, [isDarkMode]);
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
 
-  useEffect(() => {
-    if (isMenuOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+    document.addEventListener("keydown", handleEscape);
+
     return () => {
-      document.body.style.overflow = "unset";
+      document.removeEventListener("keydown", handleEscape);
     };
   }, [isMenuOpen]);
 
-  const toggleTheme = () => {
-    setIsDarkMode((prev) => !prev);
+  const { theme, toggleTheme } = useAppStore();
+  const isDarkMode = theme === "dark";
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    document.documentElement.classList.add("scroll-locked");
+    document.body.classList.add("scroll-locked");
+
+    return () => {
+      document.documentElement.classList.remove("scroll-locked");
+      document.body.classList.remove("scroll-locked");
+    };
+  }, [isMenuOpen]);
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
   };
 
   const navItemClass = ({ isActive }: { isActive: boolean }) =>
@@ -114,7 +115,7 @@ export function AppNavbar({
           )}
         </div>
 
-        {/* Mobile Action Buttons */}
+        {/* Mobile Actions */}
         <div className="flex items-center gap-2 md:hidden">
           <button
             type="button"
@@ -135,100 +136,91 @@ export function AppNavbar({
         </div>
       </div>
 
-      {/* Mobile Drawer & Backdrop Portal (Direct DOM Check without state cascading) */}
-      {typeof document !== "undefined" &&
-        createPortal(
+      {/* Mobile Drawer */}
+      <AppPortal>
+        <div
+          className={`fixed inset-0 z-50 transition-all duration-300 md:hidden ${
+            isMenuOpen
+              ? "visible pointer-events-auto"
+              : "invisible pointer-events-none"
+          }`}
+        >
+          {/* Backdrop */}
           <div
-            className={`fixed inset-0 z-50 transition-all duration-300 md:hidden ${
-              isMenuOpen
-                ? "visible pointer-events-auto"
-                : "invisible pointer-events-none"
+            className={`fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
+              isMenuOpen ? "opacity-100" : "opacity-0"
+            }`}
+            onClick={closeMenu}
+          />
+
+          {/* Drawer */}
+          <div
+            className={`fixed top-0 right-0 h-full w-3/4 max-w-xs overflow-y-auto border-l border-border bg-card p-6 shadow-2xl transition-transform duration-300 ease-in-out ${
+              isMenuOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >
-            {/* Full-screen Backdrop */}
-            <div
-              className={`fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
-                isMenuOpen ? "opacity-100" : "opacity-0"
-              }`}
-              onClick={() => setIsMenuOpen(false)}
-            />
+            <div className="flex items-center justify-between pb-6 border-b border-border">
+              <span className="font-bold text-text">Menu</span>
 
-            {/* Solid Drawer Panel */}
-            <div
-              className={`fixed top-0 right-0 h-full w-3/4 max-w-xs border-l border-border bg-card p-6 shadow-2xl transition-transform duration-300 ease-in-out ${
-                isMenuOpen ? "translate-x-0" : "translate-x-full"
-              }`}
-            >
-              <div className="flex items-center justify-between pb-6 border-b border-border">
-                <span className="font-bold text-text">Menu</span>
-                <button
-                  type="button"
-                  onClick={() => setIsMenuOpen(false)}
-                  aria-label="Close menu"
-                  className="p-1 rounded-lg text-text-secondary hover:text-text hover:bg-border/30 transition-colors cursor-pointer"
-                >
-                  <AppIcon nameIcon="Close" size={20} />
-                </button>
-              </div>
-
-              <nav className="mt-6 flex flex-col gap-3">
-                <NavLink
-                  to="/"
-                  onClick={() => setIsMenuOpen(false)}
-                  className={navItemClass}
-                >
-                  <AppIcon nameIcon="Home" size={18} />
-                  <span>Home</span>
-                </NavLink>
-
-                {isLoggedIn ? (
-                  <>
-                    <NavLink
-                      to="/notifications"
-                      onClick={() => setIsMenuOpen(false)}
-                      className={navItemClass}
-                    >
-                      <AppIcon nameIcon="Bell" size={18} />
-                      <span>Notifications</span>
-                    </NavLink>
-
-                    <NavLink
-                      to={`/profile/${username}`}
-                      onClick={() => setIsMenuOpen(false)}
-                      className={navItemClass}
-                    >
-                      <AppIcon nameIcon="Person" size={18} />
-                      <span>Profile</span>
-                    </NavLink>
-
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIsMenuOpen(false);
-                        onLogout?.();
-                      }}
-                      className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-danger hover:bg-danger/10 rounded-lg transition-colors mt-2 text-left cursor-pointer"
-                    >
-                      <AppIcon nameIcon="LogOut" size={18} />
-                      <span>Log Out</span>
-                    </button>
-                  </>
-                ) : (
-                  <Link
-                    to="/login"
-                    onClick={() => setIsMenuOpen(false)}
-                    className="mt-4"
-                  >
-                    <AppButton variant="primary" fullWidth>
-                      Sign In
-                    </AppButton>
-                  </Link>
-                )}
-              </nav>
+              <button
+                type="button"
+                onClick={closeMenu}
+                aria-label="Close menu"
+                className="p-1 rounded-lg text-text-secondary hover:text-text hover:bg-border/30 transition-colors cursor-pointer"
+              >
+                <AppIcon nameIcon="Close" size={20} />
+              </button>
             </div>
-          </div>,
-          document.body,
-        )}
+
+            <nav className="mt-6 flex flex-col gap-3">
+              <NavLink to="/" onClick={closeMenu} className={navItemClass}>
+                <AppIcon nameIcon="Home" size={18} />
+                <span>Home</span>
+              </NavLink>
+
+              {isLoggedIn ? (
+                <>
+                  <NavLink
+                    to="/notifications"
+                    onClick={closeMenu}
+                    className={navItemClass}
+                  >
+                    <AppIcon nameIcon="Bell" size={18} />
+                    <span>Notifications</span>
+                  </NavLink>
+
+                  <NavLink
+                    to={`/profile/${username}`}
+                    onClick={closeMenu}
+                    className={navItemClass}
+                  >
+                    <AppIcon nameIcon="Person" size={18} />
+                    <span>Profile</span>
+                  </NavLink>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      closeMenu();
+                      onLogout?.();
+                    }}
+                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-danger hover:bg-danger/10 rounded-lg transition-colors mt-2 text-left cursor-pointer"
+                  >
+                    <AppIcon nameIcon="LogOut" size={18} />
+                    <span>Log Out</span>
+                  </button>
+                </>
+              ) : (
+                <Link to="/login" onClick={closeMenu} className="mt-4">
+                  <AppButton variant="primary" fullWidth>
+                    Sign In
+                  </AppButton>
+                </Link>
+              )}
+            </nav>
+          </div>
+        </div>
+      </AppPortal>
     </header>
   );
 }

@@ -152,9 +152,12 @@ export default function Layout() {
                           name={user.name}
                           avatarSrc={user.image}
                           followers={user.count?.followers ?? 0}
-                          isInitiallyFollowing={user.isFollowing ?? false}
-                          onFollow={() => toggleFollow.mutate(user.id)}
-                          onUnfollow={() => toggleFollow.mutate(user.id)}
+                          isFollowing={user.isFollowing ?? false}
+                          onToggleFollow={() => toggleFollow.mutate(user.id)}
+                          isFollowLoading={
+                            toggleFollow.isPending &&
+                            toggleFollow.variables === user.id
+                          }
                         />
                       ))
                     )}
