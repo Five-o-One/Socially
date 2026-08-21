@@ -1,12 +1,34 @@
 import type { User } from "./Users";
 
+export interface SessionData {
+  expiresAt: string;
+  token: string;
+  createdAt: string;
+  updatedAt: string;
+  ipAddress: string | null;
+  userAgent: string | null;
+  userId: string;
+  id: string;
+}
+
 export interface Session {
-  user: User;
+  message: string;
+  success: boolean;
+  data: {
+    session: SessionData;
+    user: User;
+  };
 }
 
 export interface AuthResponse {
-  user: User;
-  message?: string;
+  message: string;
+  success: boolean;
+  data: {
+    redirect?: boolean;
+    token: string;
+    url?: string;
+    user: User;
+  };
 }
 
 export interface LoginRequest {

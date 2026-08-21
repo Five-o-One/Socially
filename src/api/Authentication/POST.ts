@@ -5,6 +5,7 @@ import type {
   RegisterRequest,
 } from "../../types/Authentication";
 import __BASE__ from "../base";
+import type { ApiMessageResponse } from "../../types/api";
 
 export const Login = async (
   data: LoginRequest,
@@ -28,8 +29,10 @@ export const Register = async (
   return response;
 };
 
-export const Logout = async (): Promise<AxiosResponse<void>> => {
-  const response = await __BASE__.post<void>("/api/authentication/logout");
+export const Logout = async (): Promise<AxiosResponse<ApiMessageResponse>> => {
+  const response = await __BASE__.post<ApiMessageResponse>(
+    "/api/authentication/logout",
+  );
 
   return response;
 };

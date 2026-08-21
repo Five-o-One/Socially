@@ -6,75 +6,78 @@ import { AppButton } from "@/components/AppButton";
 import AppIcon from "@/components/AppIcon/AppIcon";
 import { ConfirmModal } from "@/components/AppModal/ConfirmModal";
 import type { Post } from "@/types";
+import { useToggleLike } from "@/hooks/useToggleLike";
+import { useAddComment } from "@/hooks/useAddComment";
+import { useDeletePost } from "@/hooks/useDeletePost";
 
 interface PostCardProps {
   post: Post;
   currentUserId?: string;
-  onLike?: (postId: string) => void;
-  onComment?: (postId: string, content: string) => void;
-  onDeletePost?: (postId: string) => void;
   className?: string;
 }
 
 export function PostCard({
   post,
   currentUserId = "current-user-id",
-  onLike,
-  onComment,
-  onDeletePost,
   className = "",
 }: PostCardProps) {
-  const isLikedInitial =
-    post.likes?.some((like) => like.userId === currentUserId) || false;
   const isAuthor = post.authorId === currentUserId;
 
-  const [isLiked, setIsLiked] = useState(isLikedInitial);
-  const [likesCount, setLikesCount] = useState(
-    post._count?.likes || post.likes?.length || 0,
-  );
+  const isLiked =
+    post.likes?.some((like) => like.userId === currentUserId) ?? false;
+
+  const likesCount = post._count?.likes ?? post.likes?.length ?? 0;
+
+  const toggleLike = useToggleLike();
+  const addComment = useAddComment();
+  const deletePost = useDeletePost();
+
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState("");
-  const [comments, setComments] = useState(post.comments || []);
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
   const authorUsername = (
     post.author.username || post.author.name.toLowerCase().replace(/\s+/g, "")
   ).replace(/^@/, "");
 
-  const handleLikeToggle = () => {
-    if (isLiked) {
-      setLikesCount((prev) => Math.max(0, prev - 1));
-    } else {
-      setLikesCount((prev) => prev + 1);
+  const handleLikeToggle = async () => {
+    if (toggleLike.isPending) return;
+
+    try {
+      await toggleLike.mutateAsync(post.id);
+    } catch (error) {
+      console.error("Failed to toggle like:", error);
     }
-    setIsLiked(!isLiked);
-    onLike?.(post.id);
   };
 
-  const handleCommentSubmit = (e: React.FormEvent) => {
+  const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!commentText.trim()) return;
 
-    const newComment = {
-      id: Date.now().toString(),
-      content: commentText.trim(),
-      createdAt: "Just now",
-      author: {
-        id: currentUserId,
-        name: "Seyed Ali Mousavi",
-        username: "samb.1376",
-        image: null,
-      },
-    };
+    const content = commentText.trim();
 
-    setComments((prev) => [...prev, newComment]);
-    onComment?.(post.id, commentText.trim());
-    setCommentText("");
+    if (!content || addComment.isPending) return;
+
+    try {
+      await addComment.mutateAsync({
+        postId: post.id,
+        content,
+      });
+
+      setCommentText("");
+    } catch (error) {
+      console.error("Failed to add comment:", error);
+    }
   };
 
-  const handleConfirmDelete = () => {
-    onDeletePost?.(post.id);
-    setIsDeleteModalOpen(false);
+  const handleConfirmDelete = async () => {
+    if (deletePost.isPending) return;
+
+    try {
+      await deletePost.mutateAsync(post.id);
+      setIsDeleteModalOpen(false);
+    } catch (error) {
+      console.error("Failed to delete post:", error);
+    }
   };
 
   return (
@@ -151,7 +154,9 @@ export function PostCard({
               }`}
             >
               <AppIcon nameIcon="Chat" size={16} isFilled={showComments} />
-              <span>{comments.length}</span>
+              <span>
+                {post._count?.comments ?? post.comments?.length ?? 0}
+              </span>{" "}
             </button>
           </div>
 
@@ -159,9 +164,9 @@ export function PostCard({
           {showComments && (
             <div className="space-y-4 pt-3 border-t border-border">
               {/* Comments List */}
-              {comments.length > 0 ? (
+              {post.comments.length > 0 ? (
                 <div className="space-y-3">
-                  {comments.map((comment) => {
+                  {post.comments.map((comment) => {
                     const commentUsername = (
                       comment.author.username ||
                       comment.author.name.toLowerCase().replace(/\s+/g, "")
@@ -230,9 +235,9 @@ export function PostCard({
                         variant="primary"
                         size="sm"
                         icon="Send"
-                        disabled={!commentText.trim()}
+                        disabled={!commentText.trim() || addComment.isPending}
                       >
-                        Comment
+                        {addComment.isPending ? "Commenting..." : "Comment"}
                       </AppButton>
                     </div>
                   </div>

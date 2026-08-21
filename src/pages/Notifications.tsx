@@ -1,60 +1,53 @@
-import { useState } from "react";
 import { AppCard, NotificationCard } from "@/components";
-
-interface NotificationItem {
-  id: string;
-  type: "like" | "comment" | "follow";
-  isRead: boolean;
-  name: string;
-  avatarSrc: string | null;
-  time: string;
-  postText?: string;
-  commentText?: string;
-}
-
-const MOCK_NOTIFICATIONS: NotificationItem[] = [
-  {
-    id: "n1",
-    type: "comment",
-    isRead: false,
-    name: "Ali Mousavi",
-    avatarSrc: null,
-    time: "3 minutes ago",
-    postText: "test post",
-    commentText: "tests",
-  },
-  {
-    id: "n2",
-    type: "like",
-    isRead: false,
-    name: "Ali Mousavi",
-    avatarSrc: null,
-    time: "3 minutes ago",
-    postText: "test post",
-  },
-  {
-    id: "n3",
-    type: "comment",
-    isRead: true,
-    name: "Farshad Hosseini",
-    avatarSrc: null,
-    time: "2 hours ago",
-    postText: "پروژه سوشالی در حال توسعه است",
-    commentText: "خسته نباشید تیم!",
-  },
-  {
-    id: "n4",
-    type: "follow",
-    isRead: true,
-    name: "Mohammad Fallah",
-    avatarSrc: null,
-    time: "1 day ago",
-  },
-];
+import { useNotifications, useMarkNotificationsAsRead } from "@/hooks";
 
 export default function Notifications() {
-  const [notifications] = useState<NotificationItem[]>(MOCK_NOTIFICATIONS);
-  const unreadCount = notifications.filter((n) => !n.isRead).length;
+  const {
+    data: notifications = [],
+    isLoading,
+    isError,
+    error,
+  } = useNotifications();
+
+  const markAsRead = useMarkNotificationsAsRead();
+
+  const unreadNotifications = notifications.filter(
+    (notification) => !notification.read,
+  );
+
+  const unreadCount = unreadNotifications.length;
+
+  const handleNotificationClick = (id: string) => {
+    const notification = notifications.find((item) => item.id === id);
+
+    if (!notification || notification.read) {
+      return;
+    }
+
+    markAsRead.mutate([id]);
+  };
+
+  if (isLoading) {
+    return (
+      <AppCard>
+        <div className="p-8 text-center text-sm text-text-secondary">
+          Loading notifications...
+        </div>
+      </AppCard>
+    );
+  }
+
+  if (isError) {
+    return (
+      <AppCard>
+        <div className="p-8 text-center text-sm text-danger">
+          {error instanceof Error
+            ? error.message
+            : "Failed to load notifications."}
+        </div>
+      </AppCard>
+    );
+  }
 
   return (
     <AppCard
@@ -62,8 +55,9 @@ export default function Notifications() {
       header={
         <div className="flex items-center justify-between px-4 sm:px-5">
           <h2 className="text-lg font-bold text-text">Notifications</h2>
+
           {unreadCount > 0 && (
-            <span className="text-xs text-text-tertiary font-medium">
+            <span className="text-xs font-medium text-text-tertiary">
               {unreadCount} unread
             </span>
           )}
@@ -72,17 +66,23 @@ export default function Notifications() {
     >
       <div className="divide-y divide-border">
         {notifications.length > 0 ? (
-          notifications.map((item) => (
-            <NotificationCard
-              key={item.id}
-              type={item.type}
-              isRead={item.isRead}
-              name={item.name}
-              avatarSrc={item.avatarSrc}
-              time={item.time}
-              postText={item.postText}
-              commentText={item.commentText}
-            />
+          notifications.map((notification) => (
+            <div
+              key={notification.id}
+              onClick={() => handleNotificationClick(notification.id)}
+              className={!notification.read ? "cursor-pointer" : undefined}
+            >
+              <NotificationCard
+                type={
+                  notification.type.toLowerCase() as
+                    "like" | "comment" | "follow"
+                }
+                isRead={notification.read}
+                name={notification.creator.name}
+                avatarSrc={notification.creator.image}
+                time={new Date(notification.createdAt).toLocaleString()}
+              />
+            </div>
           ))
         ) : (
           <div className="p-8 text-center text-sm text-text-secondary">

@@ -1,112 +1,73 @@
 import { useState } from "react";
 import { AppCard, AppImage, AppButton, PostCard } from "@/components";
-import type { Post } from "@/types";
+import { usePosts } from "@/hooks/usePosts";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { useCreatePost } from "@/hooks/useCreatePost";
+import toast from "react-hot-toast";
 
 interface HomeProps {
   isAuth?: boolean;
 }
 
-const INITIAL_POSTS: Post[] = [
-  {
-    id: "1",
-    authorId: "user-farshad",
-    content:
-      "سوشالی؛ پروژه‌ای برای محک زدن مهارت‌های فرانت‌اند و کار تیمی 🚀\nپیاده‌سازی تمیز دیزاین توییتر با ری‌اکت و تیلویند.",
-    createdAt: "8 days ago",
-    updatedAt: "8 days ago",
-    author: {
-      id: "user-farshad",
-      name: "Farshad Hosseini",
-      username: "f.e.h.farshad",
-      image: null,
-    },
-    likes: [{ userId: "current-user-id" }],
-    comments: [
-      {
-        id: "c1",
-        content: "ساختار کامپوننت‌ها عالی پیاده شده 👌",
-        createdAt: "about 6 hours ago",
-        author: {
-          id: "user-mohammad",
-          name: "Mohammad Fallah",
-          username: "mohammadfallah.w",
-          image: null,
-        },
-      },
-    ],
-    _count: { likes: 1, comments: 1 },
-  },
-  {
-    id: "2",
-    authorId: "user-farshad",
-    content: "نمونه پست دوم در حالت خروج از حساب کاربری.",
-    createdAt: "8 days ago",
-    updatedAt: "8 days ago",
-    author: {
-      id: "user-farshad",
-      name: "Farshad Hosseini",
-      username: "f.e.h.farshad",
-      image: null,
-    },
-    likes: [{ userId: "1" }],
-    comments: [
-      {
-        id: "c2",
-        content: "تست کامنت",
-        createdAt: "1 hour ago",
-        author: { name: "Ali", image: null },
-      },
-    ],
-    _count: { likes: 1, comments: 1 },
-  },
-];
-
 export default function Home({ isAuth = true }: HomeProps) {
-  const [posts, setPosts] = useState<Post[]>(INITIAL_POSTS);
   const [postContent, setPostContent] = useState("");
 
-  const handleCreatePost = (e: React.FormEvent) => {
+  const { data: posts = [], isLoading, isError, error } = usePosts();
+  const { data: currentUser } = useCurrentUser();
+
+  const createPost = useCreatePost();
+
+  const handleCreatePost = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!postContent.trim()) return;
 
-    const newPost: Post = {
-      id: Date.now().toString(),
-      authorId: "current-user-id",
-      content: postContent.trim(),
-      createdAt: "Just now",
-      updatedAt: "Just now",
-      author: {
-        id: "current-user-id",
-        name: "Seyed Ali Mousavi",
-        username: "samb.1376",
-        image: null,
-      },
-      likes: [],
-      comments: [],
-      _count: { likes: 0, comments: 0 },
-    };
+    const content = postContent.trim();
 
-    setPosts([newPost, ...posts]);
-    setPostContent("");
+    if (!content || createPost.isPending) return;
+
+    try {
+      await createPost.mutateAsync(content);
+
+      setPostContent("");
+
+      toast.success("Post created successfully");
+    } catch (error) {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to create post",
+      );
+    }
   };
 
-  const handleDeletePost = (postId: string) => {
-    setPosts((prev) => prev.filter((p) => p.id !== postId));
-  };
+  if (isLoading) {
+    return (
+      <div className="flex items-center justify-center py-12 text-text-secondary">
+        Loading posts...
+      </div>
+    );
+  }
+
+  if (isError) {
+    return (
+      <AppCard>
+        <p className="text-center text-red-500">
+          {error instanceof Error ? error.message : "Failed to load posts."}
+        </p>
+      </AppCard>
+    );
+  }
 
   return (
     <div className="space-y-4">
-      {/* Create Post Card - Only visible when logged in */}
       {isAuth && (
         <AppCard>
           <form onSubmit={handleCreatePost} className="space-y-3">
             <div className="flex items-start gap-3">
               <AppImage
-                src=""
-                alt="Seyed Ali Mousavi"
+                src={currentUser?.image ?? ""}
+                alt={currentUser?.name ?? "Current user"}
                 variant="circle"
                 size="md"
               />
+
               <textarea
                 value={postContent}
                 onChange={(e) => setPostContent(e.target.value)}
@@ -116,29 +77,27 @@ export default function Home({ isAuth = true }: HomeProps) {
               />
             </div>
 
-            <div className="border-t border-border pt-3 flex justify-end">
+            <div className="flex justify-end border-t border-border pt-3">
               <AppButton
                 type="submit"
                 variant="primary"
                 size="md"
                 icon="Send"
-                disabled={!postContent.trim()}
+                disabled={!postContent.trim() || createPost.isPending}
               >
-                Post
+                {createPost.isPending ? "Posting..." : "Post"}
               </AppButton>
             </div>
           </form>
         </AppCard>
       )}
 
-      {/* Posts Feed */}
       <section className="space-y-4">
         {posts.map((post) => (
           <PostCard
             key={post.id}
             post={post}
-            currentUserId={isAuth ? "current-user-id" : undefined}
-            onDeletePost={isAuth ? handleDeletePost : undefined}
+            currentUserId={isAuth ? currentUser?.id : undefined}
           />
         ))}
       </section>

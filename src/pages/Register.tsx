@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { AppCard, AppButton } from "@/components";
 import type { RegisterRequest } from "@/types/Authentication";
+import { Register as RegisterUser } from "@/api/Authentication/POST";
 
 export default function Register() {
   const navigate = useNavigate();
@@ -16,12 +17,17 @@ export default function Register() {
   } = useForm<RegisterRequest>();
 
   const onSubmit = async (data: RegisterRequest) => {
-    setIsLoading(true);
-    console.log("Register submitted:", data);
-    setTimeout(() => {
-      setIsLoading(false);
+    try {
+      setIsLoading(true);
+
+      await RegisterUser(data);
+
       navigate("/login");
-    }, 800);
+    } catch (error) {
+      console.error("Register failed:", error);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -55,31 +61,6 @@ export default function Register() {
                 placeholder="Farshad Hosseini"
                 className="w-full rounded-lg border border-border bg-transparent px-3.5 py-2 text-sm text-text placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
               />
-              {errors.name && (
-                <p className="text-xs text-danger">{errors.name.message}</p>
-              )}
-            </div>
-
-            {/* Username */}
-            <div className="space-y-1.5">
-              <label className="text-sm font-medium text-text">Username</label>
-              <div className="relative">
-                <span className="absolute left-3.5 top-1/2 -translate-y-1/2 text-sm text-text-tertiary">
-                  @
-                </span>
-                <input
-                  {...register("name", {
-                    required: "Username is required",
-                    minLength: {
-                      value: 3,
-                      message: "Username must be at least 3 characters",
-                    },
-                  })}
-                  type="text"
-                  placeholder="username"
-                  className="w-full rounded-lg border border-border bg-transparent pl-8 pr-3.5 py-2 text-sm text-text placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
-                />
-              </div>
               {errors.name && (
                 <p className="text-xs text-danger">{errors.name.message}</p>
               )}
