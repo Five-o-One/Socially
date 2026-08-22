@@ -28,7 +28,7 @@ export function UserRow({
   return (
     <div className="flex items-center justify-between gap-3">
       <Link
-        to={`/profile/id/${id}`}
+        to={`/profile/${id}`}
         className="flex min-w-0 cursor-pointer items-center gap-2.5 group"
       >
         <AppImage
@@ -53,7 +53,7 @@ export function UserRow({
         variant={isFollowing ? "primary" : "secondary"}
         size="sm"
         onClick={onToggleFollow}
-        disabled={isFollowLoading}
+        isLoading={isFollowLoading}
       >
         {isFollowing ? "Following" : "Follow"}
       </AppButton>
