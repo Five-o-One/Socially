@@ -1,6 +1,16 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UpdateProfile } from "@/api";
-import type { UpdateProfileRequest } from "@/types";
+import type { UpdateProfileRequest, User } from "@/types";
+
+interface SessionData {
+  user?: User;
+}
+
+interface UpdateProfileMutationContext {
+  previousProfile: User | undefined;
+  previousUser: User | undefined;
+  previousSession: SessionData | undefined;
+}
 
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
@@ -22,17 +32,110 @@ export function useUpdateProfile() {
       return response.data.data;
     },
 
-    onSuccess: (_, { userId }) => {
-      queryClient.invalidateQueries({
-        queryKey: ["user-profile"],
+    onMutate: async ({ userId, data }) => {
+      await Promise.all([
+        queryClient.cancelQueries({
+          queryKey: ["user-profile", userId],
+        }),
+        queryClient.cancelQueries({
+          queryKey: ["user", userId],
+        }),
+        queryClient.cancelQueries({
+          queryKey: ["session"],
+        }),
+      ]);
+
+      const previousProfile = queryClient.getQueryData<User>([
+        "user-profile",
+        userId,
+      ]);
+
+      const previousUser = queryClient.getQueryData<User>(["user", userId]);
+
+      const previousSession = queryClient.getQueryData<SessionData>([
+        "session",
+      ]);
+
+      const updateUser = (user: User | undefined) => {
+        if (!user) return user;
+
+        return {
+          ...user,
+          ...data,
+        };
+      };
+
+      queryClient.setQueryData<User>(
+        ["user-profile", userId],
+        updateUser(previousProfile),
+      );
+
+      queryClient.setQueryData<User>(
+        ["user", userId],
+        updateUser(previousUser),
+      );
+
+      queryClient.setQueryData<SessionData>(["session"], (session) => {
+        if (!session?.user) return session;
+
+        return {
+          ...session,
+          user: {
+            ...session.user,
+            ...data,
+          },
+        };
       });
 
-      queryClient.invalidateQueries({
-        queryKey: ["session"],
-      });
+      return {
+        previousProfile,
+        previousUser,
+        previousSession,
+      };
+    },
 
-      queryClient.invalidateQueries({
-        queryKey: ["user-posts", userId],
+    onError: (_error, { userId }, context) => {
+      if (!context) return;
+
+      queryClient.setQueryData(
+        ["user-profile", userId],
+        context.previousProfile,
+      );
+
+      queryClient.setQueryData(["user", userId], context.previousUser);
+
+      queryClient.setQueryData(["session"], context.previousSession);
+    },
+
+    onSuccess: (updatedUser, { userId }) => {
+      queryClient.setQueryData<User>(
+        ["user-profile", userId],
+        (currentUser) =>
+          ({
+            ...currentUser,
+            ...updatedUser,
+          }) as User,
+      );
+
+      queryClient.setQueryData<User>(
+        ["user", userId],
+        (currentUser) =>
+          ({
+            ...currentUser,
+            ...updatedUser,
+          }) as User,
+      );
+
+      queryClient.setQueryData<SessionData>(["session"], (session) => {
+        if (!session?.user) return session;
+
+        return {
+          ...session,
+          user: {
+            ...session.user,
+            ...updatedUser,
+          },
+        };
       });
     },
   });

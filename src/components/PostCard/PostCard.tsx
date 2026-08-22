@@ -29,7 +29,7 @@ export function PostCard({
 
   const likesCount = post._count?.likes ?? post.likes?.length ?? 0;
 
-  const toggleLike = useToggleLike();
+  const toggleLike = useToggleLike(currentUserId);
   const addComment = useAddComment();
   const deletePost = useDeletePost();
 

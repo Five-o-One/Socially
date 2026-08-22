@@ -2,6 +2,10 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { GetNotifications, MarkNotificationsAsRead } from "@/api";
 import type { Notification } from "@/types/Notifications";
 
+interface MarkNotificationsContext {
+  previousNotifications: Notification[] | undefined;
+}
+
 export function useNotifications() {
   return useQuery<Notification[]>({
     queryKey: ["notifications"],
@@ -31,10 +35,46 @@ export function useMarkNotificationsAsRead() {
 
       return response.data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({
+
+    onMutate: async (ids): Promise<MarkNotificationsContext> => {
+      await queryClient.cancelQueries({
         queryKey: ["notifications"],
       });
+
+      const previousNotifications = queryClient.getQueryData<Notification[]>([
+        "notifications",
+      ]);
+
+      queryClient.setQueryData<Notification[]>(
+        ["notifications"],
+        (notifications) => {
+          if (!notifications) return notifications;
+
+          const idsSet = new Set(ids);
+
+          return notifications.map((notification) =>
+            idsSet.has(notification.id)
+              ? {
+                  ...notification,
+                  read: true,
+                }
+              : notification,
+          );
+        },
+      );
+
+      return {
+        previousNotifications,
+      };
+    },
+
+    onError: (_error, _ids, context) => {
+      if (!context) return;
+
+      queryClient.setQueryData(
+        ["notifications"],
+        context.previousNotifications,
+      );
     },
   });
 }
