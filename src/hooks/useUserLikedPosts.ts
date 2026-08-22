@@ -4,6 +4,7 @@ import { GetUserLikedPosts } from "@/api";
 export function useUserLikedPosts(userId: string) {
   return useQuery({
     queryKey: ["user-liked-posts", userId],
+
     queryFn: async () => {
       const response = await GetUserLikedPosts(userId);
 
@@ -11,8 +12,11 @@ export function useUserLikedPosts(userId: string) {
         throw new Error(response.data.message);
       }
 
-      return response.data.data;
+      return response.data.data
+        .map((like) => like.post)
+        .filter((post) => post != null);
     },
+
     enabled: Boolean(userId),
     retry: false,
   });

@@ -37,6 +37,14 @@ export interface UpdateProfileRequest {
   website?: string;
 }
 
+export interface UserLike {
+  id: string;
+  userId: string;
+  postId: string;
+  createdAt: string;
+  post: Post;
+}
+
 export type UpdateUserProfileDto = UpdateProfileRequest;
 
 export type GetUserResponse = ApiResponse<User>;
@@ -45,7 +53,7 @@ export type GetUserProfileResponse = ApiResponse<User>;
 
 export type GetRecommendedUsersResponse = ApiResponse<User[]>;
 
-export type GetUserLikedPostsResponse = ApiResponse<Post[]>;
+export type GetUserLikedPostsResponse = ApiResponse<UserLike[]>;
 
 export type ToggleFollowResponse = ApiResponse<{
   isFollowing: boolean;

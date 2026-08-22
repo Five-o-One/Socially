@@ -11,36 +11,36 @@ import {
   useCurrentUser,
   useRecommendedUsers,
   useToggleFollow,
-  useUserProfile,
+  useUserById,
 } from "@/hooks";
 import { useLogout } from "@/hooks/useLogout";
 
 export default function Layout() {
   const location = useLocation();
+  const navigate = useNavigate();
 
   const { data: currentUser, isLoading, isAuthenticated } = useCurrentUser();
+  console.log("CURRENT USER:", currentUser);
+  console.log("CURRENT USER ID:", currentUser?.id);
+
   const currentUsername =
     currentUser?.username ??
     currentUser?.name.toLowerCase().replace(/\s+/g, "") ??
     "";
 
-  const { data: sidebarUser } = useUserProfile(currentUsername);
+  const { data: sidebarUser } = useUserById(currentUser?.id ?? "");
 
   const {
     data: recommendedUsers = [],
     isLoading: isRecommendedLoading,
     isError: isRecommendedError,
-  } = useRecommendedUsers();
+  } = useRecommendedUsers(isAuthenticated);
 
   const toggleFollow = useToggleFollow();
+  const logout = useLogout();
 
   const isAuth = isAuthenticated;
-
   const isNotificationsPage = location.pathname.startsWith("/notifications");
-
-  const navigate = useNavigate();
-
-  const logout = useLogout();
 
   const handleLogout = () => {
     logout.mutate(undefined, {
@@ -50,23 +50,12 @@ export default function Layout() {
     });
   };
 
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-bg text-text flex items-center justify-center">
-        Loading...
-      </div>
-    );
-  }
-
   return (
     <div className="min-h-screen bg-bg text-text">
       <AppNavbar
         isLoggedIn={isAuth}
-        username={
-          currentUser?.username ??
-          currentUser?.name.toLowerCase().replace(/\s+/g, "") ??
-          ""
-        }
+        username={currentUsername}
+        userId={currentUser?.id}
         onLogout={handleLogout}
       />
 
@@ -77,6 +66,7 @@ export default function Layout() {
               {isAuth && currentUser ? (
                 <UserInfoCard
                   user={{
+                    id: sidebarUser?.id ?? currentUser.id,
                     imageURL: sidebarUser?.image ?? currentUser.image,
                     username: sidebarUser?.username ?? currentUsername,
                     name: sidebarUser?.name ?? currentUser.name,
@@ -149,6 +139,7 @@ export default function Layout() {
                       recommendedUsers.map((user) => (
                         <UserRow
                           key={user.id}
+                          id={user.id}
                           username={user.username ?? user.email.split("@")[0]}
                           name={user.name}
                           avatarSrc={user.image}

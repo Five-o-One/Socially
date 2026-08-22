@@ -1,12 +1,11 @@
 import { useQuery } from "@tanstack/react-query";
-import { GetUserPosts } from "@/api";
+import { GetUserById } from "@/api";
 
-export function useUserPosts(userId: string) {
+export function useUserById(id: string) {
   return useQuery({
-    queryKey: ["user-posts", userId],
-
+    queryKey: ["user", id],
     queryFn: async () => {
-      const response = await GetUserPosts(userId);
+      const response = await GetUserById(id);
 
       if (!response.data.success) {
         throw new Error(response.data.message);
@@ -14,8 +13,7 @@ export function useUserPosts(userId: string) {
 
       return response.data.data;
     },
-
-    enabled: Boolean(userId),
+    enabled: Boolean(id),
     retry: false,
   });
 }

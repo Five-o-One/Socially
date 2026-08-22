@@ -1,41 +1,21 @@
 import { useQuery } from "@tanstack/react-query";
-import { GetAllPosts, GetUserById } from "@/api";
+import { GetUserById } from "@/api";
 
-export function useUserProfile(username: string) {
+export function useUserProfile(id: string) {
   return useQuery({
-    queryKey: ["user-profile", username],
+    queryKey: ["user-profile", id],
 
     queryFn: async () => {
-      const normalizedUsername = username.replace(/^@/, "");
+      const response = await GetUserById(id);
 
-      const postsResponse = await GetAllPosts();
-
-      if (!postsResponse.data.success) {
-        throw new Error(postsResponse.data.message);
+      if (!response.data.success) {
+        throw new Error(response.data.message);
       }
 
-      const matchingPost = postsResponse.data.data.find((post) => {
-        const postUsername =
-          post.author.username ??
-          post.author.name.toLowerCase().replace(/\s+/g, "");
-
-        return postUsername === normalizedUsername;
-      });
-
-      if (!matchingPost) {
-        throw new Error("User not found");
-      }
-
-      const userResponse = await GetUserById(matchingPost.authorId);
-
-      if (!userResponse.data.success) {
-        throw new Error(userResponse.data.message);
-      }
-
-      return userResponse.data.data;
+      return response.data.data;
     },
 
-    enabled: Boolean(username),
+    enabled: Boolean(id),
     retry: false,
   });
 }
