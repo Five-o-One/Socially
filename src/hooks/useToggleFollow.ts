@@ -196,5 +196,23 @@ export function useToggleFollow() {
         );
       }
     },
+
+    onSettled: (_data, _error, userId) => {
+      queryClient.invalidateQueries({
+        queryKey: ["recommended-users"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["user-profile", userId],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["user", userId],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["session"],
+      });
+    },
   });
 }
