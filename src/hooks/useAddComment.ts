@@ -1,5 +1,10 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AddComment } from "@/api";
+import type { Comment, Post, User } from "@/types";
+
+interface CommentMutationContext {
+  previousQueries: Array<[readonly unknown[], Post[] | undefined]>;
+}
 
 export function useAddComment() {
   const queryClient = useQueryClient();
@@ -21,10 +26,96 @@ export function useAddComment() {
       return response.data;
     },
 
-    onSuccess: () => {
-      queryClient.invalidateQueries({
-        queryKey: ["posts"],
-      });
+    onMutate: async ({ postId, content }): Promise<CommentMutationContext> => {
+      await Promise.all([
+        queryClient.cancelQueries({ queryKey: ["posts"] }),
+        queryClient.cancelQueries({ queryKey: ["user-posts"] }),
+        queryClient.cancelQueries({ queryKey: ["user-liked-posts"] }),
+      ]);
+
+      const previousQueries = [
+        ...queryClient.getQueriesData<Post[]>({
+          queryKey: ["posts"],
+        }),
+        ...queryClient.getQueriesData<Post[]>({
+          queryKey: ["user-posts"],
+        }),
+        ...queryClient.getQueriesData<Post[]>({
+          queryKey: ["user-liked-posts"],
+        }),
+      ];
+
+      const session = queryClient.getQueryData<{
+        user?: User;
+      }>(["session"]);
+
+      const currentUser = session?.user;
+
+      const optimisticComment: Comment = {
+        id: `optimistic-comment-${Date.now()}-${Math.random()}`,
+        content,
+        createdAt: new Date().toISOString(),
+        author: {
+          id: currentUser?.id,
+          name: currentUser?.name ?? "You",
+          username: currentUser?.username,
+          email: currentUser?.email,
+          image: currentUser?.image ?? null,
+        },
+      };
+
+      const updatePosts = (posts: Post[] | undefined) => {
+        if (!posts) return posts;
+
+        return posts.map((post) => {
+          if (post.id !== postId) return post;
+
+          const comments = post.comments ?? [];
+          const currentCommentsCount =
+            post._count?.comments ?? post.count?.comments ?? comments.length;
+
+          return {
+            ...post,
+            comments: [...comments, optimisticComment],
+            _count: {
+              ...(post._count ?? {
+                likes: post.likes?.length ?? 0,
+              }),
+              comments: currentCommentsCount + 1,
+            },
+            count: {
+              ...(post.count ?? {
+                likes: post.likes?.length ?? 0,
+              }),
+              comments: currentCommentsCount + 1,
+            },
+          };
+        });
+      };
+
+      queryClient.setQueriesData<Post[]>({ queryKey: ["posts"] }, updatePosts);
+
+      queryClient.setQueriesData<Post[]>(
+        { queryKey: ["user-posts"] },
+        updatePosts,
+      );
+
+      queryClient.setQueriesData<Post[]>(
+        { queryKey: ["user-liked-posts"] },
+        updatePosts,
+      );
+
+      return {
+        previousQueries,
+      };
+    },
+
+    onError: (_error, _variables, context) => {
+      if (!context) return;
+
+      for (const [queryKey, data] of context.previousQueries) {
+        queryClient.setQueryData(queryKey, data);
+      }
     },
   });
 }
