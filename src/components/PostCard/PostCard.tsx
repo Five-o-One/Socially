@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import { AppCard } from "@/components/AppCard";
 import { AppImage } from "@/components/AppImage";
 import { AppButton } from "@/components/AppButton";
+import { AppSpinner } from "@/components";
 import AppIcon from "@/components/AppIcon/AppIcon";
 import { ConfirmModal } from "@/components/AppModal/ConfirmModal";
 import type { Post } from "@/types";
@@ -31,6 +32,9 @@ export function PostCard({
   const toggleLike = useToggleLike();
   const addComment = useAddComment();
   const deletePost = useDeletePost();
+
+  const isLikeLoading =
+    toggleLike.isPending && toggleLike.variables === post.id;
 
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState("");
@@ -134,13 +138,18 @@ export function PostCard({
             <button
               type="button"
               onClick={handleLikeToggle}
-              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
+              disabled={isLikeLoading}
+              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed ${
                 isLiked
                   ? "bg-danger/10 text-danger"
                   : "text-text-secondary hover:bg-border/30 hover:text-text"
               }`}
             >
-              <AppIcon nameIcon="Heart" size={16} isFilled={isLiked} />
+              {isLikeLoading ? (
+                <AppSpinner size={16} />
+              ) : (
+                <AppIcon nameIcon="Heart" size={16} isFilled={isLiked} />
+              )}
               <span>{likesCount}</span>
             </button>
 
@@ -178,7 +187,6 @@ export function PostCard({
                         className="flex items-start gap-3 text-sm"
                       >
                         <Link to={`/profile/id/${comment.author.id}`}>
-                          {" "}
                           <AppImage
                             src={comment.author.image || ""}
                             alt={comment.author.name}
