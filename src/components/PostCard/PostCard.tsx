@@ -10,6 +10,7 @@ import type { Post } from "@/types";
 import { useToggleLike } from "@/hooks/useToggleLike";
 import { useAddComment } from "@/hooks/useAddComment";
 import { useDeletePost } from "@/hooks/useDeletePost";
+import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 interface PostCardProps {
   post: Post;
@@ -22,6 +23,8 @@ export function PostCard({
   currentUserId = "current-user-id",
   className = "",
 }: PostCardProps) {
+  const { data: currentUser } = useCurrentUser();
+
   const isAuthor = post.authorId === currentUserId;
 
   const isLiked =
@@ -88,7 +91,6 @@ export function PostCard({
     <>
       <AppCard className={`transition-shadow duration-200 ${className}`}>
         <div className="space-y-3">
-          {/* Header: Author info (Clickable Link) & Delete action */}
           <div className="flex items-start justify-between gap-3">
             <Link
               to={`/profile/id/${post.authorId}`}
@@ -115,7 +117,6 @@ export function PostCard({
               </div>
             </Link>
 
-            {/* Trash icon for post author */}
             {isAuthor && (
               <button
                 type="button"
@@ -128,12 +129,10 @@ export function PostCard({
             )}
           </div>
 
-          {/* Post Content */}
           <p className="text-text text-sm sm:text-base leading-relaxed wrap-break-word whitespace-pre-line">
             {post.content}
           </p>
 
-          {/* Action Row */}
           <div className="flex items-center gap-3 pt-2">
             <button
               type="button"
@@ -163,16 +162,12 @@ export function PostCard({
               }`}
             >
               <AppIcon nameIcon="Chat" size={16} isFilled={showComments} />
-              <span>
-                {post._count?.comments ?? post.comments?.length ?? 0}
-              </span>{" "}
+              <span>{post._count?.comments ?? post.comments?.length ?? 0}</span>
             </button>
           </div>
 
-          {/* Comments Section */}
           {showComments && (
             <div className="space-y-4 pt-3 border-t border-border">
-              {/* Comments List */}
               {post.comments.length > 0 ? (
                 <div className="space-y-3">
                   {post.comments.map((comment) => {
@@ -221,12 +216,11 @@ export function PostCard({
                 </div>
               ) : null}
 
-              {/* Create Comment Form */}
               <form onSubmit={handleCommentSubmit} className="space-y-3 pt-2">
                 <div className="flex items-start gap-3">
                   <AppImage
-                    src=""
-                    alt="Current User"
+                    src={currentUser?.image ?? ""}
+                    alt={currentUser?.name ?? "Current User"}
                     variant="circle"
                     size="sm"
                   />
@@ -257,7 +251,6 @@ export function PostCard({
         </div>
       </AppCard>
 
-      {/* Post Delete Confirmation Modal */}
       <ConfirmModal
         isOpen={isDeleteModalOpen}
         title="Delete Post"
