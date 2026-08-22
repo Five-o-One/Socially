@@ -1,5 +1,11 @@
 import { useState } from "react";
-import { AppCard, AppImage, AppButton, PostCard } from "@/components";
+import {
+  AppCard,
+  AppImage,
+  AppButton,
+  PostCard,
+  AppPageSpinner,
+} from "@/components";
 import { usePosts } from "@/hooks/usePosts";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCreatePost } from "@/hooks/useCreatePost";
@@ -38,11 +44,7 @@ export default function Home({ isAuth = true }: HomeProps) {
   };
 
   if (isLoading) {
-    return (
-      <div className="flex items-center justify-center py-12 text-text-secondary">
-        Loading posts...
-      </div>
-    );
+    return <AppPageSpinner message="Loading posts..." />;
   }
 
   if (isError) {

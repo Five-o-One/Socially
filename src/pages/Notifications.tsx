@@ -1,4 +1,4 @@
-import { AppCard, NotificationCard } from "@/components";
+import { AppCard, NotificationCard, AppPageSpinner } from "@/components";
 import { useNotifications, useMarkNotificationsAsRead } from "@/hooks";
 
 export default function Notifications() {
@@ -28,13 +28,7 @@ export default function Notifications() {
   };
 
   if (isLoading) {
-    return (
-      <AppCard>
-        <div className="p-8 text-center text-sm text-text-secondary">
-          Loading notifications...
-        </div>
-      </AppCard>
-    );
+    return <AppPageSpinner message="Loading notifications..." />;
   }
 
   if (isError) {

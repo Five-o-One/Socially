@@ -8,6 +8,8 @@ import {
   PostCard,
   UserInfoModal,
   AppTab,
+  AppPageSpinner,
+  AppSpinner,
 } from "@/components";
 import {
   useCurrentUser,
@@ -77,11 +79,7 @@ function ProfileContent({ username }: { username: string }) {
   };
 
   if (isProfileLoading) {
-    return (
-      <div className="flex items-center justify-center py-12 text-text-secondary">
-        Loading profile...
-      </div>
-    );
+    return <AppPageSpinner message="Loading profile..." />;
   }
 
   if (isProfileError || !user) {
@@ -226,8 +224,8 @@ function ProfileContent({ username }: { username: string }) {
         {activeTab === "posts" && (
           <>
             {isPostsLoading ? (
-              <div className="py-12 text-center text-sm text-text-secondary">
-                Loading posts...
+              <div className="flex justify-center py-12">
+                <AppSpinner size={28} />
               </div>
             ) : userPosts.length > 0 ? (
               userPosts.map((post) => (
@@ -249,8 +247,8 @@ function ProfileContent({ username }: { username: string }) {
         {activeTab === "likes" && (
           <>
             {isLikedPostsLoading ? (
-              <div className="py-12 text-center text-sm text-text-secondary">
-                Loading liked posts...
+              <div className="flex justify-center py-12">
+                <AppSpinner size={28} />
               </div>
             ) : likedPosts.length > 0 ? (
               likedPosts.map((post) => (

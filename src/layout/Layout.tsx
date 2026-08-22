@@ -5,6 +5,7 @@ import {
   AppCard,
   AppButton,
   UserRow,
+  AppSpinner,
 } from "@/components";
 import {
   useCurrentUser,
@@ -133,9 +134,9 @@ export default function Layout() {
                 >
                   <div className="space-y-4">
                     {isRecommendedLoading ? (
-                      <p className="text-sm text-text-secondary">
-                        Loading suggestions...
-                      </p>
+                      <div className="flex justify-center py-4">
+                        <AppSpinner size={24} />
+                      </div>
                     ) : isRecommendedError ? (
                       <p className="text-sm text-danger">
                         Failed to load suggestions.
