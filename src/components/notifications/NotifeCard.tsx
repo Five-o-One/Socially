@@ -6,6 +6,7 @@ import type { NameIcon } from "@/types";
 interface NotificationCardProps {
   type: "like" | "comment" | "follow";
   isRead?: boolean;
+  userId: string;
   name: string;
   username?: string;
   avatarSrc?: string | null;
@@ -29,6 +30,7 @@ const NOTIFICATION_ICONS: Record<
 export function NotificationCard({
   type,
   isRead = false,
+  userId,
   name,
   username,
   avatarSrc,
@@ -55,7 +57,7 @@ export function NotificationCard({
 
   return (
     <div className="flex w-full items-start gap-3.5 border-b border-border p-4 transition-colors hover:bg-border/10">
-      <Link to={`/profile/${targetUsername}`}>
+      <Link to={`/profile/id/${userId}`}>
         <AppImage src={avatarSrc || ""} alt={name} variant="circle" size="md" />
       </Link>
 
@@ -69,7 +71,7 @@ export function NotificationCard({
           />
           <p className="text-sm font-medium text-text">
             <Link
-              to={`/profile/${targetUsername}`}
+              to={`/profile/id/${userId}`}
               className="font-bold hover:underline"
             >
               {name}

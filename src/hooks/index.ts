@@ -13,3 +13,4 @@ export * from "./useUpdateProfile";
 export * from "./useRecommendedUsers";
 export * from "./useNotifications";
 export * from "./useLogout";
+export * from "./useUserById";

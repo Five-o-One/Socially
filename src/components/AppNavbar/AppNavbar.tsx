@@ -6,17 +6,23 @@ import { AppButton } from "@/components/AppButton";
 import { useAppStore } from "@/store";
 
 interface AppNavbarProps {
-  isLoggedIn?: boolean;
+  isLoggedIn: boolean;
   username?: string;
+  userId?: string;
   onLogout?: () => void;
 }
 
 export function AppNavbar({
-  isLoggedIn = true,
-  username = "samb.1376",
+  isLoggedIn,
+  username = "",
+  userId,
   onLogout,
 }: AppNavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  const { theme, toggleTheme } = useAppStore();
+  const isDarkMode = theme === "dark";
+
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
       if (event.key === "Escape" && isMenuOpen) {
@@ -30,9 +36,6 @@ export function AppNavbar({
       document.removeEventListener("keydown", handleEscape);
     };
   }, [isMenuOpen]);
-
-  const { theme, toggleTheme } = useAppStore();
-  const isDarkMode = theme === "dark";
 
   useEffect(() => {
     if (!isMenuOpen) return;
@@ -74,7 +77,7 @@ export function AppNavbar({
             type="button"
             onClick={toggleTheme}
             aria-label="Toggle Theme"
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-text transition-colors hover:bg-border/30 cursor-pointer"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-border bg-card text-text transition-colors hover:bg-border/30"
           >
             <AppIcon nameIcon={isDarkMode ? "Moon" : "Light"} size={18} />
           </button>
@@ -91,7 +94,10 @@ export function AppNavbar({
                 <span>Notifications</span>
               </NavLink>
 
-              <NavLink to={`/profile/${username}`} className={navItemClass}>
+              <NavLink
+                to={userId ? `/profile/id/${userId}` : "/"}
+                className={navItemClass}
+              >
                 <AppIcon nameIcon="Person" size={18} />
                 <span>Profile</span>
               </NavLink>
@@ -101,7 +107,7 @@ export function AppNavbar({
                 size="sm"
                 icon="LogOut"
                 onClick={onLogout}
-                className="text-text-secondary hover:text-danger cursor-pointer"
+                className="cursor-pointer text-text-secondary hover:text-danger"
               >
                 LogOut
               </AppButton>
@@ -159,14 +165,14 @@ export function AppNavbar({
               isMenuOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >
-            <div className="flex items-center justify-between pb-6 border-b border-border">
+            <div className="flex items-center justify-between border-b border-border pb-6">
               <span className="font-bold text-text">Menu</span>
 
               <button
                 type="button"
                 onClick={closeMenu}
                 aria-label="Close menu"
-                className="p-1 rounded-lg text-text-secondary hover:text-text hover:bg-border/30 transition-colors cursor-pointer"
+                className="cursor-pointer rounded-lg p-1 text-text-secondary transition-colors hover:bg-border/30 hover:text-text"
               >
                 <AppIcon nameIcon="Close" size={20} />
               </button>
@@ -190,8 +196,7 @@ export function AppNavbar({
                   </NavLink>
 
                   <NavLink
-                    to={`/profile/${username}`}
-                    onClick={closeMenu}
+                    to={userId ? `/profile/id/${userId}` : "/"}
                     className={navItemClass}
                   >
                     <AppIcon nameIcon="Person" size={18} />
@@ -204,7 +209,7 @@ export function AppNavbar({
                       closeMenu();
                       onLogout?.();
                     }}
-                    className="flex items-center gap-2 px-3 py-2 text-sm font-medium text-danger hover:bg-danger/10 rounded-lg transition-colors mt-2 text-left cursor-pointer"
+                    className="mt-2 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-danger transition-colors hover:bg-danger/10"
                   >
                     <AppIcon nameIcon="LogOut" size={18} />
                     <span>Log Out</span>

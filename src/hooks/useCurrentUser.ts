@@ -5,8 +5,14 @@ export function useCurrentUser() {
 
   return {
     data: session.data?.user ?? null,
+
     isLoading: session.isLoading,
-    isAuthenticated: !!session.data?.user,
+
+    isAuthenticated: Boolean(session.data?.user),
+
+    isError: session.isError,
+    error: session.error,
+
     session,
   };
 }

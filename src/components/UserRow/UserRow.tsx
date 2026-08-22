@@ -3,16 +3,18 @@ import { AppButton } from "@/components/AppButton";
 import { AppImage } from "@/components/AppImage";
 
 interface UserRowProps {
-  avatarSrc?: string | null;
-  name?: string;
+  id: string;
   username: string;
+  name: string;
+  avatarSrc: string | null;
   followers: number;
-  isFollowing?: boolean;
-  onToggleFollow?: () => void;
+  isFollowing: boolean;
+  onToggleFollow: () => void;
   isFollowLoading?: boolean;
 }
 
 export function UserRow({
+  id,
   avatarSrc,
   name,
   username,
@@ -26,8 +28,8 @@ export function UserRow({
   return (
     <div className="flex items-center justify-between gap-3">
       <Link
-        to={`/profile/${cleanUsername}`}
-        className="flex items-center gap-2.5 min-w-0 group cursor-pointer"
+        to={`/profile/id/${id}`}
+        className="flex min-w-0 cursor-pointer items-center gap-2.5 group"
       >
         <AppImage
           src={avatarSrc || ""}

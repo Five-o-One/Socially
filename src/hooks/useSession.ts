@@ -6,8 +6,15 @@ export function useSession() {
     queryKey: ["session"],
     queryFn: async () => {
       const response = await GetSession();
+
+      if (!response.data.success) {
+        throw new Error(response.data.message || "Failed to fetch session");
+      }
+
       return response.data.data;
     },
     retry: false,
+    staleTime: 5 * 60 * 1000,
+    gcTime: 30 * 60 * 1000,
   });
 }

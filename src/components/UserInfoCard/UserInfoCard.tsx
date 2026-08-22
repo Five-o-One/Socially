@@ -5,6 +5,7 @@ import AppIcon from "@/components/AppIcon/AppIcon";
 
 interface UserSummaryProps {
   user: {
+    id: string;
     imageURL?: string | null;
     username: string;
     name: string;
@@ -22,7 +23,7 @@ export function UserInfoCard({ user, className = "" }: UserSummaryProps) {
   return (
     <AppCard className={className}>
       <Link
-        to={`/profile/${cleanUsername}`}
+        to={`/profile/id/${user.id}`}
         className="flex flex-col items-center gap-1 text-center group cursor-pointer"
       >
         <AppImage

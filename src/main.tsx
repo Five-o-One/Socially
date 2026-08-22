@@ -23,6 +23,7 @@ const router = createBrowserRouter([
       { index: true, Component: HomePage },
       { path: "notifications", Component: NotificationsPage },
       { path: "profile/:username", Component: ProfilePage },
+      { path: "profile/id/:id", Component: ProfilePage },
     ],
   },
   {

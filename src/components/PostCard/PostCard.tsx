@@ -87,7 +87,7 @@ export function PostCard({
           {/* Header: Author info (Clickable Link) & Delete action */}
           <div className="flex items-start justify-between gap-3">
             <Link
-              to={`/profile/${authorUsername}`}
+              to={`/profile/id/${post.authorId}`}
               className="flex items-center gap-3 min-w-0 group cursor-pointer"
             >
               <AppImage
@@ -177,7 +177,8 @@ export function PostCard({
                         key={comment.id}
                         className="flex items-start gap-3 text-sm"
                       >
-                        <Link to={`/profile/${commentUsername}`}>
+                        <Link to={`/profile/id/${comment.author.id}`}>
+                          {" "}
                           <AppImage
                             src={comment.author.image || ""}
                             alt={comment.author.name}
@@ -188,7 +189,7 @@ export function PostCard({
                         <div className="flex-1 rounded-xl bg-border/20 p-3">
                           <div className="flex items-center justify-between gap-2">
                             <Link
-                              to={`/profile/${commentUsername}`}
+                              to={`/profile/id/${comment.author.id}`}
                               className="flex items-center gap-2 group cursor-pointer"
                             >
                               <span className="font-semibold text-text text-xs group-hover:underline">

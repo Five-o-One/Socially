@@ -22,7 +22,7 @@ import {
 import type { UpdateUserProfileDto } from "@/types";
 import type { TabItem } from "@/components/AppTab/AppTab";
 
-function ProfileContent({ username }: { username: string }) {
+function ProfileContent({ id }: { id: string }) {
   const [activeTab, setActiveTab] = useState("posts");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -33,7 +33,7 @@ function ProfileContent({ username }: { username: string }) {
     isLoading: isProfileLoading,
     isError: isProfileError,
     error: profileError,
-  } = useUserProfile(username);
+  } = useUserProfile(id);
 
   const { data: userPosts = [], isLoading: isPostsLoading } = useUserPosts(
     user?.id ?? "",
@@ -106,6 +106,9 @@ function ProfileContent({ username }: { username: string }) {
   const postsCount =
     user._count?.posts ?? user.count?.posts ?? userPosts.length;
 
+  const displayUsername =
+    user.username ?? user.name.toLowerCase().replace(/\s+/g, "");
+
   return (
     <div className="space-y-5">
       {/* Profile Header */}
@@ -122,7 +125,7 @@ function ProfileContent({ username }: { username: string }) {
           <h2 className="mt-3 text-xl font-bold text-text">{user.name}</h2>
 
           <p className="text-sm text-text-secondary">
-            @{user.username || username}
+            @{displayUsername.replace(/^@/, "")}
           </p>
 
           {/* Stats */}
@@ -191,7 +194,7 @@ function ProfileContent({ username }: { username: string }) {
                   }
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="text-brand hover:underline truncate"
+                  className="truncate text-brand hover:underline"
                 >
                   {user.website.replace(/^https?:\/\//, "")}
                 </a>
@@ -200,6 +203,7 @@ function ProfileContent({ username }: { username: string }) {
 
             <div className="flex items-center gap-1.5">
               <AppIcon nameIcon="Calendar" size={14} />
+
               <span>
                 Joined{" "}
                 {new Date(user.createdAt).toLocaleDateString("en-US", {
@@ -219,7 +223,7 @@ function ProfileContent({ username }: { username: string }) {
         onChange={(tabId) => setActiveTab(tabId)}
       />
 
-      {/* Posts */}
+      {/* Posts / Likes */}
       <section className="space-y-4">
         {activeTab === "posts" && (
           <>
@@ -243,7 +247,6 @@ function ProfileContent({ username }: { username: string }) {
           </>
         )}
 
-        {/* Likes */}
         {activeTab === "likes" && (
           <>
             {isLikedPostsLoading ? (
@@ -287,7 +290,7 @@ function ProfileContent({ username }: { username: string }) {
 }
 
 export default function Profile() {
-  const { username = "" } = useParams();
+  const { id } = useParams();
 
-  return <ProfileContent key={username} username={username} />;
+  return <ProfileContent key={id} id={id ?? ""} />;
 }
