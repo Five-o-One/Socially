@@ -69,9 +69,12 @@ export default function Notifications() {
               <NotificationCard
                 type={
                   notification.type.toLowerCase() as
-                    "like" | "comment" | "follow"
+                    | "like"
+                    | "comment"
+                    | "follow"
                 }
                 isRead={notification.read}
+                userId={notification.creator.id}
                 name={notification.creator.name}
                 avatarSrc={notification.creator.image}
                 time={new Date(notification.createdAt).toLocaleString()}
