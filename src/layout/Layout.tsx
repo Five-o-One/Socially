@@ -110,7 +110,11 @@ export default function Layout() {
             </div>
           </aside>
 
-          <section className="col-span-12 lg:col-span-6">
+          <section
+            className={`col-span-12 ${
+              isNotificationsPage ? "lg:col-span-9" : "lg:col-span-6"
+            }`}
+          >
             <Outlet />
           </section>
 

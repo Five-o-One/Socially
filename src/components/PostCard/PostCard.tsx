@@ -10,6 +10,7 @@ import type { Post } from "@/types";
 import { useToggleLike } from "@/hooks/useToggleLike";
 import { useAddComment } from "@/hooks/useAddComment";
 import { useDeletePost } from "@/hooks/useDeletePost";
+import { useDeleteComment } from "@/hooks/useDeleteComment";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 
 interface PostCardProps {
@@ -35,6 +36,7 @@ export function PostCard({
   const toggleLike = useToggleLike(currentUserId);
   const addComment = useAddComment();
   const deletePost = useDeletePost();
+  const deleteComment = useDeleteComment();
 
   const isLikeLoading =
     toggleLike.isPending && toggleLike.variables === post.id;
@@ -42,6 +44,9 @@ export function PostCard({
   const [showComments, setShowComments] = useState(false);
   const [commentText, setCommentText] = useState("");
   const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
+  const [commentToDeleteId, setCommentToDeleteId] = useState<string | null>(
+    null,
+  );
 
   const authorUsername = (
     post.author.username || post.author.name.toLowerCase().replace(/\s+/g, "")
@@ -84,6 +89,17 @@ export function PostCard({
       setIsDeleteModalOpen(false);
     } catch (error) {
       console.error("Failed to delete post:", error);
+    }
+  };
+
+  const handleConfirmDeleteComment = async () => {
+    if (!commentToDeleteId || deleteComment.isPending) return;
+
+    try {
+      await deleteComment.mutateAsync(commentToDeleteId);
+      setCommentToDeleteId(null);
+    } catch (error) {
+      console.error("Failed to delete comment:", error);
     }
   };
 
@@ -176,6 +192,10 @@ export function PostCard({
                       comment.author.name.toLowerCase().replace(/\s+/g, "")
                     ).replace(/^@/, "");
 
+                    const isCommentAuthor =
+                      comment.author.id === currentUserId ||
+                      comment.author.id === currentUser?.id;
+
                     return (
                       <div
                         key={comment.id}
@@ -205,6 +225,17 @@ export function PostCard({
                                 • {comment.createdAt}
                               </span>
                             </Link>
+
+                            {isCommentAuthor && (
+                              <button
+                                type="button"
+                                onClick={() => setCommentToDeleteId(comment.id)}
+                                className="rounded p-1 text-text-tertiary hover:bg-danger/10 hover:text-danger transition-colors cursor-pointer"
+                                aria-label="Delete Comment"
+                              >
+                                <AppIcon nameIcon="Trash" size={14} />
+                              </button>
+                            )}
                           </div>
                           <p className="mt-1 text-text text-sm wrap-break-word">
                             {comment.content}
@@ -258,6 +289,15 @@ export function PostCard({
         confirmText="Delete"
         onConfirm={handleConfirmDelete}
         onClose={() => setIsDeleteModalOpen(false)}
+      />
+
+      <ConfirmModal
+        isOpen={Boolean(commentToDeleteId)}
+        title="Delete Comment"
+        description="Are you sure you want to delete this comment?"
+        confirmText="Delete"
+        onConfirm={handleConfirmDeleteComment}
+        onClose={() => setCommentToDeleteId(null)}
       />
     </>
   );

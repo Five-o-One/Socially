@@ -14,3 +14,4 @@ export * from "./useRecommendedUsers";
 export * from "./useNotifications";
 export * from "./useLogout";
 export * from "./useUserById";
+export * from "./useDeleteComment";

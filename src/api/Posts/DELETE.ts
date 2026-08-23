@@ -11,3 +11,13 @@ export const DeletePost = async (
 
   return response;
 };
+
+export const DeleteComment = async (
+  commentId: string,
+): Promise<AxiosResponse<ApiMessageResponse>> => {
+  const response = await __BASE__.delete<ApiMessageResponse>(
+    `/api/comments/${commentId}`,
+  );
+
+  return response;
+};
