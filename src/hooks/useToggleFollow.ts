@@ -140,11 +140,15 @@ export function useToggleFollow() {
             ...profile,
             _count: {
               ...profile._count,
+              followers:
+                profile._count?.followers ?? profile.count?.followers ?? 0,
               following: nextFollowingCount,
               followings: nextFollowingCount,
             },
             count: {
               ...profile.count,
+              followers:
+                profile.count?.followers ?? profile._count?.followers ?? 0,
               following: nextFollowingCount,
               followings: nextFollowingCount,
             },

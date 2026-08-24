@@ -19,7 +19,7 @@ export default function Layout() {
   const location = useLocation();
   const navigate = useNavigate();
 
-  const { data: currentUser, isLoading, isAuthenticated } = useCurrentUser();
+  const { data: currentUser, isAuthenticated } = useCurrentUser();
   console.log("CURRENT USER:", currentUser);
   console.log("CURRENT USER ID:", currentUser?.id);
 
@@ -54,7 +54,6 @@ export default function Layout() {
     <div className="min-h-screen bg-bg text-text">
       <AppNavbar
         isLoggedIn={isAuth}
-        username={currentUsername}
         userId={currentUser?.id}
         onLogout={handleLogout}
       />
