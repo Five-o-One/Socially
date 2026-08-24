@@ -1,3 +1,7 @@
+/**
+ * @file Development mock data for users and notifications.
+ * @description Provides static values for local examples or UI prototyping; it is not used by the production API flow.
+ */
 const mockUser = {
   name: "John Doe",
   bio: "I am a software engineer from Tehran.",

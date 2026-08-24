@@ -1,3 +1,4 @@
+/** @file Shared layout containing navigation, sidebars, and routed content. */
 import { Outlet, useLocation, Link, useNavigate } from "react-router";
 import {
   AppNavbar,
@@ -15,6 +16,10 @@ import {
 } from "@/hooks";
 import { useLogout } from "@/hooks/useLogout";
 
+/**
+ * @component Layout
+ * @description Shared application shell containing navigation, sidebars, and the routed page outlet.
+ */
 export default function Layout() {
   const location = useLocation();
   const navigate = useNavigate();

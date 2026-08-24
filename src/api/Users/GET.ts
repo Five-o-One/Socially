@@ -1,3 +1,7 @@
+/**
+ * @file User read operations.
+ * @description Loads profiles, recommendations, authored posts, and liked posts.
+ */
 import type { AxiosResponse } from "axios";
 import type {
   GetRecommendedUsersResponse,
@@ -8,6 +12,7 @@ import type {
 import type { GetAllPostsResponse } from "../../types/post";
 import __BASE__ from "../base";
 
+/** Fetches a user profile by ID. */
 export const GetUserById = async (
   id: string,
 ): Promise<AxiosResponse<GetUserResponse>> => {
@@ -16,6 +21,7 @@ export const GetUserById = async (
   return response;
 };
 
+/** Fetches a user profile by username. */
 export const GetUserByUsername = async (
   username: string,
 ): Promise<AxiosResponse<GetUserProfileResponse>> => {
@@ -26,6 +32,7 @@ export const GetUserByUsername = async (
   return response;
 };
 
+/** Fetches users recommended for the current user to follow. */
 export const GetRecommendedUsers = async (): Promise<
   AxiosResponse<GetRecommendedUsersResponse>
 > => {
@@ -36,6 +43,7 @@ export const GetRecommendedUsers = async (): Promise<
   return response;
 };
 
+/** Fetches posts authored by a user. */
 export const GetUserPosts = async (
   id: string,
 ): Promise<AxiosResponse<GetAllPostsResponse>> => {
@@ -46,6 +54,7 @@ export const GetUserPosts = async (
   return response;
 };
 
+/** Fetches posts liked by a user. */
 export const GetUserLikedPosts = async (
   id: string,
 ): Promise<AxiosResponse<GetUserLikedPostsResponse>> => {

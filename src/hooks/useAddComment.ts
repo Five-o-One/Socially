@@ -1,11 +1,18 @@
+/** @file Comment creation mutation with optimistic updates across post queries. */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AddComment } from "@/api";
 import type { Comment, Post, User } from "@/types";
 
+/** Previous post state retained for optimistic comment rollback. */
 interface CommentMutationContext {
   previousQueries: Array<[readonly unknown[], Post[] | undefined]>;
 }
 
+/**
+ * @hook useAddComment
+ * @description Adds a comment to a post and refreshes the related cached data.
+ * @returns Comment creation mutation result
+ */
 export function useAddComment() {
   const queryClient = useQueryClient();
 

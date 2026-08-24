@@ -1,3 +1,4 @@
+/** @file Post presentation and interaction controls for likes and comments. */
 import { useState } from "react";
 import { Link } from "react-router";
 import { AppCard } from "@/components/AppCard";
@@ -13,6 +14,12 @@ import { useDeletePost } from "@/hooks/useDeletePost";
 import { useDeleteComment } from "@/hooks/useDeleteComment";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 
+/**
+ * @component PostCard
+ * @description Displays post content, author details, likes, comments, and owner actions.
+ * @prop {Post} post - Post data rendered by the card
+ * @prop {string} [currentUserId] - ID used to determine ownership and interaction state
+ */
 interface PostCardProps {
   post: Post;
   currentUserId?: string;

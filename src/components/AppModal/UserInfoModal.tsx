@@ -1,9 +1,19 @@
+/** @file Profile editing form displayed inside a modal. */
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { AppModal } from "./AppModal";
 import { AppButton } from "@/components/AppButton";
 import type { UpdateUserProfileDto } from "@/types";
 
+/**
+ * @component UserInfoModal
+ * @description Form modal for editing the current user's profile.
+ * @prop {boolean} isOpen - Controls modal visibility
+ * @prop {UpdateUserProfileDto} [initialData] - Initial form values
+ * @prop {(data: UpdateUserProfileDto) => void} onSubmit - Receives submitted profile values
+ * @prop {() => void} onClose - Closes and resets the form
+ * @prop {boolean} [isLoading=false] - Shows the saving state
+ */
 interface UserInfoModalProps {
   isOpen: boolean;
   initialData?: UpdateUserProfileDto;

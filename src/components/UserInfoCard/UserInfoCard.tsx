@@ -1,8 +1,23 @@
+/** @file Compact user profile summary used in the application sidebar. */
 import { Link } from "react-router";
 import { AppCard } from "@/components/AppCard";
 import { AppImage } from "@/components/AppImage";
 import AppIcon from "@/components/AppIcon/AppIcon";
 
+/**
+ * @component UserInfoCard
+ * @description Compact user profile summary with counts and profile links.
+ * @prop {object} user - User summary to display
+ * @prop {string} user.id - User ID used for the profile link
+ * @prop {string} user.username - User handle
+ * @prop {string} user.name - Display name
+ * @prop {string | null} [user.imageURL] - Avatar image URL
+ * @prop {number} user.followers - Follower count
+ * @prop {number} user.following - Following count
+ * @prop {string | null} [user.location] - User location
+ * @prop {string | null} [user.website] - User website URL
+ * @prop {string} [className] - Additional CSS classes
+ */
 interface UserSummaryProps {
   user: {
     id: string;

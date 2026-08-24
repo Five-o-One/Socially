@@ -1,6 +1,12 @@
+/** @file Logout mutation that removes the cached authentication session. */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Logout } from "@/api";
 
+/**
+ * @hook useLogout
+ * @description Ends the current session and removes the cached session query.
+ * @returns Logout mutation result
+ */
 export function useLogout() {
   const queryClient = useQueryClient();
 

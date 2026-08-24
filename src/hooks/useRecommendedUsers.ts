@@ -1,6 +1,13 @@
+/** @file Recommended-user query used by the authenticated sidebar. */
 import { useQuery } from "@tanstack/react-query";
 import { GetRecommendedUsers } from "@/api";
 
+/**
+ * @hook useRecommendedUsers
+ * @description Loads suggested users for the sidebar.
+ * @param {boolean} [enabled=true] - Enables or disables the query
+ * @returns Recommended-users query result
+ */
 export function useRecommendedUsers(enabled = true) {
   return useQuery({
     queryKey: ["recommended-users"],

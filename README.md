@@ -1,153 +1,178 @@
 # Socially
 
-A social media frontend project built as the final project of a frontend bootcamp.
+Socially is a responsive social media frontend built with React and TypeScript. It provides a focused social experience for publishing posts, interacting with other users, managing profiles, and receiving notifications.
 
-Socially is inspired by platforms such as X and focuses on building a professional, responsive, data-driven social media experience. The project is divided into two phases: first, implementing the UI from the provided design; second, connecting that UI to a real backend API and implementing application behavior.
+This project was developed as the final project of Quera's Frontend Bootcamp. It includes both the interface and the application behavior connected to a remote backend.
 
 ## Features
 
 ### Authentication
 
-* User registration
-* User login
-* User logout
-* Session handling
-* Authentication-aware application flow
+- Register a new account
+- Sign in and sign out
+- Restore the current session on page load
+- Display authenticated and guest navigation states
 
-### Posts
+### Posts and interactions
 
-* View posts in the feed
-* Create posts
-* Delete posts
-* Like / unlike posts
-* Comment on posts
+- Browse posts in the home feed
+- Create and delete posts
+- Like and unlike posts
+- Add and delete comments
+- Update feed, profile, and interaction data through cached queries
 
-### Users
+### Profiles and users
 
-* View user profiles
-* View a user's posts
-* View posts liked by a user
-* Follow / unfollow users
-* Update user profile
-* Discover recommended users
+- View profiles by username or user ID
+- View a user's posts
+- View posts liked by a user
+- Follow and unfollow users
+- Edit the current user's name, bio, location, and website
+- Browse recommended users
 
-### Notifications
+### Notifications and interface
 
-* View notifications
-* Mark notifications as read
+- View like, comment, and follow notifications
+- Mark unread notifications as read
+- Switch between light and dark themes
+- Use responsive desktop and mobile navigation
+- Show loading, error, empty, confirmation, and fallback states
 
-### UI / UX
+## Application Routes
 
-* Responsive layouts
-* Light and dark themes
-* Reusable UI components
-* Loading states
-* Error states
-* Empty states
-* Confirmation modals
-* User information modals
-* Skeleton/spinner states where appropriate
-
----
-
-## Pages
-
-The project requires the following primary pages:
-
-| Page          | Description                        |
-| ------------- | ---------------------------------- |
-| Login         | Authenticate an existing user      |
-| Register      | Create a new account               |
-| Home / Feed   | Display posts from users           |
-| Notifications | Display user notifications         |
-| Profile       | Display user information and posts |
-
-Additional UI components and flows support interactions such as comments, following users, editing profiles, and confirmation dialogs.
-
----
+| Route                | Description                                          |
+| -------------------- | ---------------------------------------------------- |
+| `/`                  | Home feed with posts and authenticated post creation |
+| `/login`             | Login form for existing users                        |
+| `/register`          | Registration form for new users                      |
+| `/notifications`     | Notifications for the current user                   |
+| `/profile/:username` | Profile page loaded by username                      |
+| `/profile/id/:id`    | Profile page loaded by user ID                       |
+| `*`                  | Not-found page for unknown routes                    |
 
 ## Tech Stack
 
 ### Core
 
-* **React 19**
-* **TypeScript**
-* **Vite**
-* **React Router**
-* **Tailwind CSS**
+- **React 19** - UI library
+- **TypeScript** - Static typing
+- **Vite** - Development server and production build tool
+- **React Router** - Client-side routing
+- **Tailwind CSS v4** - Styling and design utilities
 
-### State & Data
+### State and data
 
-* **TanStack Query / React Query** — server state and API data
-* **Zustand** — client/application state
+- **TanStack Query** - Server-state fetching, caching, mutations, and optimistic updates
+- **Zustand** - Client-side theme and follow state
+- **Axios** - HTTP requests to the backend
 
-### UI & Utilities
+### Form and interface utilities
 
-* **react-hot-toast** — toast notifications
-* **Tailwind CSS v4** — styling
-* **ESLint** — code quality
-
-The current project uses React Router for routing and does **not** use TanStack Router.
-
----
+- **React Hook Form** - Login, registration, and profile forms
+- **Lucide React** - Icon library included in the project dependencies
+- **react-hot-toast** - User feedback notifications
+- **ESLint** - Code quality checks
 
 ## Getting Started
 
-### Prerequisites
+### Requirements
 
-Make sure you have a recent version of Node.js installed.
+- Node.js with a recent LTS version
+- pnpm
 
 ### Installation
-
-Clone the repository and install dependencies:
 
 ```bash
 git clone <repository-url>
 cd socially
-npm install
+pnpm install
 ```
 
-### Development
-
-Start the Vite development server:
+### Start the development server
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
-### Production Build
+Vite will print the local development URL in the terminal, usually `http://localhost:5173`.
 
-Create a production build:
+### Create a production build
 
 ```bash
-npm run build
+pnpm build
 ```
 
-### Preview Production Build
+This command runs the TypeScript project build and creates the optimized Vite output in `dist/`.
+
+### Preview the production build
 
 ```bash
-npm run preview
+pnpm preview
 ```
 
-### Lint
-
-Run ESLint:
+### Run lint checks
 
 ```bash
-npm run lint
+pnpm lint
 ```
 
----
+## Backend API
 
-## Available Scripts
+Socially currently uses an experimental remote backend:
 
-| Command           | Description                          |
-| ----------------- | ------------------------------------ |
-| `npm run dev`     | Start the development server         |
-| `npm run build`   | Type-check and build the application |
-| `npm run lint`    | Run ESLint                           |
-| `npm run preview` | Preview the production build         |
+```text
+https://socially-nextjs-six.vercel.app
+```
 
----
+The frontend communicates with this service through the shared Axios client in `src/api/base.ts`. Requests use cookies through `withCredentials`, so authentication depends on the remote service and its session configuration.
 
-## [License](LICENSE)
+The API currently supports these areas:
+
+| Area           | Operations                                              |
+| -------------- | ------------------------------------------------------- |
+| Authentication | Login, registration, session lookup, logout             |
+| Posts          | List, create, like/unlike, delete                       |
+| Comments       | Create and delete comments                              |
+| Users          | Find profiles, recommendations, user posts, liked posts |
+| Relationships  | Follow and unfollow users                               |
+| Profiles       | Update profile information                              |
+| Notifications  | List notifications and mark them as read                |
+
+This backend is used for development and demonstration purposes. It may change, become unavailable, or return different data without notice. The frontend does not currently expose a separate environment-variable configuration for changing the API base URL.
+
+## Project Structure
+
+```text
+src/
+├── api/          Backend request functions grouped by feature and HTTP method
+├── assets/       Static application assets and SVG icons
+├── components/   Reusable UI components
+├── constants/    Shared notification and modal configuration
+├── hooks/        Query and mutation hooks for application behavior
+├── layout/       Shared navigation, sidebars, and routed page structure
+├── lib/          Shared library configuration, including the QueryClient
+├── pages/        Route-level screens
+├── store/        Zustand client state
+└── types/        Shared TypeScript models and API contracts
+```
+
+The `src/README.md` file contains a short explanation of the source directory structure.
+
+## Data Flow
+
+1. Pages and components call custom hooks from `src/hooks/`.
+2. Hooks call the typed request functions in `src/api/`.
+3. API functions use the shared Axios client and return typed responses.
+4. TanStack Query stores server data and manages loading and error states.
+5. Mutations update or invalidate related queries; several post, like, follow, comment, and notification actions use optimistic updates.
+6. Zustand stores client-only preferences and follow information that should remain available between sessions.
+
+## Project Status
+
+The project provides a working frontend for the main social media flows. Because it relies on an experimental remote backend, the availability and exact behavior of data-dependent features are not guaranteed outside the development environment.
+
+## License
+
+Socially is released under the [MIT License](LICENSE).
+
+Copyright (c) 2026 Five-o-One.

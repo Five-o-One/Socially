@@ -1,3 +1,7 @@
+/**
+ * @file Application entry point.
+ * @description Defines the route tree and mounts the React provider hierarchy.
+ */
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";
@@ -15,6 +19,16 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { queryClient } from "@/lib/queryClient";
 import { ThemeManager } from "@/components";
 
+/**
+ * @description Application route tree consumed by `RouterProvider`.
+ * @route / - Feed rendered inside the shared `Layout`
+ * @route /notifications - Authenticated notifications page
+ * @route /profile/:username - Profile page resolved by username
+ * @route /profile/id/:id - Profile page resolved by user ID
+ * @route /login - Login page
+ * @route /register - Registration page
+ * @route * - Not-found fallback
+ */
 const router = createBrowserRouter([
   {
     path: "/",
@@ -40,6 +54,10 @@ const router = createBrowserRouter([
   },
 ]);
 
+/**
+ * @description Mounts the React application with strict mode, query caching,
+ * theme synchronization, and routing providers.
+ */
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>

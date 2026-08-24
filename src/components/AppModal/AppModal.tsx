@@ -1,7 +1,20 @@
+/** @file Base modal panel with portal rendering and dismissal behavior. */
 import { type ReactNode, useEffect } from "react";
 import AppIcon from "@/components/AppIcon/AppIcon";
 import AppPortal from "@/components/AppPortal/AppPortal";
 
+/**
+ * @component AppModal
+ * @description Portal-based modal with escape-key, backdrop, body, and footer behavior.
+ * @prop {boolean} isOpen - Controls visibility
+ * @prop {() => void} onClose - Closes the modal
+ * @prop {ReactNode} children - Modal body content
+ * @prop {string} [title] - Optional heading
+ * @prop {ReactNode} [footer] - Optional footer actions
+ * @prop {boolean} [closeOnOutsideClick=true] - Enables backdrop dismissal
+ * @prop {boolean} [showCloseButton=true] - Shows the close button
+ * @prop {string} [className] - Additional panel classes
+ */
 interface AppModalProps {
   isOpen: boolean;
   onClose: () => void;

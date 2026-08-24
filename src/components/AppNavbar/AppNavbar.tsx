@@ -1,3 +1,4 @@
+/** @file Responsive application navigation for guest and authenticated users. */
 import { useState, useEffect } from "react";
 import AppPortal from "@/components/AppPortal/AppPortal";
 import { Link, NavLink } from "react-router";
@@ -5,6 +6,13 @@ import AppIcon from "@/components/AppIcon/AppIcon";
 import { AppButton } from "@/components/AppButton";
 import { useAppStore } from "@/store";
 
+/**
+ * @component AppNavbar
+ * @description Responsive navigation bar for authenticated and guest users.
+ * @prop {boolean} isLoggedIn - Whether authenticated navigation is shown
+ * @prop {string} [userId] - Current user ID used for the profile link
+ * @prop {() => void} [onLogout] - Callback invoked when the user chooses to log out
+ */
 interface AppNavbarProps {
   isLoggedIn: boolean;
   userId?: string;

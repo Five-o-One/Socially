@@ -1,3 +1,4 @@
+/** @file Registration page and account creation flow. */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
@@ -5,6 +6,10 @@ import { AppCard, AppButton } from "@/components";
 import type { RegisterRequest } from "@/types/Authentication";
 import { Register as RegisterUser } from "@/api/Authentication/POST";
 
+/**
+ * @component Register
+ * @description Creates a new user account through the registration form.
+ */
 export default function Register() {
   const navigate = useNavigate();
   const [showPassword, setShowPassword] = useState(false);

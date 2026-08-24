@@ -1,3 +1,4 @@
+/** Collects data-fetching and mutation hooks for convenient imports. */
 export * from "./usePosts";
 export * from "./useSession";
 export * from "./useCurrentUser";

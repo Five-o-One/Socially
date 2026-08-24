@@ -1,11 +1,18 @@
+/** @file Post creation mutation with optimistic feed insertion and rollback. */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreatePost } from "@/api";
 import type { Post, User } from "@/types";
 
+/** Previous feed state retained for optimistic post rollback. */
 interface CreatePostMutationContext {
   previousPosts: Post[] | undefined;
 }
 
+/**
+ * @hook useCreatePost
+ * @description Creates a post, optimistically inserts it into the feed, and reconciles the cached data after success.
+ * @returns Post creation mutation result
+ */
 export function useCreatePost() {
   const queryClient = useQueryClient();
 

@@ -1,6 +1,19 @@
+/** @file Confirmation dialog built on the base modal component. */
 import { AppModal } from "./AppModal";
 import { AppButton } from "@/components/AppButton";
 
+/**
+ * @component ConfirmModal
+ * @description Confirmation dialog for destructive or important actions.
+ * @prop {boolean} isOpen - Controls dialog visibility
+ * @prop {string} [title='Delete Post'] - Dialog title
+ * @prop {string} [description='This action cannot be undone.'] - Dialog explanation
+ * @prop {string} [confirmText='Delete'] - Confirm button label
+ * @prop {string} [cancelText='Cancel'] - Cancel button label
+ * @prop {() => void} onConfirm - Confirms the action
+ * @prop {() => void} onClose - Closes the dialog
+ * @prop {boolean} [isLoading=false] - Disables actions while processing
+ */
 interface ConfirmModalProps {
   isOpen: boolean;
   title?: string;

@@ -1,6 +1,8 @@
+/** @file User profile, relationship, and user-query data contracts. */
 import type { ApiResponse } from "./api";
 import type { Post } from "./post";
 
+/** Aggregate counts associated with a user. */
 export interface UserCount {
   followers: number;
   following?: number;
@@ -8,10 +10,12 @@ export interface UserCount {
   posts?: number;
 }
 
+/** Minimal follower relationship reference. */
 export interface FollowerRef {
   followerId: string;
 }
 
+/** User profile model used throughout the application. */
 export interface User {
   id: string;
   name: string;
@@ -30,6 +34,7 @@ export interface User {
   isFollowing?: boolean;
 }
 
+/** Editable profile fields accepted by the update endpoint. */
 export interface UpdateProfileRequest {
   name?: string;
   bio?: string;
@@ -37,6 +42,7 @@ export interface UpdateProfileRequest {
   website?: string;
 }
 
+/** A user's like record with its related post. */
 export interface UserLike {
   id: string;
   userId: string;

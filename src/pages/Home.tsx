@@ -1,3 +1,4 @@
+/** @file Home feed page with post creation and feed states. */
 import { useState } from "react";
 import {
   AppCard,
@@ -11,6 +12,11 @@ import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCreatePost } from "@/hooks/useCreatePost";
 import toast from "react-hot-toast";
 
+/**
+ * @component Home
+ * @description Feed page with post loading, error handling, and optional post creation.
+ * @prop {boolean} [isAuth=true] - Shows authenticated controls when true
+ */
 interface HomeProps {
   isAuth?: boolean;
 }

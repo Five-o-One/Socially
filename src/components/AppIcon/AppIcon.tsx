@@ -1,3 +1,4 @@
+/** @file Named SVG icon renderer and raw SVG transformation helpers. */
 import Bell from "@/assets/icons/Bell.svg?raw";
 import Calendar from "@/assets/icons/Calendar.svg?raw";
 import Chat from "@/assets/icons/Chat.svg?raw";
@@ -19,6 +20,7 @@ import Loader from "@/assets/icons/Loader.svg?raw";
 import LogOut from "@/assets/icons/LogOut.svg?raw";
 import type { AppIconProps, NameIcon } from "@/types";
 
+/** Named raw SVG assets rendered by `AppIcon`. */
 const icons = {
   Bell,
   Calendar,
@@ -41,6 +43,7 @@ const icons = {
   LogOut,
 } satisfies Record<NameIcon, string>;
 
+/** Applies component display properties to a raw SVG string. */
 function transformSvg(
   svg: string,
   {
@@ -90,6 +93,14 @@ function transformSvg(
   return result;
 }
 
+/**
+ * @component AppIcon
+ * @description Renders a named SVG icon from the application icon map.
+ * @prop {NameIcon} nameIcon - Icon name
+ * @prop {string} [className] - Additional icon class
+ * @prop {number} [size=24] - Icon width and height
+ * @prop {boolean} [isFilled=false] - Renders empty SVG fills with currentColor
+ */
 export default function AppIcon({
   nameIcon,
   className,

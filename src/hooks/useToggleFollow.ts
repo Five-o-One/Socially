@@ -1,14 +1,21 @@
+/** @file Follow/unfollow mutation with optimistic profile and recommendation updates. */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ToggleFollow } from "@/api";
 import type { User } from "@/types";
 import { useAppStore } from "@/store";
 
+/** Previous relationship state retained for optimistic follow rollback. */
 interface FollowMutationContext {
   previousRecommendedUsers?: User[];
   previousProfiles: Array<[readonly unknown[], User | undefined]>;
   previousCurrentUser?: User;
 }
 
+/**
+ * @hook useToggleFollow
+ * @description Follows or unfollows a user and refreshes relationship data.
+ * @returns Follow mutation result
+ */
 export function useToggleFollow() {
   const queryClient = useQueryClient();
 

@@ -1,6 +1,11 @@
+/** @file Fallback page rendered for unmatched application routes. */
 import { Link } from "react-router";
 import { AppButton } from "@/components/AppButton";
 
+/**
+ * @component NotFound
+ * @description Fallback page rendered when no route matches the current URL.
+ */
 export default function NotFound() {
   return (
     <div className="grid min-h-[70vh] place-items-center bg-bg px-6 py-12">

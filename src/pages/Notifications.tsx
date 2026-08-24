@@ -1,6 +1,11 @@
+/** @file Notifications page and unread-notification handling. */
 import { AppCard, NotificationCard, AppPageSpinner } from "@/components";
 import { useNotifications, useMarkNotificationsAsRead } from "@/hooks";
 
+/**
+ * @component Notifications
+ * @description Lists notifications for the authenticated user.
+ */
 export default function Notifications() {
   const {
     data: notifications = [],

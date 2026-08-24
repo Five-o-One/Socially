@@ -1,4 +1,5 @@
 #!/bin/sh
+# File: Prevents protected-branch pushes and validates feature/fix branch names.
 
 branch_name=$(git branch --show-current)
 

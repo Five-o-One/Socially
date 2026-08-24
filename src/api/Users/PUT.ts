@@ -1,3 +1,4 @@
+/** @file User profile replacement/update operation. */
 import type { AxiosResponse } from "axios";
 import type {
   UpdateProfileRequest,
@@ -5,6 +6,7 @@ import type {
 } from "../../types/Users";
 import __BASE__ from "../base";
 
+/** Updates editable profile fields for the current user. */
 export const UpdateProfile = async (
   id: string,
   data: UpdateProfileRequest,

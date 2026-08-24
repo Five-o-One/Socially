@@ -1,3 +1,4 @@
+/** @file Login page and credential submission flow. */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
@@ -6,6 +7,10 @@ import { AppCard, AppButton } from "@/components";
 import { Login as LoginUser } from "@/api/Authentication/POST";
 import type { LoginRequest } from "@/types/Authentication";
 
+/**
+ * @component Login
+ * @description Authenticates an existing user and navigates to the application.
+ */
 export default function Login() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();

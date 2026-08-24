@@ -1,6 +1,12 @@
+/** @file Current-session query and its cache lifetime configuration. */
 import { useQuery } from "@tanstack/react-query";
 import { GetSession } from "@/api";
 
+/**
+ * @hook useSession
+ * @description Queries the current authenticated session.
+ * @returns Session query result
+ */
 export function useSession() {
   return useQuery({
     queryKey: ["session"],

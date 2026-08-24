@@ -1,10 +1,14 @@
-# ساختار پوشه‌های `src`
+# `src` folder structure
 
-- **`api/`**: توابع مربوط به ارتباط با سرور، ارسال درخواست‌ها و دریافت داده‌ها.
-- **`assets/`**: فایل‌های ثابت مثل تصاویر، آیکون‌ها، فونت‌ها و ویدیوها.
-- **`components/`**: کامپوننت‌های قابل‌استفاده مجدد مثل دکمه، ورودی، کارت و مودال.
-- **`constants/`**: مقادیر ثابت برنامه مثل مسیرها، پیام‌ها و تنظیمات عمومی.
-- **`hooks/`**: هوک‌های سفارشی React برای اشتراک‌گذاری منطق بین کامپوننت‌ها.
-- **`layout/`**: ساختار کلی صفحات و بخش‌های ثابت رابط کاربری؛ کامپوننت اصلی `App` نیز اینجاست.
-- **`store/`**: مدیریت state سراسری برنامه، برای مثال با Zustand.
-- **`types/`**: تایپ‌ها و interfaceهای مشترک TypeScript.
+The `src` directory contains the application's UI, data access, state, and shared TypeScript contracts.
+
+- **`api/`**: Functions for communicating with the backend API.
+- **`assets/`**: Static assets such as icons, images, fonts, and media.
+- **`components/`**: Reusable UI components such as buttons, cards, modals, and post controls.
+- **`constants/`**: Shared values such as notification messages and modal configuration.
+- **`hooks/`**: Custom React hooks for queries, mutations, authentication, and shared application logic.
+- **`layout/`**: Shared page structure, navigation, sidebars, and routed content.
+- **`lib/`**: Shared library configuration, including the TanStack Query client.
+- **`pages/`**: Route-level screens such as Home, Login, Register, Profile, and Notifications.
+- **`store/`**: Global client state managed with Zustand, including theme and follow state.
+- **`types/`**: Shared TypeScript interfaces, request models, and API response types.
