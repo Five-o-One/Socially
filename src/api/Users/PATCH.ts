@@ -1,3 +1,4 @@
+/** @file User relationship updates, including follow toggling. */
 import type { AxiosResponse } from "axios";
 import type { ToggleFollowResponse } from "../../types/Users";
 import __BASE__ from "../base";

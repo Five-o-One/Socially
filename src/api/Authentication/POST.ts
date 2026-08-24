@@ -1,3 +1,7 @@
+/**
+ * @file Authentication write operations.
+ * @description Provides login, registration, and logout requests.
+ */
 import type { AxiosResponse } from "axios";
 import type {
   AuthResponse,

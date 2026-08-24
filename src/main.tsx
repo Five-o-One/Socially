@@ -1,3 +1,7 @@
+/**
+ * @file Application entry point.
+ * @description Defines the route tree and mounts the React provider hierarchy.
+ */
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import "./index.css";

@@ -1,3 +1,4 @@
+/** @file Like/unlike mutation with optimistic updates across post views. */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ToggleLikePost } from "@/api";
 import type { Post } from "@/types";

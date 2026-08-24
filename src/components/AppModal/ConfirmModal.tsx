@@ -1,3 +1,4 @@
+/** @file Confirmation dialog built on the base modal component. */
 import { AppModal } from "./AppModal";
 import { AppButton } from "@/components/AppButton";
 

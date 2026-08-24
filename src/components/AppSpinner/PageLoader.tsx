@@ -1,3 +1,4 @@
+/** @file Page-level loading state with primary and secondary messages. */
 import AppSpinner from "./AppSpinner";
 
 /**

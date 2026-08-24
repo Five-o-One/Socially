@@ -1,3 +1,4 @@
+/** @file User profile, relationship, and user-query data contracts. */
 import type { ApiResponse } from "./api";
 import type { Post } from "./post";
 

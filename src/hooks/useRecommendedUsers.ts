@@ -1,3 +1,4 @@
+/** @file Recommended-user query used by the authenticated sidebar. */
 import { useQuery } from "@tanstack/react-query";
 import { GetRecommendedUsers } from "@/api";
 

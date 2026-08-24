@@ -1,3 +1,4 @@
+/** @file Follow/unfollow mutation with optimistic profile and recommendation updates. */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ToggleFollow } from "@/api";
 import type { User } from "@/types";

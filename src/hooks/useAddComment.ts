@@ -1,3 +1,4 @@
+/** @file Comment creation mutation with optimistic updates across post queries. */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AddComment } from "@/api";
 import type { Comment, Post, User } from "@/types";

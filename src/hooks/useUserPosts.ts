@@ -1,3 +1,4 @@
+/** @file Query that loads posts authored by a user. */
 import { useQuery } from "@tanstack/react-query";
 import { GetUserPosts } from "@/api";
 

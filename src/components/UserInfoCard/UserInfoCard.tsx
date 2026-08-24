@@ -1,3 +1,4 @@
+/** @file Compact user profile summary used in the application sidebar. */
 import { Link } from "react-router";
 import { AppCard } from "@/components/AppCard";
 import { AppImage } from "@/components/AppImage";

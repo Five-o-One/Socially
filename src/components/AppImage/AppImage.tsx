@@ -1,3 +1,4 @@
+/** @file Image component with loading, error, and generated placeholder states. */
 import { useState } from "react";
 
 /**

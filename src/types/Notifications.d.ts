@@ -1,3 +1,4 @@
+/** @file Notification models and notification API request/response contracts. */
 import type { User, ApiResponse } from "./Users";
 
 /** Notification item shown in the notifications page. */

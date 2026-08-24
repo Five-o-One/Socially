@@ -1,3 +1,4 @@
+/** @file Synchronizes persisted Zustand theme state with the document root. */
 import { useEffect } from "react";
 import { useAppStore } from "@/store";
 

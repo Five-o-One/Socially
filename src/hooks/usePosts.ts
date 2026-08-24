@@ -1,3 +1,4 @@
+/** @file Home feed query for retrieving all posts. */
 import { useQuery } from "@tanstack/react-query";
 import { GetAllPosts } from "@/api";
 

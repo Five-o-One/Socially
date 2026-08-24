@@ -1,3 +1,4 @@
+/** @file Fallback page rendered for unmatched application routes. */
 import { Link } from "react-router";
 import { AppButton } from "@/components/AppButton";
 

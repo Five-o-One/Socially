@@ -1,3 +1,4 @@
+/** @file Base modal panel with portal rendering and dismissal behavior. */
 import { type ReactNode, useEffect } from "react";
 import AppIcon from "@/components/AppIcon/AppIcon";
 import AppPortal from "@/components/AppPortal/AppPortal";

@@ -1,3 +1,4 @@
+/** @file User profile replacement/update operation. */
 import type { AxiosResponse } from "axios";
 import type {
   UpdateProfileRequest,

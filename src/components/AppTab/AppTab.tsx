@@ -1,3 +1,4 @@
+/** @file Tab navigation component and the tab item contract. */
 import AppIcon from "@/components/AppIcon/AppIcon";
 import type { NameIcon } from "@/types";
 

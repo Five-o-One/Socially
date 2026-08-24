@@ -1,3 +1,4 @@
+/** @file Notification read operations. */
 import type { AxiosResponse } from "axios";
 import type { GetNotificationsResponse } from "../../types/Notifications";
 import __BASE__ from "../base";

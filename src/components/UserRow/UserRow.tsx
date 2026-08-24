@@ -1,3 +1,4 @@
+/** @file User list row with profile navigation and follow controls. */
 import { Link } from "react-router";
 import { AppButton } from "@/components/AppButton";
 import { AppImage } from "@/components/AppImage";

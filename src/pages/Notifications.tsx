@@ -1,3 +1,4 @@
+/** @file Notifications page and unread-notification handling. */
 import { AppCard, NotificationCard, AppPageSpinner } from "@/components";
 import { useNotifications, useMarkNotificationsAsRead } from "@/hooks";
 

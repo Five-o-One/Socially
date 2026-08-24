@@ -1,3 +1,4 @@
+/** @file Post presentation and interaction controls for likes and comments. */
 import { useState } from "react";
 import { Link } from "react-router";
 import { AppCard } from "@/components/AppCard";

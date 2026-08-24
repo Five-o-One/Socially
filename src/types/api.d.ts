@@ -1,3 +1,5 @@
+/** @file Generic response envelopes shared by all API modules. */
+
 /** Successful API response envelope containing typed data. */
 export interface ApiSuccess<T> {
   success: true;

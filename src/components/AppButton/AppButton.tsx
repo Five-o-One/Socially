@@ -1,3 +1,4 @@
+/** @file Reusable button component and its visual interaction states. */
 import { type ReactNode } from "react";
 import type { NameIcon } from "@/types";
 import AppIcon from "@/components/AppIcon/AppIcon";

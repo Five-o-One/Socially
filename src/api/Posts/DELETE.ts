@@ -1,3 +1,4 @@
+/** @file Post and comment deletion operations. */
 import type { AxiosResponse } from "axios";
 import type { ApiMessageResponse } from "../../types/api";
 import __BASE__ from "../base";

@@ -1,3 +1,4 @@
+/** @file Post partial-update operations, including like toggling. */
 import type { AxiosResponse } from "axios";
 import type { ApiMessageResponse } from "../../types/api";
 import __BASE__ from "../base";

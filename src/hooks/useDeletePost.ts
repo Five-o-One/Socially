@@ -1,3 +1,4 @@
+/** @file Post deletion mutation with optimistic removal and rollback. */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DeletePost } from "@/api";
 import type { Post } from "@/types";

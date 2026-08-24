@@ -1,3 +1,4 @@
+/** @file Current-session query and its cache lifetime configuration. */
 import { useQuery } from "@tanstack/react-query";
 import { GetSession } from "@/api";
 

@@ -1,3 +1,7 @@
+/**
+ * @file User read operations.
+ * @description Loads profiles, recommendations, authored posts, and liked posts.
+ */
 import type { AxiosResponse } from "axios";
 import type {
   GetRecommendedUsersResponse,

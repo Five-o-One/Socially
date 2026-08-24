@@ -1,3 +1,4 @@
+/** @file Notification state updates, including marking notifications as read. */
 import type { AxiosResponse } from "axios";
 import type { MarkNotificationsAsReadRequest } from "../../types/Notifications";
 import type { ApiMessageResponse } from "../../types/api";

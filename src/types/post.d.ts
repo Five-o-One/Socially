@@ -1,3 +1,4 @@
+/** @file Post, comment, like, and post-query data contracts. */
 import type { ApiResponse } from "./api";
 
 /** API response containing the feed posts. */

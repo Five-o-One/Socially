@@ -1,3 +1,5 @@
+/** @file Icon names and props shared by icon-producing components. */
+
 /** Names supported by the shared icon component. */
 export type NameIcon =
   | "Bell"

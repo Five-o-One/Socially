@@ -1,3 +1,4 @@
+/** @file User profile query keyed by user ID. */
 import { useQuery } from "@tanstack/react-query";
 import { GetUserById } from "@/api";
 

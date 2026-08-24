@@ -1,3 +1,4 @@
+/** @file Shared layout containing navigation, sidebars, and routed content. */
 import { Outlet, useLocation, Link, useNavigate } from "react-router";
 import {
   AppNavbar,

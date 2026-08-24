@@ -1,3 +1,7 @@
+/**
+ * @file Post and comment creation operations.
+ * @description Provides typed request bodies and functions for creating posts and comments.
+ */
 import type { AxiosResponse } from "axios";
 import type { ApiMessageResponse } from "../../types/api";
 import type { ApiResponse } from "../../types/api";

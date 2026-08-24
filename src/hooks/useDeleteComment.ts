@@ -1,3 +1,4 @@
+/** @file Comment deletion mutation and related query invalidation. */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DeleteComment } from "@/api";
 import type { Post } from "@/types";

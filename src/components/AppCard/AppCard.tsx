@@ -1,3 +1,4 @@
+/** @file Reusable content card with optional header and footer regions. */
 import { type ReactNode } from "react";
 
 /**

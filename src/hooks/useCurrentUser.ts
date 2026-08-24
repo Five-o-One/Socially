@@ -1,3 +1,4 @@
+/** @file Derived current-user and authentication state from the session query. */
 import { useSession } from "./useSession";
 
 /**

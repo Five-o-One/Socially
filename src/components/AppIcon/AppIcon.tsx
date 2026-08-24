@@ -1,3 +1,4 @@
+/** @file Named SVG icon renderer and raw SVG transformation helpers. */
 import Bell from "@/assets/icons/Bell.svg?raw";
 import Calendar from "@/assets/icons/Calendar.svg?raw";
 import Chat from "@/assets/icons/Chat.svg?raw";

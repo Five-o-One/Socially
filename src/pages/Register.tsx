@@ -1,3 +1,4 @@
+/** @file Registration page and account creation flow. */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";

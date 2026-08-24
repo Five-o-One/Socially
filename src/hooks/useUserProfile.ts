@@ -1,3 +1,4 @@
+/** @file Profile query that selects an ID or username lookup. */
 import { useQuery } from "@tanstack/react-query";
 import { GetUserById, GetUserByUsername } from "@/api";
 

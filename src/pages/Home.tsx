@@ -1,3 +1,4 @@
+/** @file Home feed page with post creation and feed states. */
 import { useState } from "react";
 import {
   AppCard,

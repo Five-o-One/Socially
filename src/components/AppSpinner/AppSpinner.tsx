@@ -1,3 +1,4 @@
+/** @file Compact loading spinner based on the shared icon component. */
 import AppIcon from "@/components/AppIcon/AppIcon";
 
 /**

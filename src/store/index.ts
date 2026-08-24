@@ -1,3 +1,4 @@
+/** @file Persisted client state for theme preferences and follow relationships. */
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 

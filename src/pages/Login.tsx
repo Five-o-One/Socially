@@ -1,3 +1,4 @@
+/** @file Login page and credential submission flow. */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";

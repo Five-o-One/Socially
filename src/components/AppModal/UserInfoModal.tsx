@@ -1,3 +1,4 @@
+/** @file Profile editing form displayed inside a modal. */
 import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { AppModal } from "./AppModal";

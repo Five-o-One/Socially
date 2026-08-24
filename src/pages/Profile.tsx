@@ -1,3 +1,4 @@
+/** @file Profile page with profile actions and post/liked-post tabs. */
 import { useState } from "react";
 import { useParams } from "react-router";
 import {

@@ -1,3 +1,4 @@
+/** @file Responsive application navigation for guest and authenticated users. */
 import { useState, useEffect } from "react";
 import AppPortal from "@/components/AppPortal/AppPortal";
 import { Link, NavLink } from "react-router";

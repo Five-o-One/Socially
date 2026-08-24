@@ -1,3 +1,4 @@
+/** @file Profile update mutation with optimistic session and profile synchronization. */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UpdateProfile } from "@/api";
 import type { UpdateProfileRequest, User } from "@/types";

@@ -1,3 +1,4 @@
+/** @file Post creation mutation with optimistic feed insertion and rollback. */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreatePost } from "@/api";
 import type { Post, User } from "@/types";

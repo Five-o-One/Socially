@@ -1,3 +1,4 @@
+/** @file Notification list item with type-specific icon and content. */
 import { Link } from "react-router";
 import { AppImage } from "@/components/AppImage";
 import AppIcon from "@/components/AppIcon/AppIcon";

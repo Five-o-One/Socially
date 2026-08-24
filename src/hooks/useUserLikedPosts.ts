@@ -1,3 +1,4 @@
+/** @file Query that loads and unwraps posts liked by a user. */
 import { useQuery } from "@tanstack/react-query";
 import { GetUserLikedPosts } from "@/api";
 

@@ -1,3 +1,7 @@
+/**
+ * @file API client configuration shared by all backend request modules.
+ * @description Creates an Axios client with the remote backend URL, timeout, and cookie-based credentials.
+ */
 import axios from "axios";
 
 /** Shared Axios client configured for the Socially backend and cookie sessions. */

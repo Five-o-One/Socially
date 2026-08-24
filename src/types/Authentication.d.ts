@@ -1,3 +1,4 @@
+/** @file Authentication requests, session data, and auth response contracts. */
 import type { User } from "./Users";
 
 /** Server session metadata for the authenticated user. */
