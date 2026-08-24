@@ -23,6 +23,7 @@ import type { UpdateUserProfileDto } from "@/types";
 import type { TabItem } from "@/components/AppTab/AppTab";
 import { useAppStore } from "@/store";
 
+/** Renders profile data, profile actions, and the posts/liked-posts tabs. */
 function ProfileContent({ id, username }: { id?: string; username?: string }) {
   const [activeTab, setActiveTab] = useState("posts");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -290,6 +291,10 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
   );
 }
 
+/**
+ * @component Profile
+ * @description Resolves the profile route and renders the matching user profile.
+ */
 export default function Profile() {
   const { id, username } = useParams();
 

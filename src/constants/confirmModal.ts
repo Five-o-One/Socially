@@ -1,5 +1,6 @@
 import type { ConfirmActionType } from "../types/Modals";
 
+/** Text and button configuration for confirmation actions. */
 export const CONFIRM_ACTION_CONFIG: Record<
   ConfirmActionType,
   { title: string; message: string; confirmText: string }

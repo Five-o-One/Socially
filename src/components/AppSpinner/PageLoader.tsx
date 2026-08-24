@@ -1,5 +1,12 @@
 import AppSpinner from "./AppSpinner";
 
+/**
+ * @component AppPageSpinner
+ * @description Centered page-level loading state.
+ * @prop {string} [message='Loading...'] - Main message displayed below the spinner
+ * @prop {string} [subMessage='Please wait'] - Secondary loading message
+ * @prop {string} [className] - Additional wrapper classes
+ */
 interface AppPageSpinnerProps {
   message?: string;
   subMessage?: string;

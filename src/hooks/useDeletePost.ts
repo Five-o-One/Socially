@@ -2,10 +2,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DeletePost } from "@/api";
 import type { Post } from "@/types";
 
+/** Previous feed state retained for optimistic deletion rollback. */
 interface DeletePostMutationContext {
   previousQueries: Array<[readonly unknown[], Post[] | undefined]>;
 }
 
+/**
+ * @hook useDeletePost
+ * @description Deletes a post and invalidates feed and profile post queries.
+ * @returns Post deletion mutation result
+ */
 export function useDeletePost() {
   const queryClient = useQueryClient();
 

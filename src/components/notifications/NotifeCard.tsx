@@ -3,6 +3,18 @@ import { AppImage } from "@/components/AppImage";
 import AppIcon from "@/components/AppIcon/AppIcon";
 import type { NameIcon } from "@/types";
 
+/**
+ * @component NotificationCard
+ * @description Displays one notification with its type-specific icon, message, and read state.
+ * @prop {'like' | 'comment' | 'follow'} type - Notification category
+ * @prop {boolean} [isRead=false] - Whether the notification has been read
+ * @prop {string} userId - ID used for the creator profile link
+ * @prop {string} name - Creator display name
+ * @prop {string | null} [avatarSrc] - Creator avatar URL
+ * @prop {string} time - Formatted notification time
+ * @prop {string | null} [postText] - Related post excerpt
+ * @prop {string | null} [commentText] - Related comment excerpt
+ */
 interface NotificationCardProps {
   type: "like" | "comment" | "follow";
   isRead?: boolean;

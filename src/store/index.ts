@@ -1,6 +1,7 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
+/** Supported application themes. */
 type Theme = "light" | "dark";
 
 interface AppStore {
@@ -16,6 +17,7 @@ interface AppStore {
   isFollowingUser: (userId: string) => boolean;
 }
 
+/** Global Zustand store for theme state and theme actions. */
 export const useAppStore = create<AppStore>()(
   persist(
     (set, get) => ({

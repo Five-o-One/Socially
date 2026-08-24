@@ -1,6 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { GetUserById } from "@/api";
 
+/**
+ * @hook useUserById
+ * @description Loads one user by ID.
+ * @param {string} id - User ID
+ * @returns User query result
+ */
 export function useUserById(id: string) {
   return useQuery({
     queryKey: ["user", id],

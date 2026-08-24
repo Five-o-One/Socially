@@ -7,6 +7,7 @@ import type {
 import __BASE__ from "../base";
 import type { ApiMessageResponse } from "../../types/api";
 
+/** Authenticates a user with email and password. */
 export const Login = async (
   data: LoginRequest,
 ): Promise<AxiosResponse<AuthResponse>> => {
@@ -18,6 +19,7 @@ export const Login = async (
   return response;
 };
 
+/** Creates a new user account. */
 export const Register = async (
   data: RegisterRequest,
 ): Promise<AxiosResponse<AuthResponse>> => {
@@ -29,6 +31,7 @@ export const Register = async (
   return response;
 };
 
+/** Ends the current authenticated session. */
 export const Logout = async (): Promise<AxiosResponse<ApiMessageResponse>> => {
   const response = await __BASE__.post<ApiMessageResponse>(
     "/api/authentication/logout",

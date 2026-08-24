@@ -15,6 +15,10 @@ import {
 } from "@/hooks";
 import { useLogout } from "@/hooks/useLogout";
 
+/**
+ * @component Layout
+ * @description Shared application shell containing navigation, sidebars, and the routed page outlet.
+ */
 export default function Layout() {
   const location = useLocation();
   const navigate = useNavigate();

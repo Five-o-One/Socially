@@ -6,6 +6,10 @@ import { AppCard, AppButton } from "@/components";
 import { Login as LoginUser } from "@/api/Authentication/POST";
 import type { LoginRequest } from "@/types/Authentication";
 
+/**
+ * @component Login
+ * @description Authenticates an existing user and navigates to the application.
+ */
 export default function Login() {
   const navigate = useNavigate();
   const queryClient = useQueryClient();

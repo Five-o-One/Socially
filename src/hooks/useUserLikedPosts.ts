@@ -1,6 +1,12 @@
 import { useQuery } from "@tanstack/react-query";
 import { GetUserLikedPosts } from "@/api";
 
+/**
+ * @hook useUserLikedPosts
+ * @description Loads posts liked by a user.
+ * @param {string} userId - User ID
+ * @returns Liked-posts query result
+ */
 export function useUserLikedPosts(userId: string) {
   return useQuery({
     queryKey: ["user-liked-posts", userId],

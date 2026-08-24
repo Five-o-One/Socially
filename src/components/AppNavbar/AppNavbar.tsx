@@ -5,6 +5,13 @@ import AppIcon from "@/components/AppIcon/AppIcon";
 import { AppButton } from "@/components/AppButton";
 import { useAppStore } from "@/store";
 
+/**
+ * @component AppNavbar
+ * @description Responsive navigation bar for authenticated and guest users.
+ * @prop {boolean} isLoggedIn - Whether authenticated navigation is shown
+ * @prop {string} [userId] - Current user ID used for the profile link
+ * @prop {() => void} [onLogout] - Callback invoked when the user chooses to log out
+ */
 interface AppNavbarProps {
   isLoggedIn: boolean;
   userId?: string;

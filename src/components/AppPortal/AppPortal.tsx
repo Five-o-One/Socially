@@ -1,6 +1,11 @@
 import { type ReactNode } from "react";
 import { createPortal } from "react-dom";
 
+/**
+ * @component AppPortal
+ * @description Renders children into the document body for overlays and drawers.
+ * @prop {ReactNode} children - Content rendered through the portal
+ */
 interface AppPortalProps {
   children: ReactNode;
 }

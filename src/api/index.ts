@@ -1,3 +1,4 @@
+/** Collects API functions for posts, authentication, users, and notifications. */
 export * from "./Posts/GET";
 export * from "./Posts/POST";
 export * from "./Posts/PATCH";

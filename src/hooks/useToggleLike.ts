@@ -2,12 +2,19 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ToggleLikePost } from "@/api";
 import type { Post } from "@/types";
 
+/** Previous post state retained for optimistic like rollback. */
 interface LikeMutationContext {
   previousPosts?: Post[];
   previousUserPosts: Array<[readonly unknown[], Post[] | undefined]>;
   previousLikedPosts: Array<[readonly unknown[], Post[] | undefined]>;
 }
 
+/**
+ * @hook useToggleLike
+ * @description Toggles a post like and updates the affected post cache.
+ * @param {string} currentUserId - Current user ID used for optimistic like state
+ * @returns Like mutation result
+ */
 export function useToggleLike(currentUserId: string) {
   const queryClient = useQueryClient();
 

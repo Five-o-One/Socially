@@ -2,10 +2,16 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { GetNotifications, MarkNotificationsAsRead } from "@/api";
 import type { Notification } from "@/types/Notifications";
 
+/** Previous notification state retained for optimistic read updates. */
 interface MarkNotificationsContext {
   previousNotifications: Notification[] | undefined;
 }
 
+/**
+ * @hook useNotifications
+ * @description Loads notifications for the current user.
+ * @returns Notifications query result
+ */
 export function useNotifications() {
   return useQuery<Notification[]>({
     queryKey: ["notifications"],
@@ -22,6 +28,11 @@ export function useNotifications() {
   });
 }
 
+/**
+ * @hook useMarkNotificationsAsRead
+ * @description Marks notifications as read and refreshes notification data.
+ * @returns Mark-as-read mutation result
+ */
 export function useMarkNotificationsAsRead() {
   const queryClient = useQueryClient();
 

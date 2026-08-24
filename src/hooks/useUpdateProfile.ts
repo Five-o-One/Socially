@@ -2,10 +2,16 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UpdateProfile } from "@/api";
 import type { UpdateProfileRequest, User } from "@/types";
 
+/** Minimal cached session shape used during profile updates. */
 interface SessionData {
   user?: User;
 }
 
+/**
+ * @hook useUpdateProfile
+ * @description Updates profile fields and refreshes the current-user cache.
+ * @returns Profile update mutation result
+ */
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
 

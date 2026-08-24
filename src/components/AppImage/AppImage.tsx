@@ -1,5 +1,17 @@
 import { useState } from "react";
 
+/**
+ * @component AppImage
+ * @description Displays an image or an initial-letter placeholder when the image is unavailable.
+ * @prop {string} [src] - Image URL
+ * @prop {string} alt - Accessible label and placeholder seed
+ * @prop {'circle' | 'rounded' | 'square'} [variant='rounded'] - Image shape
+ * @prop {'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full'} [size='md'] - Image size
+ * @prop {string} [className] - Additional CSS classes
+ * @prop {boolean} [lazyLoad=true] - Enables lazy loading
+ * @prop {boolean} [showRealImage=true] - Attempts to render the source image
+ * @prop {'solid' | 'gradient'} [placeholderStyle='gradient'] - Placeholder style
+ */
 interface AppImageProps {
   src?: string | null;
   alt: string;

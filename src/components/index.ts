@@ -1,3 +1,4 @@
+/** Collects the reusable UI components used throughout the application. */
 import AppIcon from "./AppIcon/AppIcon.tsx";
 import AppNavbar from "./AppNavbar/AppNavbar.tsx";
 import AppSpinner from "./AppSpinner/AppSpinner.tsx";

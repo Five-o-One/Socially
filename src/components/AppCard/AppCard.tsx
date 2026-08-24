@@ -1,5 +1,17 @@
 import { type ReactNode } from "react";
 
+/**
+ * @component AppCard
+ * @description Reusable content container with optional header, footer, padding, border, and click behavior.
+ * @prop {ReactNode} children - Main card content
+ * @prop {ReactNode} [header] - Optional content above the body
+ * @prop {ReactNode} [footer] - Optional content below the body
+ * @prop {boolean} [hoverable=false] - Enables hover styling
+ * @prop {boolean} [noPadding=false] - Removes default padding
+ * @prop {boolean} [borderless=false] - Removes the card border
+ * @prop {() => void} [onClick] - Card click handler
+ * @prop {string} [className] - Additional CSS classes
+ */
 interface AppCardProps {
   children: ReactNode;
   header?: ReactNode;

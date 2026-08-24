@@ -2,6 +2,18 @@ import { Link } from "react-router";
 import { AppButton } from "@/components/AppButton";
 import { AppImage } from "@/components/AppImage";
 
+/**
+ * @component UserRow
+ * @description Displays a user in a list with profile and follow controls.
+ * @prop {string} id - User ID associated with the row
+ * @prop {string} username - User handle
+ * @prop {string} name - User display name
+ * @prop {string | null} avatarSrc - Avatar image URL
+ * @prop {number} followers - Follower count
+ * @prop {boolean} isFollowing - Current follow state
+ * @prop {() => void} onToggleFollow - Follow state handler
+ * @prop {boolean} [isFollowLoading=false] - Disables follow action while processing
+ */
 interface UserRowProps {
   id: string;
   username: string;
