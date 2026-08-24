@@ -8,7 +8,6 @@ interface NotificationCardProps {
   isRead?: boolean;
   userId: string;
   name: string;
-  username?: string;
   avatarSrc?: string | null;
   time: string;
   postText?: string | null;
@@ -32,7 +31,6 @@ export function NotificationCard({
   isRead = false,
   userId,
   name,
-  username,
   avatarSrc,
   time,
   postText,
@@ -42,10 +40,6 @@ export function NotificationCard({
     icon: "Bell",
     className: "text-brand",
   };
-
-  const targetUsername = (
-    username || name.toLowerCase().replace(/\s+/g, "")
-  ).replace(/^@/, "");
 
   const getNotificationText = () => {
     const normalizedType = type.toLowerCase();

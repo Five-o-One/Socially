@@ -1,12 +1,19 @@
 import { useQuery } from "@tanstack/react-query";
-import { GetUserById } from "@/api";
+import { GetUserById, GetUserByUsername } from "@/api";
 
-export function useUserProfile(id: string) {
+interface UseUserProfileOptions {
+  id?: string;
+  username?: string;
+}
+
+export function useUserProfile({ id, username }: UseUserProfileOptions) {
   return useQuery({
-    queryKey: ["user-profile", id],
+    queryKey: ["user-profile", id, username],
 
     queryFn: async () => {
-      const response = await GetUserById(id);
+      const response = id
+        ? await GetUserById(id)
+        : await GetUserByUsername(username!);
 
       if (!response.data.success) {
         throw new Error(response.data.message);
@@ -15,7 +22,7 @@ export function useUserProfile(id: string) {
       return response.data.data;
     },
 
-    enabled: Boolean(id),
+    enabled: Boolean(id || username),
     retry: false,
   });
 }

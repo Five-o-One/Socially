@@ -6,12 +6,6 @@ interface SessionData {
   user?: User;
 }
 
-interface UpdateProfileMutationContext {
-  previousProfile: User | undefined;
-  previousUser: User | undefined;
-  previousSession: SessionData | undefined;
-}
-
 export function useUpdateProfile() {
   const queryClient = useQueryClient();
 
@@ -56,7 +50,7 @@ export function useUpdateProfile() {
         "session",
       ]);
 
-      const updateUser = (user: User | undefined) => {
+      const updateUser = (user: User | undefined): User | undefined => {
         if (!user) return user;
 
         return {
@@ -110,21 +104,24 @@ export function useUpdateProfile() {
     onSuccess: (updatedUser, { userId }) => {
       queryClient.setQueryData<User>(
         ["user-profile", userId],
-        (currentUser) =>
-          ({
+        (currentUser) => {
+          if (!currentUser) return updatedUser;
+
+          return {
             ...currentUser,
             ...updatedUser,
-          }) as User,
+          };
+        },
       );
 
-      queryClient.setQueryData<User>(
-        ["user", userId],
-        (currentUser) =>
-          ({
-            ...currentUser,
-            ...updatedUser,
-          }) as User,
-      );
+      queryClient.setQueryData<User>(["user", userId], (currentUser) => {
+        if (!currentUser) return updatedUser;
+
+        return {
+          ...currentUser,
+          ...updatedUser,
+        };
+      });
 
       queryClient.setQueryData<SessionData>(["session"], (session) => {
         if (!session?.user) return session;

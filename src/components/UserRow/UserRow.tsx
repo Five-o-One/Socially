@@ -14,7 +14,6 @@ interface UserRowProps {
 }
 
 export function UserRow({
-  id,
   avatarSrc,
   name,
   username,
@@ -28,8 +27,8 @@ export function UserRow({
   return (
     <div className="flex items-center justify-between gap-3">
       <Link
-        to={`/profile/${id}`}
-        className="flex min-w-0 cursor-pointer items-center gap-2.5 group"
+        to={`/profile/${cleanUsername}`}
+        className="group flex min-w-0 cursor-pointer items-center gap-2.5"
       >
         <AppImage
           src={avatarSrc || ""}

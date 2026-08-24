@@ -22,7 +22,7 @@ import {
 import type { UpdateUserProfileDto } from "@/types";
 import type { TabItem } from "@/components/AppTab/AppTab";
 
-function ProfileContent({ id }: { id: string }) {
+function ProfileContent({ id, username }: { id?: string; username?: string }) {
   const [activeTab, setActiveTab] = useState("posts");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
@@ -33,7 +33,10 @@ function ProfileContent({ id }: { id: string }) {
     isLoading: isProfileLoading,
     isError: isProfileError,
     error: profileError,
-  } = useUserProfile(id);
+  } = useUserProfile({
+    id,
+    username,
+  });
 
   const { data: userPosts = [], isLoading: isPostsLoading } = useUserPosts(
     user?.id ?? "",
@@ -111,7 +114,6 @@ function ProfileContent({ id }: { id: string }) {
 
   return (
     <div className="space-y-5">
-      {/* Profile Header */}
       <AppCard>
         <div className="flex flex-col items-center text-center">
           <AppImage
@@ -128,7 +130,6 @@ function ProfileContent({ id }: { id: string }) {
             @{displayUsername.replace(/^@/, "")}
           </p>
 
-          {/* Stats */}
           <div className="mt-4 flex items-center gap-8 text-sm">
             <div>
               <span className="font-bold text-text">{followingCount}</span>{" "}
@@ -146,7 +147,6 @@ function ProfileContent({ id }: { id: string }) {
             </div>
           </div>
 
-          {/* Action */}
           <div className="mt-5 w-full max-w-xs">
             {isOwnProfile ? (
               <AppButton
@@ -169,7 +169,6 @@ function ProfileContent({ id }: { id: string }) {
             )}
           </div>
 
-          {/* Additional Info */}
           <div className="mt-4 flex flex-wrap items-center justify-center gap-4 text-xs text-text-secondary">
             {user.bio && (
               <p className="w-full max-w-md text-sm text-text">{user.bio}</p>
@@ -216,14 +215,12 @@ function ProfileContent({ id }: { id: string }) {
         </div>
       </AppCard>
 
-      {/* Tabs */}
       <AppTab
         tabs={profileTabs}
         activeTab={activeTab}
         onChange={(tabId) => setActiveTab(tabId)}
       />
 
-      {/* Posts / Likes */}
       <section className="space-y-4">
         {activeTab === "posts" && (
           <>
@@ -270,7 +267,6 @@ function ProfileContent({ id }: { id: string }) {
         )}
       </section>
 
-      {/* Edit Profile */}
       {isOwnProfile && (
         <UserInfoModal
           isOpen={isEditModalOpen}
@@ -290,7 +286,7 @@ function ProfileContent({ id }: { id: string }) {
 }
 
 export default function Profile() {
-  const { id } = useParams();
+  const { id, username } = useParams();
 
-  return <ProfileContent key={id} id={id ?? ""} />;
+  return <ProfileContent key={id ?? username} id={id} username={username} />;
 }

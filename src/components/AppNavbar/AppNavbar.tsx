@@ -7,17 +7,11 @@ import { useAppStore } from "@/store";
 
 interface AppNavbarProps {
   isLoggedIn: boolean;
-  username?: string;
   userId?: string;
   onLogout?: () => void;
 }
 
-export function AppNavbar({
-  isLoggedIn,
-  username = "",
-  userId,
-  onLogout,
-}: AppNavbarProps) {
+export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { theme, toggleTheme } = useAppStore();
