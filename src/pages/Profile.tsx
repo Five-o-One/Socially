@@ -21,12 +21,14 @@ import {
 } from "@/hooks";
 import type { UpdateUserProfileDto } from "@/types";
 import type { TabItem } from "@/components/AppTab/AppTab";
+import { useAppStore } from "@/store";
 
 function ProfileContent({ id, username }: { id?: string; username?: string }) {
   const [activeTab, setActiveTab] = useState("posts");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   const { data: currentUser } = useCurrentUser();
+  const isFollowingUser = useAppStore((state) => state.isFollowingUser);
 
   const {
     data: user,
@@ -49,7 +51,10 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
   const updateProfile = useUpdateProfile();
 
   const isOwnProfile = currentUser?.id === user?.id;
-  const isFollowing = user?.isFollowing ?? false;
+
+  console.log("PROFILE USER:", user);
+  const isFollowing =
+    user?.isFollowing ?? (user ? isFollowingUser(user.id) : false);
 
   const profileTabs: TabItem[] = [
     { id: "posts", label: "Posts", icon: "Post" },
