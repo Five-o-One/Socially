@@ -11,6 +11,8 @@ export function useUserProfile({ id, username }: UseUserProfileOptions) {
     queryKey: ["user-profile", id, username],
 
     queryFn: async () => {
+      console.log("🔥 GETTING USER PROFILE:", { id, username });
+
       const response = id
         ? await GetUserById(id)
         : await GetUserByUsername(username!);

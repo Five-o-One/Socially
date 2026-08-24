@@ -1,6 +1,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ToggleFollow } from "@/api";
 import type { User } from "@/types";
+import { useAppStore } from "@/store";
 
 interface FollowMutationContext {
   previousRecommendedUsers?: User[];
@@ -11,6 +12,10 @@ interface FollowMutationContext {
 export function useToggleFollow() {
   const queryClient = useQueryClient();
 
+  const followUser = useAppStore((state) => state.followUser);
+  const unfollowUser = useAppStore((state) => state.unfollowUser);
+  const isFollowingUser = useAppStore((state) => state.isFollowingUser);
+
   return useMutation({
     mutationFn: async (userId: string) => {
       const response = await ToggleFollow(userId);
@@ -19,7 +24,7 @@ export function useToggleFollow() {
         throw new Error(response.data.message);
       }
 
-      return response.data.data;
+      return response.data;
     },
 
     onMutate: async (userId): Promise<FollowMutationContext> => {
@@ -53,22 +58,49 @@ export function useToggleFollow() {
         ? queryClient.getQueryData<User>(["user", currentUserId])
         : undefined;
 
-      const targetFromRecommendations = previousRecommendedUsers?.find(
+      const targetRecommendedUser = previousRecommendedUsers?.find(
         (user) => user.id === userId,
       );
 
-      const targetProfile = queryClient.getQueryData<User>([
-        "user-profile",
-        userId,
-      ]);
+      const targetProfile = previousProfiles
+        .map(([, profile]) => profile)
+        .find((profile) => profile?.id === userId);
 
       const currentFollowing =
         targetProfile?.isFollowing ??
-        targetFromRecommendations?.isFollowing ??
-        false;
+        targetRecommendedUser?.isFollowing ??
+        isFollowingUser(userId);
 
       const nextFollowing = !currentFollowing;
 
+      /*
+       * Optimistically update the target user's profile.
+       */
+      for (const [queryKey, profile] of previousProfiles) {
+        if (!profile || profile.id !== userId) continue;
+
+        const followers =
+          profile._count?.followers ?? profile.count?.followers ?? 0;
+
+        const nextFollowers = Math.max(0, followers + (nextFollowing ? 1 : -1));
+
+        queryClient.setQueryData<User>(queryKey, {
+          ...profile,
+          isFollowing: nextFollowing,
+          _count: {
+            ...profile._count,
+            followers: nextFollowers,
+          },
+          count: {
+            ...profile.count,
+            followers: nextFollowers,
+          },
+        });
+      }
+
+      /*
+       * Optimistically update recommendation list.
+       */
       queryClient.setQueryData<User[]>(["recommended-users"], (users) => {
         if (!users) return users;
 
@@ -98,37 +130,19 @@ export function useToggleFollow() {
         });
       });
 
-      queryClient.setQueryData<User>(["user-profile", userId], (profile) => {
-        if (!profile) return profile;
-
-        const followers =
-          profile._count?.followers ?? profile.count?.followers ?? 0;
-
-        const nextFollowers = Math.max(0, followers + (nextFollowing ? 1 : -1));
-
-        return {
-          ...profile,
-          isFollowing: nextFollowing,
-          _count: {
-            ...profile._count,
-            followers: nextFollowers,
-          },
-          count: {
-            ...profile.count,
-            followers: nextFollowers,
-          },
-        };
-      });
-
+      /*
+       * Optimistically update the logged-in user's following count
+       * exactly once.
+       */
       if (currentUserId) {
-        const updateCurrentUser = (profile: User | undefined) => {
-          if (!profile) return profile;
+        const updateCurrentUser = (user: User | undefined) => {
+          if (!user) return user;
 
           const following =
-            profile._count?.following ??
-            profile._count?.followings ??
-            profile.count?.following ??
-            profile.count?.followings ??
+            user._count?.following ??
+            user._count?.followings ??
+            user.count?.following ??
+            user.count?.followings ??
             0;
 
           const nextFollowingCount = Math.max(
@@ -137,28 +151,21 @@ export function useToggleFollow() {
           );
 
           return {
-            ...profile,
+            ...user,
             _count: {
-              ...profile._count,
-              followers:
-                profile._count?.followers ?? profile.count?.followers ?? 0,
+              ...user._count,
+              followers: user._count?.followers ?? user.count?.followers ?? 0,
               following: nextFollowingCount,
               followings: nextFollowingCount,
             },
             count: {
-              ...profile.count,
-              followers:
-                profile.count?.followers ?? profile._count?.followers ?? 0,
+              ...user.count,
+              followers: user.count?.followers ?? user._count?.followers ?? 0,
               following: nextFollowingCount,
               followings: nextFollowingCount,
             },
           };
         };
-
-        queryClient.setQueryData<User>(
-          ["user-profile", currentUserId],
-          updateCurrentUser,
-        );
 
         queryClient.setQueryData<User>(
           ["user", currentUserId],
@@ -201,21 +208,61 @@ export function useToggleFollow() {
       }
     },
 
+    onSuccess: (data, userId) => {
+      const isFollowing = data.message === "User followed successfully";
+
+      if (isFollowing) {
+        followUser(userId);
+      } else {
+        unfollowUser(userId);
+      }
+
+      const profileQueries = queryClient.getQueriesData<User>({
+        queryKey: ["user-profile"],
+      });
+
+      for (const [queryKey, profile] of profileQueries) {
+        if (!profile || profile.id !== userId) continue;
+
+        queryClient.setQueryData<User>(queryKey, {
+          ...profile,
+          isFollowing,
+        });
+      }
+
+      queryClient.setQueryData<User[]>(["recommended-users"], (users) => {
+        if (!users) return users;
+
+        return users.map((user) =>
+          user.id === userId
+            ? {
+                ...user,
+                isFollowing,
+              }
+            : user,
+        );
+      });
+    },
+
     onSettled: (_data, _error, userId) => {
+      /*
+       * Do not invalidate user-profile here.
+       *
+       * The GET /api/users/:id response does not contain
+       * isFollowing, so refetching it would overwrite our
+       * local isFollowing state with undefined.
+       */
+
       queryClient.invalidateQueries({
         queryKey: ["recommended-users"],
       });
 
       queryClient.invalidateQueries({
-        queryKey: ["user-profile", userId],
+        queryKey: ["session"],
       });
 
       queryClient.invalidateQueries({
         queryKey: ["user", userId],
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: ["session"],
       });
     },
   });
