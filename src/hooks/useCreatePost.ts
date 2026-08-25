@@ -2,6 +2,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreatePost } from "@/api";
 import type { Post, User } from "@/types";
+import toast from "react-hot-toast";
 
 /** Previous feed state retained for optimistic post rollback. */
 interface CreatePostMutationContext {
@@ -75,10 +76,14 @@ export function useCreatePost() {
       };
     },
 
-    onError: (_error, _content, context) => {
-      if (!context) return;
+    onError: (error, _content, context) => {
+      if (context) {
+        queryClient.setQueryData(["posts"], context.previousPosts);
+      }
 
-      queryClient.setQueryData(["posts"], context.previousPosts);
+      toast.error(
+        error instanceof Error ? error.message : "Failed to create post",
+      );
     },
 
     onSuccess: (createdPost) => {
@@ -109,6 +114,7 @@ export function useCreatePost() {
       queryClient.invalidateQueries({
         queryKey: ["user-posts", createdPost.authorId],
       });
+      toast.success("Post created successfully");
     },
   });
 }

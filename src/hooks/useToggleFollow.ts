@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ToggleFollow } from "@/api";
 import type { User } from "@/types";
 import { useAppStore } from "@/store";
+import toast from "react-hot-toast";
 
 /** Previous relationship state retained for optimistic follow rollback. */
 interface FollowMutationContext {
@@ -187,7 +188,7 @@ export function useToggleFollow() {
       };
     },
 
-    onError: (_error, _userId, context) => {
+    onError: (error, _userId, context) => {
       if (!context) return;
 
       if (context.previousRecommendedUsers) {
@@ -213,10 +214,21 @@ export function useToggleFollow() {
           context.previousCurrentUser,
         );
       }
+
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Failed to update follow status",
+      );
     },
 
     onSuccess: (data, userId) => {
       const isFollowing = data.message === "User followed successfully";
+      toast.success(
+        isFollowing
+          ? "User followed successfully"
+          : "User unfollowed successfully",
+      );
 
       if (isFollowing) {
         followUser(userId);

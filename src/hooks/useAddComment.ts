@@ -1,5 +1,6 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AddComment } from "@/api";
+import toast from "react-hot-toast";
 
 /**
  * @hook useAddComment
@@ -27,14 +28,18 @@ export function useAddComment() {
     },
 
     onSuccess: async () => {
-      console.log("COMMENT POST SUCCESS");
-
       await queryClient.refetchQueries({
         queryKey: ["posts"],
         type: "active",
       });
 
-      console.log("POSTS REFETCHED");
+      toast.success("Comment added successfully");
+    },
+
+    onError: (error) => {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to add comment",
+      );
     },
   });
 }

@@ -2,6 +2,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DeleteComment } from "@/api";
 import type { Post } from "@/types";
+import toast from "react-hot-toast";
 
 /**
  * @hook useDeleteComment
@@ -61,6 +62,16 @@ export function useDeleteComment() {
         { queryKey: ["user-liked-posts"] },
         removeCommentFromPosts,
       );
+    },
+
+    onError: (error) => {
+      toast.error(
+        error instanceof Error ? error.message : "Failed to delete comment",
+      );
+    },
+
+    onSuccess: () => {
+      toast.success("Comment deleted successfully");
     },
 
     onSettled: () => {
