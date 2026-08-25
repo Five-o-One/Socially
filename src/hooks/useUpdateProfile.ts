@@ -2,6 +2,7 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UpdateProfile } from "@/api";
 import type { UpdateProfileRequest, User } from "@/types";
+import toast from "react-hot-toast";
 
 /** Minimal cached session shape used during profile updates. */
 interface SessionData {
@@ -95,7 +96,7 @@ export function useUpdateProfile() {
       };
     },
 
-    onError: (_error, { userId }, context) => {
+    onError: (error, { userId }, context) => {
       if (!context) return;
 
       queryClient.setQueryData(
@@ -106,6 +107,10 @@ export function useUpdateProfile() {
       queryClient.setQueryData(["user", userId], context.previousUser);
 
       queryClient.setQueryData(["session"], context.previousSession);
+
+      toast.error(
+        error instanceof Error ? error.message : "Failed to update profile",
+      );
     },
 
     onSuccess: (updatedUser, { userId }) => {
@@ -141,6 +146,7 @@ export function useUpdateProfile() {
           },
         };
       });
+      toast.success("Profile updated successfully");
     },
   });
 }

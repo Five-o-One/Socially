@@ -6,6 +6,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { AppCard, AppButton } from "@/components";
 import { Login as LoginUser } from "@/api/Authentication/POST";
 import type { LoginRequest } from "@/types/Authentication";
+import toast from "react-hot-toast";
 
 /**
  * @component Login
@@ -39,6 +40,8 @@ export default function Login() {
       await queryClient.invalidateQueries({
         queryKey: ["session"],
       });
+
+      toast.success("Welcome back!");
 
       navigate("/");
     } catch (error) {

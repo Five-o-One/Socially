@@ -5,6 +5,7 @@ import { useForm } from "react-hook-form";
 import { AppCard, AppButton } from "@/components";
 import type { RegisterRequest } from "@/types/Authentication";
 import { Register as RegisterUser } from "@/api/Authentication/POST";
+import toast from "react-hot-toast";
 
 /**
  * @component Register
@@ -25,11 +26,21 @@ export default function Register() {
     try {
       setIsLoading(true);
 
-      await RegisterUser(data);
+      const response = await RegisterUser(data);
+
+      if (!response.data.success) {
+        throw new Error(response.data.message);
+      }
+
+      toast.success("Account created successfully");
 
       navigate("/login");
     } catch (error) {
-      console.error("Register failed:", error);
+      toast.error(
+        error instanceof Error
+          ? error.message
+          : "Registration failed. Please try again.",
+      );
     } finally {
       setIsLoading(false);
     }
