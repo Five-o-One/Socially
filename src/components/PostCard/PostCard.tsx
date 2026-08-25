@@ -191,9 +191,9 @@ export function PostCard({
 
           {showComments && (
             <div className="space-y-4 pt-3 border-t border-border">
-              {post.comments.length > 0 ? (
+              {(post.comments?.length ?? 0) > 0 ? (
                 <div className="space-y-3">
-                  {post.comments.map((comment) => {
+                  {(post.comments ?? []).map((comment) => {
                     const commentUsername = (
                       comment.author.username ||
                       comment.author.name.toLowerCase().replace(/\s+/g, "")

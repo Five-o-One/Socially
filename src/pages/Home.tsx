@@ -25,6 +25,8 @@ export default function Home({ isAuth = true }: HomeProps) {
   const [postContent, setPostContent] = useState("");
 
   const { data: posts = [], isLoading, isError, error } = usePosts();
+
+  console.log("HOME POSTS OBJECT:", posts);
   const { data: currentUser } = useCurrentUser();
 
   const createPost = useCreatePost();
@@ -62,6 +64,21 @@ export default function Home({ isAuth = true }: HomeProps) {
       </AppCard>
     );
   }
+
+  console.log("HOME POSTS:", posts);
+
+  console.log("FIRST POST:", posts[0]);
+
+  console.log("FIRST POST COMMENTS:", posts[0]?.comments);
+
+  console.log(
+    "POST WITH NEW COMMENT:",
+    posts.find((post) =>
+      post.comments?.some(
+        (comment) => comment.content === "پیام جدید از طرف زهرا",
+      ),
+    ),
+  );
 
   return (
     <div className="space-y-4">
