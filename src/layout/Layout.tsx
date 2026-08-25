@@ -99,7 +99,7 @@ export default function Layout() {
                   <div className="mt-6 flex flex-col gap-3">
                     <Link to="/login">
                       <AppButton variant="primary" fullWidth>
-                        Log In
+                        Sign In
                       </AppButton>
                     </Link>
 

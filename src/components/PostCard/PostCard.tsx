@@ -28,19 +28,20 @@ interface PostCardProps {
 
 export function PostCard({
   post,
-  currentUserId = "current-user-id",
+  currentUserId,
   className = "",
 }: PostCardProps) {
-  const { data: currentUser } = useCurrentUser();
+  const { data: currentUser, isAuthenticated } = useCurrentUser();
 
-  const isAuthor = post.authorId === currentUserId;
+  const isAuthor = isAuthenticated && post.authorId === currentUserId;
 
   const isLiked =
-    post.likes?.some((like) => like.userId === currentUserId) ?? false;
+    isAuthenticated &&
+    (post.likes?.some((like) => like.userId === currentUserId) ?? false);
 
   const likesCount = post._count?.likes ?? post.likes?.length ?? 0;
 
-  const toggleLike = useToggleLike(currentUserId);
+  const toggleLike = useToggleLike(currentUserId ?? "");
   const addComment = useAddComment();
   const deletePost = useDeletePost();
   const deleteComment = useDeleteComment();
@@ -60,7 +61,7 @@ export function PostCard({
   ).replace(/^@/, "");
 
   const handleLikeToggle = async () => {
-    if (toggleLike.isPending) return;
+    if (!isAuthenticated || toggleLike.isPending) return;
 
     try {
       await toggleLike.mutateAsync(post.id);
@@ -74,7 +75,7 @@ export function PostCard({
 
     const content = commentText.trim();
 
-    if (!content || addComment.isPending) return;
+    if (!isAuthenticated || !content || addComment.isPending) return;
 
     try {
       await addComment.mutateAsync({
@@ -125,14 +126,17 @@ export function PostCard({
                 variant="circle"
                 size="md"
               />
+
               <div className="min-w-0">
                 <div className="flex items-center gap-2 flex-wrap">
                   <span className="font-bold text-text text-sm truncate group-hover:underline">
                     {post.author.name}
                   </span>
+
                   <span className="text-text-secondary text-xs truncate">
                     @{authorUsername}
                   </span>
+
                   <span className="text-text-tertiary text-xs">
                     • {post.createdAt}
                   </span>
@@ -160,7 +164,7 @@ export function PostCard({
             <button
               type="button"
               onClick={handleLikeToggle}
-              disabled={isLikeLoading}
+              disabled={!isAuthenticated || isLikeLoading}
               className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed ${
                 isLiked
                   ? "bg-danger/10 text-danger"
@@ -172,6 +176,7 @@ export function PostCard({
               ) : (
                 <AppIcon nameIcon="Heart" size={16} isFilled={isLiked} />
               )}
+
               <span>{likesCount}</span>
             </button>
 
@@ -185,6 +190,7 @@ export function PostCard({
               }`}
             >
               <AppIcon nameIcon="Chat" size={16} isFilled={showComments} />
+
               <span>{post._count?.comments ?? post.comments?.length ?? 0}</span>
             </button>
           </div>
@@ -200,8 +206,9 @@ export function PostCard({
                     ).replace(/^@/, "");
 
                     const isCommentAuthor =
-                      comment.author.id === currentUserId ||
-                      comment.author.id === currentUser?.id;
+                      isAuthenticated &&
+                      (comment.author.id === currentUserId ||
+                        comment.author.id === currentUser?.id);
 
                     return (
                       <div
@@ -216,6 +223,7 @@ export function PostCard({
                             size="sm"
                           />
                         </Link>
+
                         <div className="flex-1 rounded-xl bg-border/20 p-3">
                           <div className="flex items-center justify-between gap-2">
                             <Link
@@ -225,9 +233,11 @@ export function PostCard({
                               <span className="font-semibold text-text text-xs group-hover:underline">
                                 {comment.author.name}
                               </span>
+
                               <span className="text-text-tertiary text-xs">
                                 @{commentUsername}
                               </span>
+
                               <span className="text-text-tertiary text-xs">
                                 • {comment.createdAt}
                               </span>
@@ -244,6 +254,7 @@ export function PostCard({
                               </button>
                             )}
                           </div>
+
                           <p className="mt-1 text-text text-sm wrap-break-word">
                             {comment.content}
                           </p>
@@ -254,36 +265,60 @@ export function PostCard({
                 </div>
               ) : null}
 
-              <form onSubmit={handleCommentSubmit} className="space-y-3 pt-2">
-                <div className="flex items-start gap-3">
-                  <AppImage
-                    src={currentUser?.image ?? ""}
-                    alt={currentUser?.name ?? "Current User"}
-                    variant="circle"
-                    size="sm"
-                  />
-                  <div className="flex-1 rounded-xl border border-border bg-card p-2.5 focus-within:border-brand">
-                    <textarea
-                      value={commentText}
-                      onChange={(e) => setCommentText(e.target.value)}
-                      placeholder="Write a comment..."
-                      rows={2}
-                      className="w-full resize-none bg-transparent text-sm text-text placeholder:text-text-tertiary outline-none"
+              {isAuthenticated ? (
+                <form onSubmit={handleCommentSubmit} className="space-y-3 pt-2">
+                  <div className="flex items-start gap-3">
+                    <AppImage
+                      src={currentUser?.image ?? ""}
+                      alt={currentUser?.name ?? "Current User"}
+                      variant="circle"
+                      size="sm"
                     />
-                    <div className="flex justify-end pt-1">
-                      <AppButton
-                        type="submit"
-                        variant="primary"
-                        size="sm"
-                        icon="Send"
-                        disabled={!commentText.trim() || addComment.isPending}
-                      >
-                        {addComment.isPending ? "Commenting..." : "Comment"}
-                      </AppButton>
+
+                    <div className="flex-1 rounded-xl border border-border bg-card p-2.5 focus-within:border-brand">
+                      <textarea
+                        value={commentText}
+                        onChange={(e) => setCommentText(e.target.value)}
+                        placeholder="Write a comment..."
+                        rows={2}
+                        className="w-full resize-none bg-transparent text-sm text-text placeholder:text-text-tertiary outline-none"
+                      />
+
+                      <div className="flex justify-end pt-1">
+                        <AppButton
+                          type="submit"
+                          variant="primary"
+                          size="sm"
+                          icon="Send"
+                          disabled={!commentText.trim() || addComment.isPending}
+                        >
+                          {addComment.isPending ? "Commenting..." : "Comment"}
+                        </AppButton>
+                      </div>
                     </div>
                   </div>
+                </form>
+              ) : (
+                <div className="rounded-xl border border-border bg-card px-4 py-4 text-center">
+                  <p className="text-sm text-text-secondary">
+                    Please sign in or register to leave a comment.
+                  </p>
+
+                  <div className="mt-3 flex items-center justify-center gap-3">
+                    <Link to="/login">
+                      <AppButton type="button" variant="secondary" size="sm">
+                        Sign in
+                      </AppButton>
+                    </Link>
+
+                    <Link to="/register">
+                      <AppButton type="button" variant="primary" size="sm">
+                        Sign Up
+                      </AppButton>
+                    </Link>
+                  </div>
                 </div>
-              </form>
+              )}
             </div>
           )}
         </div>

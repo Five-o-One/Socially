@@ -14,20 +14,13 @@ import toast from "react-hot-toast";
 
 /**
  * @component Home
- * @description Feed page with post loading, error handling, and optional post creation.
- * @prop {boolean} [isAuth=true] - Shows authenticated controls when true
+ * @description Feed page with post loading, error handling, and authenticated post creation.
  */
-interface HomeProps {
-  isAuth?: boolean;
-}
-
-export default function Home({ isAuth = true }: HomeProps) {
+export default function Home() {
   const [postContent, setPostContent] = useState("");
 
   const { data: posts = [], isLoading, isError, error } = usePosts();
-
-  console.log("HOME POSTS OBJECT:", posts);
-  const { data: currentUser } = useCurrentUser();
+  const { data: currentUser, isAuthenticated } = useCurrentUser();
 
   const createPost = useCreatePost();
 
@@ -65,24 +58,9 @@ export default function Home({ isAuth = true }: HomeProps) {
     );
   }
 
-  console.log("HOME POSTS:", posts);
-
-  console.log("FIRST POST:", posts[0]);
-
-  console.log("FIRST POST COMMENTS:", posts[0]?.comments);
-
-  console.log(
-    "POST WITH NEW COMMENT:",
-    posts.find((post) =>
-      post.comments?.some(
-        (comment) => comment.content === "پیام جدید از طرف زهرا",
-      ),
-    ),
-  );
-
   return (
     <div className="space-y-4">
-      {isAuth && (
+      {isAuthenticated && (
         <AppCard>
           <form onSubmit={handleCreatePost} className="space-y-3">
             <div className="flex items-start gap-3">
@@ -119,11 +97,7 @@ export default function Home({ isAuth = true }: HomeProps) {
 
       <section className="space-y-4">
         {posts.map((post) => (
-          <PostCard
-            key={post.id}
-            post={post}
-            currentUserId={isAuth ? currentUser?.id : undefined}
-          />
+          <PostCard key={post.id} post={post} currentUserId={currentUser?.id} />
         ))}
       </section>
     </div>
