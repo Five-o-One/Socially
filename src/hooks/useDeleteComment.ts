@@ -13,8 +13,14 @@ export function useDeleteComment() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: async (commentId: string) => {
-      const response = await DeleteComment(commentId);
+    mutationFn: async ({
+      postId,
+      commentId,
+    }: {
+      postId: string;
+      commentId: string;
+    }) => {
+      const response = await DeleteComment(postId, commentId);
 
       if (!response.data.success) {
         throw new Error(response.data.message || "Failed to delete comment");
@@ -23,27 +29,42 @@ export function useDeleteComment() {
       return response.data;
     },
 
-    onMutate: async (commentId: string) => {
+    onMutate: async ({ commentId }) => {
       await Promise.all([
         queryClient.cancelQueries({ queryKey: ["posts"] }),
         queryClient.cancelQueries({ queryKey: ["user-posts"] }),
         queryClient.cancelQueries({ queryKey: ["user-liked-posts"] }),
       ]);
 
+      const previousQueries = [
+        ...queryClient.getQueriesData<Post[]>({
+          queryKey: ["posts"],
+        }),
+        ...queryClient.getQueriesData<Post[]>({
+          queryKey: ["user-posts"],
+        }),
+        ...queryClient.getQueriesData<Post[]>({
+          queryKey: ["user-liked-posts"],
+        }),
+      ];
+
       const removeCommentFromPosts = (posts: Post[] | undefined) => {
         if (!posts) return posts;
 
         return posts.map((post) => {
-          const hasComment = post.comments?.some((c) => c.id === commentId);
-          if (!hasComment) return post;
+          if (!post.comments?.some((comment) => comment.id === commentId)) {
+            return post;
+          }
 
           return {
             ...post,
-            comments: post.comments.filter((c) => c.id !== commentId),
+            comments: post.comments.filter(
+              (comment) => comment.id !== commentId,
+            ),
             _count: post._count
               ? {
                   ...post._count,
-                  comments: Math.max(0, (post._count.comments ?? 1) - 1),
+                  comments: Math.max(0, post._count.comments - 1),
                 }
               : undefined,
           };
@@ -54,17 +75,29 @@ export function useDeleteComment() {
         { queryKey: ["posts"] },
         removeCommentFromPosts,
       );
+
       queryClient.setQueriesData<Post[]>(
         { queryKey: ["user-posts"] },
         removeCommentFromPosts,
       );
+
       queryClient.setQueriesData<Post[]>(
         { queryKey: ["user-liked-posts"] },
         removeCommentFromPosts,
       );
+
+      return {
+        previousQueries,
+      };
     },
 
-    onError: (error) => {
+    onError: (error, _variables, context) => {
+      if (context) {
+        for (const [queryKey, data] of context.previousQueries) {
+          queryClient.setQueryData(queryKey, data);
+        }
+      }
+
       toast.error(
         error instanceof Error ? error.message : "Failed to delete comment",
       );

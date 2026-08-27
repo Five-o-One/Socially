@@ -104,7 +104,10 @@ export function PostCard({
     if (!commentToDeleteId || deleteComment.isPending) return;
 
     try {
-      await deleteComment.mutateAsync(commentToDeleteId);
+      await deleteComment.mutateAsync({
+        postId: post.id,
+        commentId: commentToDeleteId,
+      });
       setCommentToDeleteId(null);
     } catch (error) {
       console.error("Failed to delete comment:", error);
@@ -115,7 +118,8 @@ export function PostCard({
     <>
       <AppCard className={`transition-shadow duration-200 ${className}`}>
         <div className="space-y-3">
-          <div className="flex items-start justify-between gap-3">
+          <div className="group flex items-start justify-between gap-3">
+            {" "}
             <Link
               to={`/profile/id/${post.authorId}`}
               className="flex items-center gap-3 min-w-0 group cursor-pointer"
@@ -143,12 +147,11 @@ export function PostCard({
                 </div>
               </div>
             </Link>
-
             {isAuthor && (
               <button
                 type="button"
                 onClick={() => setIsDeleteModalOpen(true)}
-                className="rounded-lg p-1.5 text-text-tertiary hover:bg-danger/10 hover:text-danger transition-colors cursor-pointer"
+                className="opacity-0 group-hover:opacity-100 rounded-lg p-1.5 text-text-tertiary hover:bg-danger/10 hover:text-danger transition-opacity cursor-pointer"
                 aria-label="Delete Post"
               >
                 <AppIcon nameIcon="Trash" size={18} />
@@ -200,6 +203,8 @@ export function PostCard({
               {(post.comments?.length ?? 0) > 0 ? (
                 <div className="space-y-3">
                   {(post.comments ?? []).map((comment) => {
+                    console.log("FULL COMMENT:", comment);
+
                     const commentUsername = (
                       comment.author.username ||
                       comment.author.name.toLowerCase().replace(/\s+/g, "")
@@ -207,13 +212,13 @@ export function PostCard({
 
                     const isCommentAuthor =
                       isAuthenticated &&
-                      (comment.author.id === currentUserId ||
-                        comment.author.id === currentUser?.id);
+                      Boolean(currentUser?.email) &&
+                      comment.author.email === currentUser.email;
 
                     return (
                       <div
                         key={comment.id}
-                        className="flex items-start gap-3 text-sm"
+                        className="group flex items-start gap-3 text-sm"
                       >
                         <Link to={`/profile/id/${comment.author.id}`}>
                           <AppImage
@@ -247,7 +252,7 @@ export function PostCard({
                               <button
                                 type="button"
                                 onClick={() => setCommentToDeleteId(comment.id)}
-                                className="rounded p-1 text-text-tertiary hover:bg-danger/10 hover:text-danger transition-colors cursor-pointer"
+                                className="opacity-0 group-hover:opacity-100 rounded p-1 text-text-tertiary hover:bg-danger/10 hover:text-danger transition-opacity cursor-pointer"
                                 aria-label="Delete Comment"
                               >
                                 <AppIcon nameIcon="Trash" size={14} />

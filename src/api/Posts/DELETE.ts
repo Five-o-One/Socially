@@ -1,4 +1,3 @@
-/** @file Post and comment deletion operations. */
 import type { AxiosResponse } from "axios";
 import type { ApiMessageResponse } from "../../types/api";
 import __BASE__ from "../base";
@@ -14,12 +13,13 @@ export const DeletePost = async (
   return response;
 };
 
-/** Deletes a comment by ID. */
+/** Deletes a comment from a specific post. */
 export const DeleteComment = async (
+  postId: string,
   commentId: string,
 ): Promise<AxiosResponse<ApiMessageResponse>> => {
   const response = await __BASE__.delete<ApiMessageResponse>(
-    `/api/comments/${commentId}`,
+    `/api/posts/${postId}/comment/${commentId}`,
   );
 
   return response;
