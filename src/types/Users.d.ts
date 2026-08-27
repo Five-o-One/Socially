@@ -66,3 +66,5 @@ export type ToggleFollowResponse = ApiResponse<{
 }>;
 
 export type UpdateProfileResponse = ApiResponse<User>;
+
+export type SearchUsersResponse = ApiResponse<User[]>;

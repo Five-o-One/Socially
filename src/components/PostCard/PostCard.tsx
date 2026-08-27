@@ -1,6 +1,6 @@
 /** @file Post presentation and interaction controls for likes and comments. */
 import { useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { AppCard } from "@/components/AppCard";
 import { AppImage } from "@/components/AppImage";
 import { AppButton } from "@/components/AppButton";
@@ -13,6 +13,7 @@ import { useAddComment } from "@/hooks/useAddComment";
 import { useDeletePost } from "@/hooks/useDeletePost";
 import { useDeleteComment } from "@/hooks/useDeleteComment";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
+import { SearchUsers } from "@/api";
 
 /**
  * @component PostCard
@@ -31,6 +32,8 @@ export function PostCard({
   currentUserId,
   className = "",
 }: PostCardProps) {
+  const navigate = useNavigate();
+
   const { data: currentUser, isAuthenticated } = useCurrentUser();
 
   const isAuthor = isAuthenticated && post.authorId === currentUserId;
@@ -55,6 +58,10 @@ export function PostCard({
   const [commentToDeleteId, setCommentToDeleteId] = useState<string | null>(
     null,
   );
+
+  const [commentAuthorIds, setCommentAuthorIds] = useState<
+    Record<string, string>
+  >({});
 
   const authorUsername = (
     post.author.username || post.author.name.toLowerCase().replace(/\s+/g, "")
@@ -89,6 +96,52 @@ export function PostCard({
     }
   };
 
+  const handleCommentAuthorClick = async (
+    e: React.MouseEvent<HTMLAnchorElement>,
+    email?: string,
+  ) => {
+    e.preventDefault();
+
+    if (!email) return;
+
+    const normalizedEmail = email.toLowerCase();
+
+    // Use the ID we already resolved for this author.
+    const cachedId = commentAuthorIds[normalizedEmail];
+
+    if (cachedId) {
+      navigate(`/profile/id/${cachedId}`);
+      return;
+    }
+
+    try {
+      const response = await SearchUsers(email);
+
+      if (!response.data.success) {
+        console.error("Failed to find comment author:", response.data.message);
+        return;
+      }
+
+      const user = response.data.data.find(
+        (user) => user.email.toLowerCase() === normalizedEmail,
+      );
+
+      if (!user) {
+        console.error("Comment author not found:", email);
+        return;
+      }
+
+      setCommentAuthorIds((previous) => ({
+        ...previous,
+        [normalizedEmail]: user.id,
+      }));
+
+      navigate(`/profile/id/${user.id}`);
+    } catch (error) {
+      console.error("Failed to resolve comment author:", error);
+    }
+  };
+
   const handleConfirmDelete = async () => {
     if (deletePost.isPending) return;
 
@@ -108,6 +161,7 @@ export function PostCard({
         postId: post.id,
         commentId: commentToDeleteId,
       });
+
       setCommentToDeleteId(null);
     } catch (error) {
       console.error("Failed to delete comment:", error);
@@ -119,10 +173,9 @@ export function PostCard({
       <AppCard className={`transition-shadow duration-200 ${className}`}>
         <div className="space-y-3">
           <div className="group flex items-start justify-between gap-3">
-            {" "}
             <Link
               to={`/profile/id/${post.authorId}`}
-              className="flex items-center gap-3 min-w-0 group cursor-pointer"
+              className="flex min-w-0 cursor-pointer items-center gap-3 group"
             >
               <AppImage
                 src={post.author.image || ""}
@@ -132,26 +185,27 @@ export function PostCard({
               />
 
               <div className="min-w-0">
-                <div className="flex items-center gap-2 flex-wrap">
-                  <span className="font-bold text-text text-sm truncate group-hover:underline">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span className="truncate text-sm font-bold text-text group-hover:underline">
                     {post.author.name}
                   </span>
 
-                  <span className="text-text-secondary text-xs truncate">
+                  <span className="truncate text-xs text-text-secondary">
                     @{authorUsername}
                   </span>
 
-                  <span className="text-text-tertiary text-xs">
+                  <span className="text-xs text-text-tertiary">
                     • {post.createdAt}
                   </span>
                 </div>
               </div>
             </Link>
+
             {isAuthor && (
               <button
                 type="button"
                 onClick={() => setIsDeleteModalOpen(true)}
-                className="opacity-0 group-hover:opacity-100 rounded-lg p-1.5 text-text-tertiary hover:bg-danger/10 hover:text-danger transition-opacity cursor-pointer"
+                className="cursor-pointer rounded-lg p-1.5 text-text-tertiary opacity-0 transition-opacity hover:bg-danger/10 hover:text-danger group-hover:opacity-100"
                 aria-label="Delete Post"
               >
                 <AppIcon nameIcon="Trash" size={18} />
@@ -159,7 +213,7 @@ export function PostCard({
             )}
           </div>
 
-          <p className="text-text text-sm sm:text-base leading-relaxed wrap-break-word whitespace-pre-line">
+          <p className="wrap-break-word whitespace-pre-line text-sm leading-relaxed text-text sm:text-base">
             {post.content}
           </p>
 
@@ -168,7 +222,7 @@ export function PostCard({
               type="button"
               onClick={handleLikeToggle}
               disabled={!isAuthenticated || isLikeLoading}
-              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer disabled:opacity-75 disabled:cursor-not-allowed ${
+              className={`flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-75 ${
                 isLiked
                   ? "bg-danger/10 text-danger"
                   : "text-text-secondary hover:bg-border/30 hover:text-text"
@@ -186,7 +240,7 @@ export function PostCard({
             <button
               type="button"
               onClick={() => setShowComments(!showComments)}
-              className={`flex items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors cursor-pointer ${
+              className={`flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors ${
                 showComments
                   ? "bg-brand/10 text-brand"
                   : "text-text-secondary hover:bg-border/30 hover:text-text"
@@ -199,12 +253,10 @@ export function PostCard({
           </div>
 
           {showComments && (
-            <div className="space-y-4 pt-3 border-t border-border">
+            <div className="space-y-4 border-t border-border pt-3">
               {(post.comments?.length ?? 0) > 0 ? (
                 <div className="space-y-3">
                   {(post.comments ?? []).map((comment) => {
-                    console.log("FULL COMMENT:", comment);
-
                     const commentUsername = (
                       comment.author.username ||
                       comment.author.name.toLowerCase().replace(/\s+/g, "")
@@ -213,46 +265,67 @@ export function PostCard({
                     const isCommentAuthor =
                       isAuthenticated &&
                       Boolean(currentUser?.email) &&
-                      comment.author.email === currentUser.email;
+                      comment.author.email === currentUser?.email;
+
+                    const commentEmail = comment.author.email;
 
                     return (
                       <div
                         key={comment.id}
                         className="group flex items-start gap-3 text-sm"
                       >
-                        <Link to={`/profile/id/${comment.author.id}`}>
+                        <a
+                          href={
+                            commentEmail
+                              ? `/profile/${encodeURIComponent(commentEmail)}`
+                              : "#"
+                          }
+                          onClick={(e) =>
+                            handleCommentAuthorClick(e, commentEmail)
+                          }
+                          aria-label={`View ${comment.author.name}'s profile`}
+                        >
                           <AppImage
                             src={comment.author.image || ""}
                             alt={comment.author.name}
                             variant="circle"
                             size="sm"
                           />
-                        </Link>
+                        </a>
 
                         <div className="flex-1 rounded-xl bg-border/20 p-3">
                           <div className="flex items-center justify-between gap-2">
-                            <Link
-                              to={`/profile/id/${comment.author.id}`}
-                              className="flex items-center gap-2 group cursor-pointer"
+                            <a
+                              href={
+                                commentEmail
+                                  ? `/profile/${encodeURIComponent(
+                                      commentEmail,
+                                    )}`
+                                  : "#"
+                              }
+                              onClick={(e) =>
+                                handleCommentAuthorClick(e, commentEmail)
+                              }
+                              className="group flex cursor-pointer items-center gap-2"
                             >
-                              <span className="font-semibold text-text text-xs group-hover:underline">
+                              <span className="text-xs font-semibold text-text group-hover:underline">
                                 {comment.author.name}
                               </span>
 
-                              <span className="text-text-tertiary text-xs">
+                              <span className="text-xs text-text-tertiary">
                                 @{commentUsername}
                               </span>
 
-                              <span className="text-text-tertiary text-xs">
+                              <span className="text-xs text-text-tertiary">
                                 • {comment.createdAt}
                               </span>
-                            </Link>
+                            </a>
 
                             {isCommentAuthor && (
                               <button
                                 type="button"
                                 onClick={() => setCommentToDeleteId(comment.id)}
-                                className="opacity-0 group-hover:opacity-100 rounded p-1 text-text-tertiary hover:bg-danger/10 hover:text-danger transition-opacity cursor-pointer"
+                                className="cursor-pointer rounded p-1 text-text-tertiary opacity-0 transition-opacity hover:bg-danger/10 hover:text-danger group-hover:opacity-100"
                                 aria-label="Delete Comment"
                               >
                                 <AppIcon nameIcon="Trash" size={14} />
@@ -260,7 +333,7 @@ export function PostCard({
                             )}
                           </div>
 
-                          <p className="mt-1 text-text text-sm wrap-break-word">
+                          <p className="mt-1 wrap-break-word text-sm text-text">
                             {comment.content}
                           </p>
                         </div>
