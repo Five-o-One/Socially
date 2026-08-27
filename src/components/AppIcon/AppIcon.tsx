@@ -19,9 +19,11 @@ import Close from "@/assets/icons/x.svg?raw";
 import Loader from "@/assets/icons/Loader.svg?raw";
 import LogOut from "@/assets/icons/LogOut.svg?raw";
 import type { AppIconProps, NameIcon } from "@/types";
+import ArrowUp from "@/assets/icons/ArrowUp.svg?raw";
 
 /** Named raw SVG assets rendered by `AppIcon`. */
 const icons = {
+  ArrowUp,
   Bell,
   Calendar,
   Chat,

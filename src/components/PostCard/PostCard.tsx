@@ -14,6 +14,7 @@ import { useDeletePost } from "@/hooks/useDeletePost";
 import { useDeleteComment } from "@/hooks/useDeleteComment";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { SearchUsers } from "@/api";
+import { formatRelativeTime } from "@/utils/formatRelativeTime";
 
 /**
  * @component PostCard
@@ -195,7 +196,7 @@ export function PostCard({
                   </span>
 
                   <span className="text-xs text-text-tertiary">
-                    • {post.createdAt}
+                    • {formatRelativeTime(post.createdAt)}{" "}
                   </span>
                 </div>
               </div>
@@ -317,7 +318,7 @@ export function PostCard({
                               </span>
 
                               <span className="text-xs text-text-tertiary">
-                                • {comment.createdAt}
+                                • {formatRelativeTime(comment.createdAt)}{" "}
                               </span>
                             </a>
 

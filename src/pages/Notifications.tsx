@@ -1,6 +1,12 @@
 /** @file Notifications page and unread-notification handling. */
-import { AppCard, NotificationCard, AppPageSpinner } from "@/components";
+import {
+  AppCard,
+  AppButton,
+  NotificationCard,
+  AppPageSpinner,
+} from "@/components";
 import { useNotifications, useMarkNotificationsAsRead } from "@/hooks";
+import { formatRelativeTime } from "@/utils/formatRelativeTime";
 
 /**
  * @component Notifications
@@ -32,6 +38,14 @@ export default function Notifications() {
     markAsRead.mutate([id]);
   };
 
+  const handleMarkAllAsRead = () => {
+    if (unreadCount === 0 || markAsRead.isPending) return;
+
+    markAsRead.mutate(
+      unreadNotifications.map((notification) => notification.id),
+    );
+  };
+
   if (isLoading) {
     return <AppPageSpinner message="Loading notifications..." />;
   }
@@ -52,13 +66,27 @@ export default function Notifications() {
     <AppCard
       noPadding
       header={
-        <div className="flex items-center justify-between px-4 sm:px-5">
-          <h2 className="text-lg font-bold text-text">Notifications</h2>
+        <div className="flex items-center justify-between gap-3 px-4 sm:px-5">
+          <div className="flex items-center gap-3">
+            <h2 className="text-lg font-bold text-text">Notifications</h2>
+
+            {unreadCount > 0 && (
+              <span className="text-xs font-medium text-text-tertiary">
+                {unreadCount} unread
+              </span>
+            )}
+          </div>
 
           {unreadCount > 0 && (
-            <span className="text-xs font-medium text-text-tertiary">
-              {unreadCount} unread
-            </span>
+            <AppButton
+              type="button"
+              variant="secondary"
+              size="sm"
+              onClick={handleMarkAllAsRead}
+              disabled={markAsRead.isPending}
+            >
+              {markAsRead.isPending ? "Marking..." : "Mark all as read"}
+            </AppButton>
           )}
         </div>
       }
@@ -74,15 +102,13 @@ export default function Notifications() {
               <NotificationCard
                 type={
                   notification.type.toLowerCase() as
-                    | "like"
-                    | "comment"
-                    | "follow"
+                    "like" | "comment" | "follow"
                 }
                 isRead={notification.read}
                 userId={notification.creator.id}
                 name={notification.creator.name}
                 avatarSrc={notification.creator.image}
-                time={new Date(notification.createdAt).toLocaleString()}
+                time={formatRelativeTime(notification.createdAt)}
               />
             </div>
           ))

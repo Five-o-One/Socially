@@ -5,6 +5,7 @@ import { Link, NavLink } from "react-router";
 import AppIcon from "@/components/AppIcon/AppIcon";
 import { AppButton } from "@/components/AppButton";
 import { useAppStore } from "@/store";
+import { useNotifications } from "@/hooks";
 
 /**
  * @component AppNavbar
@@ -23,6 +24,12 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const { theme, toggleTheme } = useAppStore();
+
+  const { data: notifications = [] } = useNotifications(isLoggedIn);
+
+  const hasUnreadNotifications = notifications.some(
+    (notification) => !notification.read,
+  );
   const isDarkMode = theme === "dark";
 
   useEffect(() => {
@@ -63,7 +70,7 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
     }`;
 
   return (
-    <header className="sticky top-0 z-40 w-full border-b border-border bg-header backdrop-blur-md">
+    <header className="fixed top-0 left-0 right-0 z-40 w-full border-b border-border/50 bg-header/70 backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-header/55">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link
@@ -79,7 +86,7 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
             type="button"
             onClick={toggleTheme}
             aria-label="Toggle Theme"
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-border bg-card text-text transition-colors hover:bg-border/30"
+            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-border bg-card/70 text-text backdrop-blur-sm transition-colors hover:bg-border/30"
           >
             <AppIcon nameIcon={isDarkMode ? "Moon" : "Light"} size={18} />
           </button>
@@ -92,7 +99,17 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
           {isLoggedIn ? (
             <>
               <NavLink to="/notifications" className={navItemClass}>
-                <AppIcon nameIcon="Bell" size={18} />
+                <span className="relative">
+                  <AppIcon nameIcon="Bell" size={18} />
+
+                  {hasUnreadNotifications && (
+                    <span
+                      aria-label="Unread notifications"
+                      className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-danger ring-2 ring-header"
+                    />
+                  )}
+                </span>
+
                 <span>Notifications</span>
               </NavLink>
 
@@ -129,7 +146,7 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
             type="button"
             onClick={toggleTheme}
             aria-label="Toggle Theme"
-            className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card text-text"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card/70 text-text backdrop-blur-sm"
           >
             <AppIcon nameIcon={isDarkMode ? "Moon" : "Light"} size={18} />
           </button>
@@ -193,12 +210,23 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
                     onClick={closeMenu}
                     className={navItemClass}
                   >
-                    <AppIcon nameIcon="Bell" size={18} />
+                    <span className="relative">
+                      <AppIcon nameIcon="Bell" size={18} />
+
+                      {hasUnreadNotifications && (
+                        <span
+                          aria-label="Unread notifications"
+                          className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-danger ring-2 ring-header"
+                        />
+                      )}
+                    </span>
+
                     <span>Notifications</span>
                   </NavLink>
 
                   <NavLink
                     to={userId ? `/profile/id/${userId}` : "/"}
+                    onClick={closeMenu}
                     className={navItemClass}
                   >
                     <AppIcon nameIcon="Person" size={18} />
