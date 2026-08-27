@@ -13,7 +13,7 @@ interface MarkNotificationsContext {
  * @description Loads notifications for the current user.
  * @returns Notifications query result
  */
-export function useNotifications() {
+export function useNotifications(enabled = true) {
   return useQuery<Notification[]>({
     queryKey: ["notifications"],
     queryFn: async () => {
@@ -26,6 +26,7 @@ export function useNotifications() {
       return response.data.data;
     },
     retry: false,
+    enabled,
   });
 }
 

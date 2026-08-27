@@ -56,18 +56,20 @@ export function NotificationCard({
 
   const getNotificationText = () => {
     const normalizedType = type.toLowerCase();
+
     if (normalizedType === "like") return "liked your post";
     if (normalizedType === "comment") return "commented on your post";
     if (normalizedType === "follow") return "started following you";
+
     return "interacted with your profile";
   };
 
   return (
-    <div className="flex w-full items-start gap-3.5 border-b border-border p-4 transition-colors hover:bg-border/10">
+    <div className="flex w-full items-center gap-3.5 border-b border-border p-4 transition-colors hover:bg-border/10">
+      {" "}
       <Link to={`/profile/id/${userId}`}>
         <AppImage src={avatarSrc || ""} alt={name} variant="circle" size="md" />
       </Link>
-
       <div className="flex-1 min-w-0">
         <div className="flex items-center gap-2">
           <AppIcon
@@ -76,6 +78,7 @@ export function NotificationCard({
             className={config.className}
             isFilled={type.toLowerCase() === "like"}
           />
+
           <p className="text-sm font-medium text-text">
             <Link
               to={`/profile/id/${userId}`}
@@ -83,7 +86,8 @@ export function NotificationCard({
             >
               {name}
             </Link>{" "}
-            {getNotificationText()}
+            {getNotificationText()}{" "}
+            <span className="text-xs text-text-tertiary">· {time}</span>
           </p>
         </div>
 
@@ -98,13 +102,8 @@ export function NotificationCard({
             {commentText}
           </div>
         )}
-
-        <p className="mt-2 text-xs text-text-tertiary">{time}</p>
       </div>
-
-      {!isRead && (
-        <span className="mt-1.5 h-2 w-2 shrink-0 rounded-full bg-brand" />
-      )}
+      {!isRead && <span className="h-2 w-2 shrink-0 rounded-full bg-brand" />}
     </div>
   );
 }

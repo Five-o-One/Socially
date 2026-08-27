@@ -33,3 +33,4 @@ export {
 export { default as AppPortal } from "./AppPortal/AppPortal";
 export { default as ThemeManager } from "./ThemeManager/ThemeManager";
 export { default as AppPageSpinner } from "./AppSpinner/PageLoader";
+export * from "./ScrollToTop";
