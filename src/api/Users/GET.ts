@@ -8,6 +8,7 @@ import type {
   GetUserLikedPostsResponse,
   GetUserProfileResponse,
   GetUserResponse,
+  SearchUsersResponse,
 } from "../../types/Users";
 import type { GetAllPostsResponse } from "../../types/post";
 import __BASE__ from "../base";
@@ -60,6 +61,17 @@ export const GetUserLikedPosts = async (
 ): Promise<AxiosResponse<GetUserLikedPostsResponse>> => {
   const response = await __BASE__.get<GetUserLikedPostsResponse>(
     `/api/users/${id}/likes`,
+  );
+
+  return response;
+};
+
+/** Searches users by name or email. */
+export const SearchUsers = async (
+  query: string,
+): Promise<AxiosResponse<SearchUsersResponse>> => {
+  const response = await __BASE__.get<SearchUsersResponse>(
+    `/api/users/search?q=${encodeURIComponent(query)}`,
   );
 
   return response;

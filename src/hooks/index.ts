@@ -16,3 +16,5 @@ export * from "./useNotifications";
 export * from "./useLogout";
 export * from "./useUserById";
 export * from "./useDeleteComment";
+export * from "./useUserSearch";
+export * from "./useUserByEmail";
