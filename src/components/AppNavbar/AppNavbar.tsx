@@ -6,6 +6,7 @@ import AppIcon from "@/components/AppIcon/AppIcon";
 import { AppButton } from "@/components/AppButton";
 import { useAppStore } from "@/store";
 import { useNotifications } from "@/hooks";
+import AppSearch from "@/components/AppSearch/AppSearch";
 
 /**
  * @component AppNavbar
@@ -79,6 +80,11 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
         >
           Socially
         </Link>
+
+        {/* Search Names Desktop */}
+        <div className="hidden md:block md:max-w-xs md:flex-1 md:mx-4">
+          <AppSearch />
+        </div>
 
         {/* Desktop Navigation */}
         <div className="hidden md:flex md:items-center md:gap-3">
@@ -195,6 +201,11 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
               >
                 <AppIcon nameIcon="Close" size={20} />
               </button>
+            </div>
+
+            {/* Search - Mobile Drawer */}
+            <div className="mt-6">
+              <AppSearch onNavigate={closeMenu} />
             </div>
 
             <nav className="mt-6 flex flex-col gap-3">
