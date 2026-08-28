@@ -95,7 +95,7 @@ export function AppModal({
                 <button
                   type="button"
                   onClick={onClose}
-                  className="p-1 rounded-lg hover:bg-border/40 text-text-secondary hover:text-text transition-colors"
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-border/40 hover:text-text"
                   aria-label="Close modal"
                 >
                   <AppIcon nameIcon="Close" size={20} />

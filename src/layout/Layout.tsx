@@ -149,7 +149,9 @@ export default function Layout() {
                         username={user.username ?? user.email.split("@")[0]}
                         name={user.name}
                         avatarSrc={user.image}
-                        followers={user.count?.followers ?? 0}
+                        followers={
+                          user.count?.followers ?? user._count?.followers ?? 0
+                        }
                         isFollowing={user.isFollowing ?? false}
                         onToggleFollow={() => toggleFollow.mutate(user.id)}
                         isFollowLoading={
