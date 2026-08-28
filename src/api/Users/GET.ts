@@ -4,6 +4,8 @@
  */
 import type { AxiosResponse } from "axios";
 import type {
+  GetFollowersResponse,
+  GetFollowingsResponse,
   GetRecommendedUsersResponse,
   GetUserLikedPostsResponse,
   GetUserProfileResponse,
@@ -72,6 +74,28 @@ export const SearchUsers = async (
 ): Promise<AxiosResponse<SearchUsersResponse>> => {
   const response = await __BASE__.get<SearchUsersResponse>(
     `/api/users/search?q=${encodeURIComponent(query)}`,
+  );
+
+  return response;
+};
+
+/** Fetches followers of a specific user. */
+export const GetFollowers = async (
+  id: string,
+): Promise<AxiosResponse<GetFollowersResponse>> => {
+  const response = await __BASE__.get<GetFollowersResponse>(
+    `/api/users/${id}/followers`,
+  );
+
+  return response;
+};
+
+/** Fetches users followed by a specific user. */
+export const GetFollowings = async (
+  id: string,
+): Promise<AxiosResponse<GetFollowingsResponse>> => {
+  const response = await __BASE__.get<GetFollowingsResponse>(
+    `/api/users/${id}/followings`,
   );
 
   return response;

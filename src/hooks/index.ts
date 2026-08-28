@@ -18,3 +18,5 @@ export * from "./useUserById";
 export * from "./useDeleteComment";
 export * from "./useUserSearch";
 export * from "./useUserByEmail";
+export * from "./useFollowers";
+export * from "./useFollowings";

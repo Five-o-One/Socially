@@ -13,6 +13,7 @@ import AppImage from "./AppImage/AppImage.tsx";
 import AppModal from "./AppModal/AppModal.tsx";
 import NotificationCard from "./notifications/NotifeCard.tsx";
 import PostCard from "./PostCard/PostCard.tsx";
+import FollowListModal from "./AppModal/FollowListModal.tsx";
 
 export {
   AppIcon,
@@ -29,6 +30,7 @@ export {
   NotificationCard,
   PostCard,
   UserRow,
+  FollowListModal,
 };
 export { default as AppPortal } from "./AppPortal/AppPortal";
 export { default as ThemeManager } from "./ThemeManager/ThemeManager";

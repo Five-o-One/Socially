@@ -1,4 +1,3 @@
-/** @file Profile page with profile actions and post/liked-post tabs. */
 import { useState } from "react";
 import { useParams } from "react-router";
 import {
@@ -12,6 +11,7 @@ import {
   AppPageSpinner,
   AppSpinner,
 } from "@/components";
+import { FollowListModal } from "@/components/AppModal/FollowListModal";
 import {
   useCurrentUser,
   useUserProfile,
@@ -24,10 +24,13 @@ import type { UpdateUserProfileDto } from "@/types";
 import type { TabItem } from "@/components/AppTab/AppTab";
 import { useAppStore } from "@/store";
 
-/** Renders profile data, profile actions, and the posts/liked-posts tabs. */
 function ProfileContent({ id, username }: { id?: string; username?: string }) {
   const [activeTab, setActiveTab] = useState("posts");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [isFollowModalOpen, setIsFollowModalOpen] = useState(false);
+  const [followModalTab, setFollowModalTab] = useState<
+    "followers" | "following"
+  >("followers");
 
   const { data: currentUser } = useCurrentUser();
   const isFollowingUser = useAppStore((state) => state.isFollowingUser);
@@ -54,7 +57,6 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
 
   const isOwnProfile = currentUser?.id === user?.id;
 
-  console.log("PROFILE USER:", user);
   const isFollowing =
     user?.isFollowing ?? (user ? isFollowingUser(user.id) : false);
 
@@ -62,6 +64,11 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
     { id: "posts", label: "Posts", icon: "Post" },
     { id: "likes", label: "Likes", icon: "Heart" },
   ];
+
+  const handleOpenFollowModal = (tab: "followers" | "following") => {
+    setFollowModalTab(tab);
+    setIsFollowModalOpen(true);
+  };
 
   const handleFollowToggle = async () => {
     if (!user || toggleFollow.isPending) return;
@@ -137,16 +144,33 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
             @{displayUsername.replace(/^@/, "")}
           </p>
 
+          {/* Stats Bar with Clickable Triggers */}
           <div className="mt-4 flex items-center gap-8 text-sm">
-            <div>
-              <span className="font-bold text-text">{followingCount}</span>{" "}
-              <span className="text-text-secondary">Following</span>
-            </div>
+            <button
+              type="button"
+              onClick={() => handleOpenFollowModal("following")}
+              className="cursor-pointer transition-transform active:scale-95 group"
+            >
+              <span className="font-bold text-text group-hover:underline">
+                {followingCount}
+              </span>{" "}
+              <span className="text-text-secondary group-hover:underline">
+                Following
+              </span>
+            </button>
 
-            <div>
-              <span className="font-bold text-text">{followersCount}</span>{" "}
-              <span className="text-text-secondary">Followers</span>
-            </div>
+            <button
+              type="button"
+              onClick={() => handleOpenFollowModal("followers")}
+              className="cursor-pointer transition-transform active:scale-95 group"
+            >
+              <span className="font-bold text-text group-hover:underline">
+                {followersCount}
+              </span>{" "}
+              <span className="text-text-secondary group-hover:underline">
+                Followers
+              </span>
+            </button>
 
             <div>
               <span className="font-bold text-text">{postsCount}</span>{" "}
@@ -288,14 +312,19 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
           isLoading={updateProfile.isPending}
         />
       )}
+
+      {/* Followers / Following Modal */}
+      <FollowListModal
+        isOpen={isFollowModalOpen}
+        onClose={() => setIsFollowModalOpen(false)}
+        userId={user.id}
+        userName={user.name}
+        initialTab={followModalTab}
+      />
     </div>
   );
 }
 
-/**
- * @component Profile
- * @description Resolves the profile route and renders the matching user profile.
- */
 export default function Profile() {
   const { id, username } = useParams();
 

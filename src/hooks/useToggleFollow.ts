@@ -46,6 +46,12 @@ export function useToggleFollow() {
         queryClient.cancelQueries({
           queryKey: ["user"],
         }),
+        queryClient.cancelQueries({
+          queryKey: ["followers"],
+        }),
+        queryClient.cancelQueries({
+          queryKey: ["followings"],
+        }),
       ]);
 
       const previousRecommendedUsers = queryClient.getQueryData<User[]>([
@@ -264,14 +270,6 @@ export function useToggleFollow() {
     },
 
     onSettled: (_data, _error, userId) => {
-      /*
-       * Do not invalidate user-profile here.
-       *
-       * The GET /api/users/:id response does not contain
-       * isFollowing, so refetching it would overwrite our
-       * local isFollowing state with undefined.
-       */
-
       queryClient.invalidateQueries({
         queryKey: ["recommended-users"],
       });
@@ -282,6 +280,14 @@ export function useToggleFollow() {
 
       queryClient.invalidateQueries({
         queryKey: ["user", userId],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["followers"],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: ["followings"],
       });
     },
   });
