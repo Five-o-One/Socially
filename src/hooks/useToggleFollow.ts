@@ -160,7 +160,7 @@ export function useToggleFollow() {
           };
         };
 
-        for (const [queryKey, profile] of previousProfiles) {
+        for (const [queryKey] of previousProfiles) {
           queryClient.setQueryData<User>(queryKey, updateCurrentUserProfile);
         }
       }
