@@ -89,6 +89,9 @@ export function useToggleFollow() {
 
       /*
        * Optimistically update the target user's profile.
+       *
+       * The target profile represents the person being followed/unfollowed,
+       * so only their followers count changes.
        */
       for (const [queryKey, profile] of previousProfiles) {
         if (!profile || profile.id !== userId) continue;
@@ -110,6 +113,56 @@ export function useToggleFollow() {
             followers: nextFollowers,
           },
         });
+      }
+
+      /*
+       * Optimistically update the current user's profile.
+       *
+       * When we are viewing our own profile, this is the cache used by
+       * useUserProfile, so the Following count changes immediately.
+       */
+      if (currentUserId) {
+        const updateCurrentUserProfile = (
+          profile: User | undefined,
+        ): User | undefined => {
+          if (!profile || profile.id !== currentUserId) {
+            return profile;
+          }
+
+          const following =
+            profile._count?.following ??
+            profile._count?.followings ??
+            profile.count?.following ??
+            profile.count?.followings ??
+            0;
+
+          const nextFollowingCount = Math.max(
+            0,
+            following + (nextFollowing ? 1 : -1),
+          );
+
+          return {
+            ...profile,
+            _count: {
+              ...profile._count,
+              followers:
+                profile._count?.followers ?? profile.count?.followers ?? 0,
+              following: nextFollowingCount,
+              followings: nextFollowingCount,
+            },
+            count: {
+              ...profile.count,
+              followers:
+                profile.count?.followers ?? profile._count?.followers ?? 0,
+              following: nextFollowingCount,
+              followings: nextFollowingCount,
+            },
+          };
+        };
+
+        for (const [queryKey, profile] of previousProfiles) {
+          queryClient.setQueryData<User>(queryKey, updateCurrentUserProfile);
+        }
       }
 
       /*
@@ -145,8 +198,9 @@ export function useToggleFollow() {
       });
 
       /*
-       * Optimistically update the logged-in user's following count
-       * exactly once.
+       * Optimistically update the logged-in user's user cache.
+       *
+       * This is what the sidebar reads through useUserById().
        */
       if (currentUserId) {
         const updateCurrentUser = (user: User | undefined) => {
@@ -229,7 +283,8 @@ export function useToggleFollow() {
     },
 
     onSuccess: (data, userId) => {
-      const isFollowing = data.message === "User followed successfully";
+      const isFollowing = data.data.isFollowing;
+
       toast.success(
         isFollowing
           ? "User followed successfully"
@@ -242,17 +297,25 @@ export function useToggleFollow() {
         unfollowUser(userId);
       }
 
+      /*
+       * Sync relationship state after the server confirms the mutation.
+       */
       const profileQueries = queryClient.getQueriesData<User>({
         queryKey: ["user-profile"],
       });
 
       for (const [queryKey, profile] of profileQueries) {
-        if (!profile || profile.id !== userId) continue;
+        if (!profile) continue;
 
-        queryClient.setQueryData<User>(queryKey, {
-          ...profile,
-          isFollowing,
-        });
+        /*
+         * Target user's relationship state.
+         */
+        if (profile.id === userId) {
+          queryClient.setQueryData<User>(queryKey, {
+            ...profile,
+            isFollowing,
+          });
+        }
       }
 
       queryClient.setQueryData<User[]>(["recommended-users"], (users) => {
@@ -280,6 +343,14 @@ export function useToggleFollow() {
 
       queryClient.invalidateQueries({
         queryKey: ["user", userId],
+      });
+
+      /*
+       * Re-fetch all profile queries so the optimistic count is eventually
+       * replaced by the authoritative server value.
+       */
+      queryClient.invalidateQueries({
+        queryKey: ["user-profile"],
       });
 
       queryClient.invalidateQueries({
