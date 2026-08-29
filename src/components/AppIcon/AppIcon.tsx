@@ -20,6 +20,7 @@ import Loader from "@/assets/icons/Loader.svg?raw";
 import LogOut from "@/assets/icons/LogOut.svg?raw";
 import type { AppIconProps, NameIcon } from "@/types";
 import ArrowUp from "@/assets/icons/ArrowUp.svg?raw";
+import Search from "@/assets/icons/Search.svg?raw";
 
 /** Named raw SVG assets rendered by `AppIcon`. */
 const icons = {
@@ -37,6 +38,7 @@ const icons = {
   Moon,
   Person,
   Post,
+  Search,
   Send,
   Trash,
   Menu,

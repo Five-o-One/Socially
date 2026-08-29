@@ -8,13 +8,6 @@ import { useAppStore } from "@/store";
 import { useNotifications } from "@/hooks";
 import AppSearch from "@/components/AppSearch/AppSearch";
 
-/**
- * @component AppNavbar
- * @description Responsive navigation bar for authenticated and guest users.
- * @prop {boolean} isLoggedIn - Whether authenticated navigation is shown
- * @prop {string} [userId] - Current user ID used for the profile link
- * @prop {() => void} [onLogout] - Callback invoked when the user chooses to log out
- */
 interface AppNavbarProps {
   isLoggedIn: boolean;
   userId?: string;
@@ -31,6 +24,7 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
   const hasUnreadNotifications = notifications.some(
     (notification) => !notification.read,
   );
+
   const isDarkMode = theme === "dark";
 
   useEffect(() => {
@@ -64,83 +58,88 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
   };
 
   const navItemClass = ({ isActive }: { isActive: boolean }) =>
-    `flex items-center gap-2 px-3 py-2 rounded-lg text-sm font-medium transition-colors ${
+    `flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
       isActive
-        ? "text-text font-bold bg-border/40"
-        : "text-text-secondary hover:text-text hover:bg-border/20"
+        ? "bg-border/40 font-bold text-text"
+        : "text-text-secondary hover:bg-border/20 hover:text-text"
     }`;
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-40 w-full border-b border-border/50 bg-header/70 backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-header/55">
+    <header className="fixed left-0 right-0 top-0 z-40 w-full border-b border-border/50 bg-header/70 backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-header/55">
       <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
         {/* Logo */}
         <Link
           to="/"
-          className="text-xl font-mono font-bold tracking-tight text-text"
+          className="shrink-0 font-mono text-xl font-bold tracking-tight text-text"
         >
           Socially
         </Link>
 
-        {/* Search Names Desktop */}
-        <div className="hidden md:block md:max-w-xs md:flex-1 md:mx-4">
-          <AppSearch />
-        </div>
-
         {/* Desktop Navigation */}
-        <div className="hidden md:flex md:items-center md:gap-3">
-          <button
-            type="button"
-            onClick={toggleTheme}
-            aria-label="Toggle Theme"
-            className="flex h-9 w-9 cursor-pointer items-center justify-center rounded-lg border border-border bg-card/70 text-text backdrop-blur-sm transition-colors hover:bg-border/30"
-          >
-            <AppIcon nameIcon={isDarkMode ? "Moon" : "Light"} size={18} />
-          </button>
-
+        <div className="hidden items-center gap-2 md:flex">
+          {/* Primary navigation */}
           <NavLink to="/" className={navItemClass}>
             <AppIcon nameIcon="Home" size={18} />
             <span>Home</span>
           </NavLink>
 
+          {/* Search */}
+          <AppSearch />
+
+          {/* Notifications */}
+          {isLoggedIn && (
+            <NavLink to="/notifications" className={navItemClass}>
+              <span className="relative">
+                <AppIcon nameIcon="Bell" size={18} />
+
+                {hasUnreadNotifications && (
+                  <span
+                    aria-label="Unread notifications"
+                    className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-danger ring-2 ring-header"
+                  />
+                )}
+              </span>
+
+              <span>Notifications</span>
+            </NavLink>
+          )}
+
+          {/* Profile */}
+          {isLoggedIn && (
+            <NavLink
+              to={userId ? `/profile/id/${userId}` : "/"}
+              className={navItemClass}
+            >
+              <AppIcon nameIcon="Person" size={18} />
+              <span>Profile</span>
+            </NavLink>
+          )}
+
+          {/* Theme */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-border bg-card/70 text-text backdrop-blur-sm transition-colors hover:bg-border/30"
+          >
+            <AppIcon nameIcon={isDarkMode ? "Moon" : "Light"} size={18} />
+          </button>
+
+          {/* Logout */}
           {isLoggedIn ? (
-            <>
-              <NavLink to="/notifications" className={navItemClass}>
-                <span className="relative">
-                  <AppIcon nameIcon="Bell" size={18} />
-
-                  {hasUnreadNotifications && (
-                    <span
-                      aria-label="Unread notifications"
-                      className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-danger ring-2 ring-header"
-                    />
-                  )}
-                </span>
-
-                <span>Notifications</span>
-              </NavLink>
-
-              <NavLink
-                to={userId ? `/profile/id/${userId}` : "/"}
-                className={navItemClass}
-              >
-                <AppIcon nameIcon="Person" size={18} />
-                <span>Profile</span>
-              </NavLink>
-
-              <AppButton
-                variant="ghost"
-                size="sm"
-                icon="LogOut"
-                onClick={onLogout}
-                className="cursor-pointer text-text-secondary hover:text-danger"
-              >
-                LogOut
-              </AppButton>
-            </>
+            <AppButton
+              variant="ghost"
+              size="sm"
+              icon="LogOut"
+              onClick={onLogout}
+              className="cursor-pointer text-text-secondary hover:text-danger"
+            >
+              Log Out
+            </AppButton>
           ) : (
             <Link to="/login">
               <AppButton variant="primary" size="md">
-                Sign in
+                Sign In
               </AppButton>
             </Link>
           )}
@@ -151,7 +150,7 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
           <button
             type="button"
             onClick={toggleTheme}
-            aria-label="Toggle Theme"
+            aria-label="Toggle theme"
             className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card/70 text-text backdrop-blur-sm"
           >
             <AppIcon nameIcon={isDarkMode ? "Moon" : "Light"} size={18} />
@@ -163,6 +162,7 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
             variant="ghost"
             onClick={() => setIsMenuOpen(true)}
             className="border border-border"
+            aria-label="Open menu"
           />
         </div>
       </div>
@@ -172,8 +172,8 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
         <div
           className={`fixed inset-0 z-50 transition-all duration-300 md:hidden ${
             isMenuOpen
-              ? "visible pointer-events-auto"
-              : "invisible pointer-events-none"
+              ? "pointer-events-auto visible"
+              : "pointer-events-none invisible"
           }`}
         >
           {/* Backdrop */}
@@ -186,10 +186,11 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
 
           {/* Drawer */}
           <div
-            className={`fixed top-0 right-0 h-full w-3/4 max-w-xs overflow-y-auto border-l border-border bg-card p-6 shadow-2xl transition-transform duration-300 ease-in-out ${
+            className={`fixed right-0 top-0 h-full w-3/4 max-w-xs overflow-y-auto border-l border-border bg-card p-6 shadow-2xl transition-transform duration-300 ease-in-out ${
               isMenuOpen ? "translate-x-0" : "translate-x-full"
             }`}
           >
+            {/* Drawer Header */}
             <div className="flex items-center justify-between border-b border-border pb-6">
               <span className="font-bold text-text">Menu</span>
 
@@ -203,11 +204,12 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
               </button>
             </div>
 
-            {/* Search - Mobile Drawer */}
+            {/* Mobile Search */}
             <div className="mt-6">
               <AppSearch onNavigate={closeMenu} />
             </div>
 
+            {/* Mobile Navigation */}
             <nav className="mt-6 flex flex-col gap-3">
               <NavLink to="/" onClick={closeMenu} className={navItemClass}>
                 <AppIcon nameIcon="Home" size={18} />

@@ -16,6 +16,7 @@ export type NameIcon =
   | "Moon"
   | "Person"
   | "Post"
+  | "Search"
   | "Send"
   | "Trash"
   | "Menu"
