@@ -1,39 +1,17 @@
+/** @file Reusable content card with optional header and footer regions. */
 import { type ReactNode } from "react";
 
 /**
  * @component AppCard
- * @description Container card component with optional header, footer, and interactive states
- *
- * @prop {ReactNode} children - Main content of the card
- * @prop {ReactNode} [header] - Optional header section content
- * @prop {ReactNode} [footer] - Optional footer section content
- * @prop {boolean} [hoverable=false] - Whether the card has hover effects (shadow and scale)
- * @prop {boolean} [noPadding=false] - Removes internal padding from the card
+ * @description Reusable content container with optional header, footer, padding, border, and click behavior.
+ * @prop {ReactNode} children - Main card content
+ * @prop {ReactNode} [header] - Optional content above the body
+ * @prop {ReactNode} [footer] - Optional content below the body
+ * @prop {boolean} [hoverable=false] - Enables hover styling
+ * @prop {boolean} [noPadding=false] - Removes default padding
  * @prop {boolean} [borderless=false] - Removes the card border
- * @prop {() => void} [onClick] - Click handler for the entire card
- * @prop {string} [className] - Additional Tailwind CSS classes
- *
- * @example
- * // Basic card with default padding and border
- * <AppCard>
- *   <p>Card content</p>
- * </AppCard>
- *
- * @example
- * // Card with header, footer, and hover effect
- * <AppCard
- *   header={<h3>Title</h3>}
- *   footer={<button>Read More</button>}
- *   hoverable
- * >
- *   <p>Card content goes here</p>
- * </AppCard>
- *
- * @example
- * // Card without padding and border
- * <AppCard noPadding borderless>
- *   <div className="p-4">Custom content with internal padding</div>
- * </AppCard>
+ * @prop {() => void} [onClick] - Card click handler
+ * @prop {string} [className] - Additional CSS classes
  */
 interface AppCardProps {
   children: ReactNode;
@@ -56,8 +34,8 @@ export function AppCard({
   onClick,
   className = "",
 }: AppCardProps) {
-  // Base card styles
   const baseClasses = `
+    shadow-card
     bg-card rounded-2xl
     transition-all duration-200 ease-in-out
     ${!borderless ? "border border-border" : ""}
@@ -65,10 +43,8 @@ export function AppCard({
     ${onClick ? "cursor-pointer" : ""}
   `;
 
-  // Padding class - removed when noPadding is true
   const paddingClass = noPadding ? "p-0" : "p-4 sm:p-5";
 
-  // Combine all classes
   const combinedClassName = `
     ${baseClasses}
     ${paddingClass}
@@ -79,7 +55,6 @@ export function AppCard({
 
   return (
     <div className={combinedClassName} onClick={onClick}>
-      {/* Card Header - displayed if provided */}
       {header && (
         <div
           className={`
@@ -91,10 +66,8 @@ export function AppCard({
         </div>
       )}
 
-      {/* Card Main Content */}
       <div>{children}</div>
 
-      {/* Card Footer - displayed if provided */}
       {footer && (
         <div
           className={`

@@ -1,35 +1,19 @@
+/** @file Base modal panel with portal rendering and dismissal behavior. */
 import { type ReactNode, useEffect } from "react";
-import { IoClose } from "react-icons/io5";
+import AppIcon from "@/components/AppIcon/AppIcon";
+import AppPortal from "@/components/AppPortal/AppPortal";
 
 /**
  * @component AppModal
- * @description Reusable modal component with animations, close button, and responsive design
- *
- * @prop {boolean} isOpen - Controls modal visibility state
- * @prop {() => void} onClose - Callback function to close the modal
- * @prop {ReactNode} children - Content to be displayed inside the modal
- * @prop {string} [title] - Modal title text (optional)
- * @prop {ReactNode} [footer] - Custom footer content (optional)
- * @prop {boolean} [closeOnOutsideClick=true] - Close modal when clicking outside
- * @prop {boolean} [showCloseButton=true] - Show/hide the close button
- * @prop {string} [className] - Additional CSS classes for customization
- *
- * @example
- * // Basic modal with title
- * <AppModal isOpen={isOpen} onClose={() => setIsOpen(false)} title="Modal Title">
- *   <p>Modal content goes here</p>
- * </AppModal>
- *
- * @example
- * // Modal with custom footer
- * <AppModal
- *   isOpen={isOpen}
- *   onClose={onClose}
- *   title="Confirm Action"
- *   footer={<AppButton variant="danger">Delete</AppButton>}
- * >
- *   <p>Are you sure you want to delete this item?</p>
- * </AppModal>
+ * @description Portal-based modal with escape-key, backdrop, body, and footer behavior.
+ * @prop {boolean} isOpen - Controls visibility
+ * @prop {() => void} onClose - Closes the modal
+ * @prop {ReactNode} children - Modal body content
+ * @prop {string} [title] - Optional heading
+ * @prop {ReactNode} [footer] - Optional footer actions
+ * @prop {boolean} [closeOnOutsideClick=true] - Enables backdrop dismissal
+ * @prop {boolean} [showCloseButton=true] - Shows the close button
+ * @prop {string} [className] - Additional panel classes
  */
 interface AppModalProps {
   isOpen: boolean;
@@ -52,20 +36,18 @@ export function AppModal({
   showCloseButton = true,
   className = "",
 }: AppModalProps) {
-  // Prevent body scroll when modal is open
   useEffect(() => {
-    if (isOpen) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "unset";
-    }
+    if (!isOpen) return;
+
+    document.documentElement.classList.add("scroll-locked");
+    document.body.classList.add("scroll-locked");
 
     return () => {
-      document.body.style.overflow = "unset";
+      document.documentElement.classList.remove("scroll-locked");
+      document.body.classList.remove("scroll-locked");
     };
   }, [isOpen]);
 
-  // Close modal when Escape key is pressed
   useEffect(() => {
     const handleEscape = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isOpen) {
@@ -77,7 +59,6 @@ export function AppModal({
     return () => document.removeEventListener("keydown", handleEscape);
   }, [isOpen, onClose]);
 
-  // Close modal when clicking outside
   const handleOutsideClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (closeOnOutsideClick && e.target === e.currentTarget) {
       onClose();
@@ -87,53 +68,54 @@ export function AppModal({
   if (!isOpen) return null;
 
   return (
-    <div
-      className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm"
-      onClick={handleOutsideClick}
-      role="dialog"
-      aria-modal="true"
-      aria-labelledby={title ? "modal-title" : undefined}
-    >
+    <AppPortal>
       <div
-        className={`
-          bg-card rounded-lg shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto
-          animate-in fade-in slide-in-from-bottom-4 duration-300 ease-out
+        className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-200"
+        onClick={handleOutsideClick}
+        role="dialog"
+        aria-modal="true"
+      >
+        <div
+          className={`
+          bg-card rounded-2xl border border-border shadow-2xl max-w-lg w-full max-h-[90vh] overflow-y-auto
+          scale-100 transition-all
           ${className}
         `
-          .trim()
-          .replace(/\s+/g, " ")}
-      >
-        {/* Modal Header */}
-        {(title || showCloseButton) && (
-          <div className="flex items-center justify-between p-4 border-b border-border">
-            {title && (
-              <h3 id="modal-title" className="text-lg font-bold text-text">
-                {title}
-              </h3>
-            )}
-            {showCloseButton && (
-              <button
-                onClick={onClose}
-                className="p-1 rounded-full hover:bg-border/50 transition-colors"
-                aria-label="Close modal"
-              >
-                <IoClose className="w-6 h-6 text-text-secondary" />
-              </button>
-            )}
-          </div>
-        )}
+            .trim()
+            .replace(/\s+/g, " ")}
+        >
+          {/* Header */}
+          {(title || showCloseButton) && (
+            <div className="flex items-center justify-between p-4 sm:p-5 border-b border-border">
+              {title && (
+                <h3 className="text-lg font-bold text-text">{title}</h3>
+              )}
 
-        {/* Modal Content */}
-        <div className="p-4 sm:p-6">{children}</div>
+              {showCloseButton && (
+                <button
+                  type="button"
+                  onClick={onClose}
+                  className="flex h-8 w-8 items-center justify-center rounded-lg text-text-secondary transition-colors hover:bg-border/40 hover:text-text"
+                  aria-label="Close modal"
+                >
+                  <AppIcon nameIcon="Close" size={20} />
+                </button>
+              )}
+            </div>
+          )}
 
-        {/* Modal Footer */}
-        {footer && (
-          <div className="p-4 border-t border-border flex flex-wrap justify-end gap-2">
-            {footer}
-          </div>
-        )}
+          {/* Body */}
+          <div className="p-4 sm:p-6">{children}</div>
+
+          {/* Footer */}
+          {footer && (
+            <div className="p-4 sm:p-5 border-t border-border flex flex-wrap justify-end gap-3">
+              {footer}
+            </div>
+          )}
+        </div>
       </div>
-    </div>
+    </AppPortal>
   );
 }
 

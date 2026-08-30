@@ -1,0 +1,26 @@
+#!/bin/sh
+# File: Prevents protected-branch pushes and validates feature/fix branch names.
+
+branch_name=$(git branch --show-current)
+
+if [ -z "$branch_name" ]; then
+  echo "❌ Cannot detect current branch."
+  exit 1
+fi
+
+# Block pushing to protected branches
+case "$branch_name" in
+  main|develop|deploy)
+    echo "❌ You cannot push to '$branch_name' branch."
+    exit 1
+    ;;
+esac
+
+# Branch name must start with fix/ or feat/
+if ! echo "$branch_name" | grep -Eq '^(fix|feat)\/.+$'; then
+  echo "❌ Invalid branch name: $branch_name"
+  echo "✅ Branch name must start with 'fix/' or 'feat/'"
+  exit 1
+fi
+
+exit 0

@@ -1,61 +1,111 @@
-// components/notifications/NotifeCard.tsx
-import { AppImage } from "../AppImage";
-import AppIcon from "../AppIcon/AppIcon";
-import {
-  ICON_BY_TYPE,
-  NOTIFICATION_MESSAGES,
-} from "../../constants/Notifiction";
+/** @file Notification list item with type-specific icon and content. */
+import { Link } from "react-router";
+import { AppImage } from "@/components/AppImage";
+import AppIcon from "@/components/AppIcon/AppIcon";
+import type { NameIcon } from "@/types";
 
-type NotificationType = "follow" | "like" | "comment";
-
-interface NotifeCardProps {
-  type: NotificationType;
-  isRead: boolean;
+/**
+ * @component NotificationCard
+ * @description Displays one notification with its type-specific icon, message, and read state.
+ * @prop {'like' | 'comment' | 'follow'} type - Notification category
+ * @prop {boolean} [isRead=false] - Whether the notification has been read
+ * @prop {string} userId - ID used for the creator profile link
+ * @prop {string} name - Creator display name
+ * @prop {string | null} [avatarSrc] - Creator avatar URL
+ * @prop {string} time - Formatted notification time
+ * @prop {string | null} [postText] - Related post excerpt
+ * @prop {string | null} [commentText] - Related comment excerpt
+ */
+interface NotificationCardProps {
+  type: "like" | "comment" | "follow";
+  isRead?: boolean;
+  userId: string;
   name: string;
-  avatarSrc: string;
+  avatarSrc?: string | null;
   time: string;
-  postText?: string;
-  commentText?: string;
+  postText?: string | null;
+  commentText?: string | null;
 }
 
-export default function NotifeCard({
+const NOTIFICATION_ICONS: Record<
+  string,
+  { icon: NameIcon; className: string }
+> = {
+  LIKE: { icon: "Heart", className: "text-danger" },
+  like: { icon: "Heart", className: "text-danger" },
+  COMMENT: { icon: "Chat", className: "text-brand" },
+  comment: { icon: "Chat", className: "text-brand" },
+  FOLLOW: { icon: "Person", className: "text-text" },
+  follow: { icon: "Person", className: "text-text" },
+};
+
+export function NotificationCard({
   type,
-  isRead,
+  isRead = false,
+  userId,
   name,
   avatarSrc,
   time,
   postText,
   commentText,
-}: NotifeCardProps) {
-  const message = NOTIFICATION_MESSAGES[type](name);
-  const { icon, className } = ICON_BY_TYPE[type];
+}: NotificationCardProps) {
+  const config = NOTIFICATION_ICONS[type] || {
+    icon: "Bell",
+    className: "text-brand",
+  };
+
+  const getNotificationText = () => {
+    const normalizedType = type.toLowerCase();
+
+    if (normalizedType === "like") return "liked your post";
+    if (normalizedType === "comment") return "commented on your post";
+    if (normalizedType === "follow") return "started following you";
+
+    return "interacted with your profile";
+  };
 
   return (
-    <div className="w-full flex items-start gap-4 border-b border-border pt-4 pb-4.25 px-4">
-      <AppImage src={avatarSrc} alt={name} variant="circle" size="sm" />
-
+    <div className="flex w-full items-center gap-3.5 border-b border-border p-4 transition-colors hover:bg-border/10">
+      {" "}
+      <Link to={`/profile/id/${userId}`}>
+        <AppImage src={avatarSrc || ""} alt={name} variant="circle" size="md" />
+      </Link>
       <div className="flex-1 min-w-0">
-        <div className="flex items-center gap-1.5">
-          <AppIcon nameIcon={icon} size={16} className={className} />
-          <p className="text-text text-sm">{message}</p>
+        <div className="flex items-center gap-2">
+          <AppIcon
+            nameIcon={config.icon}
+            size={16}
+            className={config.className}
+            isFilled={type.toLowerCase() === "like"}
+          />
+
+          <p className="text-sm font-medium text-text">
+            <Link
+              to={`/profile/id/${userId}`}
+              className="font-bold hover:underline"
+            >
+              {name}
+            </Link>{" "}
+            {getNotificationText()}{" "}
+            <span className="text-xs text-text-tertiary">· {time}</span>
+          </p>
         </div>
 
         {postText && (
-          <div className="w-full mt-2 bg-border/40 rounded-md p-2 text-text-secondary text-sm">
+          <div className="mt-2 rounded-lg bg-border/30 p-2.5 text-xs sm:text-sm text-text-secondary">
             {postText}
           </div>
         )}
 
-        {type === "comment" && commentText && (
-          <div className="w-full mt-2 bg-border/80 rounded-md p-2 text-text text-sm">
+        {commentText && (
+          <div className="mt-2 rounded-lg bg-border/60 p-2.5 text-xs sm:text-sm text-text">
             {commentText}
           </div>
         )}
-
-        <p className="text-text-tertiary text-xs mt-1">{time}</p>
       </div>
-
-      {!isRead && <span className="size-2 rounded-full bg-brand mt-1" />}
+      {!isRead && <span className="h-2 w-2 shrink-0 rounded-full bg-brand" />}
     </div>
   );
 }
+
+export default NotificationCard;

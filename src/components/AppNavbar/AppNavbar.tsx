@@ -1,171 +1,276 @@
-import { useState } from "react";
-import AppIcon from "../AppIcon/AppIcon";
-import { AppButton } from "../AppButton";
-import { NavLink } from "react-router";
+/** @file Responsive application navigation for guest and authenticated users. */
+import { useState, useEffect } from "react";
+import AppPortal from "@/components/AppPortal/AppPortal";
+import { Link, NavLink } from "react-router";
+import AppIcon from "@/components/AppIcon/AppIcon";
+import { AppButton } from "@/components/AppButton";
+import { useAppStore } from "@/store";
+import { useNotifications } from "@/hooks";
+import AppSearch from "@/components/AppSearch/AppSearch";
 
-export default function AppNavbar() {
+interface AppNavbarProps {
+  isLoggedIn: boolean;
+  userId?: string;
+  onLogout?: () => void;
+}
+
+export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [isLoggedIn] = useState(false);
+
+  const { theme, toggleTheme } = useAppStore();
+
+  const { data: notifications = [] } = useNotifications(isLoggedIn);
+
+  const hasUnreadNotifications = notifications.some(
+    (notification) => !notification.read,
+  );
+
+  const isDarkMode = theme === "dark";
+
+  useEffect(() => {
+    const handleEscape = (event: KeyboardEvent) => {
+      if (event.key === "Escape" && isMenuOpen) {
+        setIsMenuOpen(false);
+      }
+    };
+
+    document.addEventListener("keydown", handleEscape);
+
+    return () => {
+      document.removeEventListener("keydown", handleEscape);
+    };
+  }, [isMenuOpen]);
+
+  useEffect(() => {
+    if (!isMenuOpen) return;
+
+    document.documentElement.classList.add("scroll-locked");
+    document.body.classList.add("scroll-locked");
+
+    return () => {
+      document.documentElement.classList.remove("scroll-locked");
+      document.body.classList.remove("scroll-locked");
+    };
+  }, [isMenuOpen]);
+
+  const closeMenu = () => {
+    setIsMenuOpen(false);
+  };
+
+  const navItemClass = ({ isActive }: { isActive: boolean }) =>
+    `flex items-center gap-2 rounded-lg px-3 py-2 text-sm font-medium transition-colors ${
+      isActive
+        ? "bg-border/40 font-bold text-text"
+        : "text-text-secondary hover:bg-border/20 hover:text-text"
+    }`;
+
   return (
-    <div className="flex flex-row items-center justify-between w-full h-17 bg-header border border-border lg:px-60 md:px-3 px-2">
-      <a className="text-xl font-mono font-bold" href="/">
-        Socially
-      </a>
-      <div className="flex flex-row gap-4">
-        <div className="md:hidden">
+    <header className="fixed left-0 right-0 top-0 z-40 w-full border-b border-border/50 bg-header/70 backdrop-blur-xl backdrop-saturate-150 supports-[backdrop-filter]:bg-header/55">
+      <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-4 sm:px-6 lg:px-8">
+        {/* Logo */}
+        <Link
+          to="/"
+          className="shrink-0 font-mono text-xl font-bold tracking-tight text-text"
+        >
+          Socially
+        </Link>
+
+        {/* Desktop Navigation */}
+        <div className="hidden items-center gap-2 md:flex">
+          {/* Primary navigation */}
+          <NavLink to="/" className={navItemClass}>
+            <AppIcon nameIcon="Home" size={18} />
+            <span>Home</span>
+          </NavLink>
+
+          {/* Search */}
+          <AppSearch />
+
+          {/* Notifications */}
+          {isLoggedIn && (
+            <NavLink to="/notifications" className={navItemClass}>
+              <span className="relative">
+                <AppIcon nameIcon="Bell" size={18} />
+
+                {hasUnreadNotifications && (
+                  <span
+                    aria-label="Unread notifications"
+                    className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-danger ring-2 ring-header"
+                  />
+                )}
+              </span>
+
+              <span>Notifications</span>
+            </NavLink>
+          )}
+
+          {/* Profile */}
+          {isLoggedIn && (
+            <NavLink
+              to={userId ? `/profile/id/${userId}` : "/"}
+              className={navItemClass}
+            >
+              <AppIcon nameIcon="Person" size={18} />
+              <span>Profile</span>
+            </NavLink>
+          )}
+
+          {/* Theme */}
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-border bg-card/70 text-text backdrop-blur-sm transition-colors hover:bg-border/30"
+          >
+            <AppIcon nameIcon={isDarkMode ? "Moon" : "Light"} size={18} />
+          </button>
+
+          {/* Logout */}
+          {isLoggedIn ? (
+            <AppButton
+              variant="ghost"
+              size="sm"
+              icon="LogOut"
+              onClick={onLogout}
+              className="cursor-pointer text-text-secondary hover:text-danger"
+            >
+              Log Out
+            </AppButton>
+          ) : (
+            <Link to="/login">
+              <AppButton variant="primary" size="md">
+                Sign In
+              </AppButton>
+            </Link>
+          )}
+        </div>
+
+        {/* Mobile Actions */}
+        <div className="flex items-center gap-2 md:hidden">
+          <button
+            type="button"
+            onClick={toggleTheme}
+            aria-label="Toggle theme"
+            className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card/70 text-text backdrop-blur-sm"
+          >
+            <AppIcon nameIcon={isDarkMode ? "Moon" : "Light"} size={18} />
+          </button>
+
           <AppButton
-            icon="Light"
+            icon="Menu"
             size="md"
             variant="ghost"
-            className="md:hidden border border-border shadow-sm"
+            onClick={() => setIsMenuOpen(true)}
+            className="border border-border"
+            aria-label="Open menu"
           />
         </div>
-        <AppButton
-          icon="Menu"
-          size="md"
-          variant="primary"
-          onClick={() => setIsMenuOpen(true)}
-          className="md:hidden"
-        />
       </div>
-      {/* desktop nav */}
-      <div className="hidden md:flex flex-row items-center gap-4">
-        {isLoggedIn ? (
-          <>
-            <AppButton
-              icon="Light"
-              size="md"
-              variant="ghost"
-              className="border border-border shadow-sm cursor-pointer"
-            ></AppButton>
-            <NavLink to="/">
-              <AppButton
-                size="md"
-                icon="Home"
-                variant="ghost"
-                className="cursor-pointer"
+
+      {/* Mobile Drawer */}
+      <AppPortal>
+        <div
+          className={`fixed inset-0 z-50 transition-all duration-300 md:hidden ${
+            isMenuOpen
+              ? "pointer-events-auto visible"
+              : "pointer-events-none invisible"
+          }`}
+        >
+          {/* Backdrop */}
+          <div
+            className={`fixed inset-0 bg-black/60 backdrop-blur-sm transition-opacity duration-300 ${
+              isMenuOpen ? "opacity-100" : "opacity-0"
+            }`}
+            onClick={closeMenu}
+          />
+
+          {/* Drawer */}
+          <div
+            className={`fixed right-0 top-0 h-full w-3/4 max-w-xs overflow-y-auto border-l border-border bg-card p-6 shadow-2xl transition-transform duration-300 ease-in-out ${
+              isMenuOpen ? "translate-x-0" : "translate-x-full"
+            }`}
+          >
+            {/* Drawer Header */}
+            <div className="flex items-center justify-between border-b border-border pb-6">
+              <span className="font-bold text-text">Menu</span>
+
+              <button
+                type="button"
+                onClick={closeMenu}
+                aria-label="Close menu"
+                className="cursor-pointer rounded-lg p-1 text-text-secondary transition-colors hover:bg-border/30 hover:text-text"
               >
-                Home
-              </AppButton>
-            </NavLink>
-            <NavLink to="/notifications">
-              <AppButton
-                size="md"
-                icon="Bell"
-                variant="ghost"
-                className="cursor-pointer"
-              >
-                Notification
-              </AppButton>
-            </NavLink>
-            <NavLink to="/profile/:username">
-              <AppButton
-                size="md"
-                icon="Person"
-                variant="ghost"
-                className="cursor-pointer"
-              >
-                Profile
-              </AppButton>
-            </NavLink>
-            <NavLink to="/">
-              <AppButton icon="LogOut" variant="ghost"></AppButton>
-            </NavLink>
-          </>
-        ) : (
-          <>
-            <AppButton
-              icon="Light"
-              size="md"
-              variant="ghost"
-              className="border border-border shadow-sm cursor-pointer"
-            ></AppButton>
-            <NavLink to={"/"}>
-              <AppButton
-                size="md"
-                icon="Home"
-                variant="ghost"
-                className="cursor-pointer"
-              >
-                Home
-              </AppButton>
-            </NavLink>
-            <NavLink to="/profile/:username">
-              <AppButton size="md" className="cursor-pointer">
-                Sign in
-              </AppButton>
-            </NavLink>
-          </>
-        )}
-      </div>
-      <div
-        className={`fixed inset-0 bg-black/40 transition-opacity duration-300 z-40 ${isMenuOpen ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"}`}
-        onClick={() => setIsMenuOpen(false)}
-      ></div>
-      <div
-        className={`fixed top-0 right-0 h-full w-4/6 bg-card border-l border-border z-50 transition-transform duration-300 ease-in-out ${
-          isMenuOpen ? "translate-x-0" : "translate-x-full"
-        }`}
-      >
-        <div className="flex flex-col gap-4 p-4">
-          <div className="flex flex-row justify-between">
-            <h2 className="font-semibold">Menu</h2>
-            <button onClick={() => setIsMenuOpen(false)}>
-              <AppIcon nameIcon="Close" size={24} />
-            </button>
-          </div>
-          {/* mobile nav */}
-          <div className="flex flex-col items-center gap-5">
-            {isLoggedIn ? (
-              <>
-                <NavLink to="/">
-                  <AppButton
-                    icon="Home"
-                    variant="ghost"
-                    className="flex items-center gap-2 text-sm font-medium"
+                <AppIcon nameIcon="Close" size={20} />
+              </button>
+            </div>
+
+            {/* Mobile Search */}
+            <div className="mt-6">
+              <AppSearch onNavigate={closeMenu} />
+            </div>
+
+            {/* Mobile Navigation */}
+            <nav className="mt-6 flex flex-col gap-3">
+              <NavLink to="/" onClick={closeMenu} className={navItemClass}>
+                <AppIcon nameIcon="Home" size={18} />
+                <span>Home</span>
+              </NavLink>
+
+              {isLoggedIn ? (
+                <>
+                  <NavLink
+                    to="/notifications"
+                    onClick={closeMenu}
+                    className={navItemClass}
                   >
-                    Home
-                  </AppButton>
-                </NavLink>
-                <NavLink to="/notifications">
-                  <AppButton
-                    icon="Bell"
-                    variant="ghost"
-                    className="flex items-center gap-2"
+                    <span className="relative">
+                      <AppIcon nameIcon="Bell" size={18} />
+
+                      {hasUnreadNotifications && (
+                        <span
+                          aria-label="Unread notifications"
+                          className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-danger ring-2 ring-header"
+                        />
+                      )}
+                    </span>
+
+                    <span>Notifications</span>
+                  </NavLink>
+
+                  <NavLink
+                    to={userId ? `/profile/id/${userId}` : "/"}
+                    onClick={closeMenu}
+                    className={navItemClass}
                   >
-                    Notifications
-                  </AppButton>
-                </NavLink>
-                <NavLink to="/profile/:username">
-                  <AppButton
-                    icon="Person"
-                    variant="ghost"
-                    className="flex items-center gap-2"
+                    <AppIcon nameIcon="Person" size={18} />
+                    <span>Profile</span>
+                  </NavLink>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      closeMenu();
+                      onLogout?.();
+                    }}
+                    className="mt-2 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-danger transition-colors hover:bg-danger/10"
                   >
-                    Profile
-                  </AppButton>
-                </NavLink>
-                <NavLink to="/">
-                  <AppButton icon="LogOut" variant="ghost"></AppButton>
-                </NavLink>
-              </>
-            ) : (
-              <>
-                <NavLink to="/">
-                  <AppButton icon="Home" className="flex items-center gap-2">
-                    Home
-                  </AppButton>
-                </NavLink>
-                <NavLink to="/profile/:username">
-                  <AppButton className="flex items-center gap-2">
+                    <AppIcon nameIcon="LogOut" size={18} />
+                    <span>Log Out</span>
+                  </button>
+                </>
+              ) : (
+                <Link to="/login" onClick={closeMenu} className="mt-4">
+                  <AppButton variant="primary" fullWidth>
                     Sign In
                   </AppButton>
-                </NavLink>
-              </>
-            )}
+                </Link>
+              )}
+            </nav>
           </div>
         </div>
-      </div>
-    </div>
+      </AppPortal>
+    </header>
   );
 }
+
+export default AppNavbar;

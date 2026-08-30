@@ -1,5 +1,9 @@
+/** @file Icon names and props shared by icon-producing components. */
+
+/** Names supported by the shared icon component. */
 export type NameIcon =
   | "Bell"
+  | "ArrowUp"
   | "Calendar"
   | "Chat"
   | "Edit"
@@ -12,6 +16,7 @@ export type NameIcon =
   | "Moon"
   | "Person"
   | "Post"
+  | "Search"
   | "Send"
   | "Trash"
   | "Menu"
@@ -19,6 +24,7 @@ export type NameIcon =
   | "Loader"
   | "LogOut";
 
+/** Props accepted by the shared icon component. */
 export interface AppIconProps {
   nameIcon: NameIcon;
   className?: string;

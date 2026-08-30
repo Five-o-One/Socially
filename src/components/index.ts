@@ -1,11 +1,20 @@
-import AppIcon from './AppIcon/AppIcon.tsx'
-import AppNavbar from './AppNavbar/AppNavbar.tsx'
-import AppSpinner from './AppSpinner/AppSpinner.tsx'
-import AppTab from './AppTab/AppTab.tsx'
-import ConfirmModal from './AppModals/ConfirmModal.tsx'
-import UserInfoModal from './AppModals/UserInfoModal.tsx'
-import UserInfoNumber from './UserInfo/UserInfoNumber.tsx'
-import UserInfoString from './UserInfo/UserInfoString.tsx'
+/** Collects the reusable UI components used throughout the application. */
+import AppIcon from "./AppIcon/AppIcon.tsx";
+import AppNavbar from "./AppNavbar/AppNavbar.tsx";
+import AppSpinner from "./AppSpinner/AppSpinner.tsx";
+import AppTab from "./AppTab/AppTab.tsx";
+import ConfirmModal from "./AppModal/ConfirmModal.tsx";
+import UserInfoModal from "./AppModal/UserInfoModal.tsx";
+import UserInfoCard from "./UserInfoCard/UserInfoCard.tsx";
+import UserRow from "./UserRow/UserRow.tsx";
+import AppButton from "./AppButton/AppButton.tsx";
+import AppCard from "./AppCard/AppCard.tsx";
+import AppImage from "./AppImage/AppImage.tsx";
+import AppModal from "./AppModal/AppModal.tsx";
+import NotificationCard from "./notifications/NotifeCard.tsx";
+import PostCard from "./PostCard/PostCard.tsx";
+import FollowListModal from "./AppModal/FollowListModal.tsx";
+import AppSearch from "./AppSearch/AppSearch.tsx";
 
 export {
   AppIcon,
@@ -14,6 +23,18 @@ export {
   AppTab,
   ConfirmModal,
   UserInfoModal,
-  UserInfoNumber,
-  UserInfoString
-}
+  UserInfoCard,
+  AppButton,
+  AppCard,
+  AppImage,
+  AppModal,
+  NotificationCard,
+  PostCard,
+  UserRow,
+  FollowListModal,
+  AppSearch,
+};
+export { default as AppPortal } from "./AppPortal/AppPortal";
+export { default as ThemeManager } from "./ThemeManager/ThemeManager";
+export { default as AppPageSpinner } from "./AppSpinner/PageLoader";
+export * from "./ScrollToTop";
