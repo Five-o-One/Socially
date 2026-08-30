@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { CreatePost } from "@/api";
 import type { Post, User } from "@/types";
 import toast from "react-hot-toast";
+import { assertApiSuccess, getErrorMessage } from "@/lib/error";
 
 /** Previous feed state retained for optimistic post rollback. */
 interface CreatePostMutationContext {
@@ -21,9 +22,7 @@ export function useCreatePost() {
     mutationFn: async (content: string) => {
       const response = await CreatePost({ content });
 
-      if (!response.data.success) {
-        throw new Error(response.data.message);
-      }
+      assertApiSuccess(response.data, "Failed to create post");
 
       return response.data.data;
     },
@@ -81,9 +80,7 @@ export function useCreatePost() {
         queryClient.setQueryData(["posts"], context.previousPosts);
       }
 
-      toast.error(
-        error instanceof Error ? error.message : "Failed to create post",
-      );
+      toast.error(getErrorMessage(error, "Failed to create post"));
     },
 
     onSuccess: (createdPost) => {
@@ -114,6 +111,7 @@ export function useCreatePost() {
       queryClient.invalidateQueries({
         queryKey: ["user-posts", createdPost.authorId],
       });
+
       toast.success("Post created successfully");
     },
   });

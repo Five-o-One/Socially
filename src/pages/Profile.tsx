@@ -19,10 +19,11 @@ import {
   useUserLikedPosts,
   useToggleFollow,
   useUpdateProfile,
+  useFollowings,
 } from "@/hooks";
+import { getErrorMessage } from "@/lib/error";
 import type { UpdateUserProfileDto } from "@/types";
 import type { TabItem } from "@/components/AppTab/AppTab";
-import { useAppStore } from "@/store";
 
 function ProfileContent({ id, username }: { id?: string; username?: string }) {
   const [activeTab, setActiveTab] = useState("posts");
@@ -33,7 +34,6 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
   >("followers");
 
   const { data: currentUser } = useCurrentUser();
-  const isFollowingUser = useAppStore((state) => state.isFollowingUser);
 
   const {
     data: user,
@@ -44,6 +44,11 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
     id,
     username,
   });
+
+  const { data: currentUserFollowings = [] } = useFollowings(
+    currentUser?.id ?? "",
+    Boolean(currentUser?.id && user?.id && currentUser.id !== user.id),
+  );
 
   const { data: userPosts = [], isLoading: isPostsLoading } = useUserPosts(
     user?.id ?? "",
@@ -57,9 +62,9 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
 
   const isOwnProfile = currentUser?.id === user?.id;
 
-  const isFollowing =
-    user?.isFollowing ?? (user ? isFollowingUser(user.id) : false);
-
+  const isFollowing = currentUserFollowings.some(
+    (followingUser) => followingUser.id === user?.id,
+  );
   const profileTabs: TabItem[] = [
     { id: "posts", label: "Posts", icon: "Post" },
     { id: "likes", label: "Likes", icon: "Heart" },
@@ -75,8 +80,8 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
 
     try {
       await toggleFollow.mutateAsync(user.id);
-    } catch (error) {
-      console.error("Failed to toggle follow:", error);
+    } catch {
+      // useToggleFollow handles and displays the error.
     }
   };
 
@@ -90,8 +95,8 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
       });
 
       setIsEditModalOpen(false);
-    } catch (error) {
-      console.error("Failed to update profile:", error);
+    } catch {
+      // useUpdateProfile handles and displays the error.
     }
   };
 
@@ -103,9 +108,7 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
     return (
       <AppCard>
         <p className="text-center text-danger">
-          {profileError instanceof Error
-            ? profileError.message
-            : "Failed to load profile."}
+          {getErrorMessage(profileError, "Failed to load profile.")}
         </p>
       </AppCard>
     );
@@ -144,7 +147,6 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
             @{displayUsername.replace(/^@/, "")}
           </p>
 
-          {/* Stats Bar with Clickable Triggers */}
           <div className="mt-4 flex items-center gap-8 text-sm">
             <button
               type="button"
@@ -215,7 +217,6 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
             {user.website && (
               <div className="flex items-center gap-1.5">
                 <AppIcon nameIcon="Link" size={14} />
-
                 <a
                   href={
                     user.website.startsWith("http")
@@ -233,7 +234,6 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
 
             <div className="flex items-center gap-1.5">
               <AppIcon nameIcon="Calendar" size={14} />
-
               <span>
                 Joined{" "}
                 {new Date(user.createdAt).toLocaleDateString("en-US", {
@@ -313,7 +313,6 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
         />
       )}
 
-      {/* Followers / Following Modal */}
       <FollowListModal
         isOpen={isFollowModalOpen}
         onClose={() => setIsFollowModalOpen(false)}

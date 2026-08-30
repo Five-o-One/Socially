@@ -9,7 +9,6 @@ import {
   useToggleFollow,
   useCurrentUser,
 } from "@/hooks";
-import { useAppStore } from "@/store";
 
 interface FollowListModalProps {
   isOpen: boolean;
@@ -33,7 +32,6 @@ function FollowListContent({
   const [activeTab, setActiveTab] = useState<string>(initialTab);
 
   const { data: currentUser } = useCurrentUser();
-  const isFollowingUser = useAppStore((state) => state.isFollowingUser);
   const toggleFollow = useToggleFollow();
 
   const isMyOwnNetwork = userId === currentUser?.id;
@@ -102,10 +100,7 @@ function FollowListContent({
             const isUserFollowed =
               (activeTab === "following" && isMyOwnNetwork) ||
               user.isFollowing === true ||
-              (currentUser?.id ? myFollowingIds.has(user.id) : false) ||
-              (typeof isFollowingUser === "function"
-                ? isFollowingUser(user.id)
-                : false);
+              (currentUser?.id ? myFollowingIds.has(user.id) : false);
 
             return (
               <div

@@ -4,7 +4,7 @@ import { AppImage } from "@/components/AppImage";
 
 interface UserRowProps {
   id: string;
-  username: string;
+  username?: string;
   name: string;
   avatarSrc: string | null;
   followers: number;
@@ -14,6 +14,7 @@ interface UserRowProps {
 }
 
 export function UserRow({
+  id,
   avatarSrc,
   name,
   username,
@@ -22,24 +23,24 @@ export function UserRow({
   onToggleFollow,
   isFollowLoading = false,
 }: UserRowProps) {
-  const cleanUsername = username.replace(/^@/, "");
+  const cleanUsername = username?.replace(/^@/, "") ?? "";
 
   return (
     <div className="flex items-center justify-between gap-3">
       <Link
-        to={`/profile/${cleanUsername}`}
+        to={`/profile/id/${id}`}
         className="group flex min-w-0 cursor-pointer items-center gap-2.5"
       >
         <AppImage
           src={avatarSrc || ""}
-          alt={name || username}
+          alt={name || cleanUsername || "User"}
           variant="circle"
           size="md"
         />
 
         <div className="min-w-0">
           <p className="truncate text-sm font-semibold text-text group-hover:underline">
-            {name || `@${cleanUsername}`}
+            {name || (cleanUsername ? `@${cleanUsername}` : "User")}
           </p>
 
           <p className="truncate text-xs text-text-secondary">

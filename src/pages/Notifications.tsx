@@ -7,6 +7,7 @@ import {
 } from "@/components";
 import { useNotifications, useMarkNotificationsAsRead } from "@/hooks";
 import { formatRelativeTime } from "@/utils/formatRelativeTime";
+import { getErrorMessage } from "@/lib/error";
 
 /**
  * @component Notifications
@@ -54,9 +55,7 @@ export default function Notifications() {
     return (
       <AppCard>
         <div className="p-8 text-center text-sm text-danger">
-          {error instanceof Error
-            ? error.message
-            : "Failed to load notifications."}
+          {getErrorMessage(error, "Failed to load notifications.")}
         </div>
       </AppCard>
     );

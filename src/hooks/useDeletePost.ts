@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DeletePost } from "@/api";
 import type { Post } from "@/types";
 import toast from "react-hot-toast";
+import { assertApiSuccess, getErrorMessage } from "@/lib/error";
 
 /** Previous feed state retained for optimistic deletion rollback. */
 interface DeletePostMutationContext {
@@ -19,19 +20,11 @@ export function useDeletePost() {
 
   return useMutation({
     mutationFn: async (postId: string) => {
-      try {
-        const response = await DeletePost(postId);
+      const response = await DeletePost(postId);
 
-        if (!response.data.success) {
-          throw new Error(response.data.message);
-        }
+      assertApiSuccess(response.data, "Failed to delete post");
 
-        return response.data;
-      } catch (error) {
-        throw error instanceof Error
-          ? error
-          : new Error("Failed to delete post");
-      }
+      return response.data;
     },
 
     onMutate: async (postId): Promise<DeletePostMutationContext> => {
@@ -89,9 +82,7 @@ export function useDeletePost() {
         }
       }
 
-      toast.error(
-        error instanceof Error ? error.message : "Failed to delete post",
-      );
+      toast.error(getErrorMessage(error, "Failed to delete post"));
     },
 
     onSuccess: () => {

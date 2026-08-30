@@ -7,6 +7,7 @@ import { AppCard, AppButton } from "@/components";
 import { Login as LoginUser } from "@/api/Authentication/POST";
 import type { LoginRequest } from "@/types/Authentication";
 import toast from "react-hot-toast";
+import { assertApiSuccess, getErrorMessage } from "@/lib/error";
 
 /**
  * @component Login
@@ -33,9 +34,7 @@ export default function Login() {
     try {
       const response = await LoginUser(data);
 
-      if (!response.data.success) {
-        throw new Error(response.data.message);
-      }
+      assertApiSuccess(response.data, "Login failed. Please try again.");
 
       await queryClient.invalidateQueries({
         queryKey: ["session"],
@@ -45,11 +44,7 @@ export default function Login() {
 
       navigate("/");
     } catch (error) {
-      setLoginError(
-        error instanceof Error
-          ? error.message
-          : "Login failed. Please try again.",
-      );
+      setLoginError(getErrorMessage(error, "Login failed. Please try again."));
     } finally {
       setIsLoading(false);
     }

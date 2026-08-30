@@ -1,6 +1,7 @@
 /** @file Post presentation and interaction controls for likes and comments. */
 import { useState } from "react";
 import { Link, useNavigate } from "react-router";
+import toast from "react-hot-toast";
 import { AppCard } from "@/components/AppCard";
 import { AppImage } from "@/components/AppImage";
 import { AppButton } from "@/components/AppButton";
@@ -37,7 +38,7 @@ export function PostCard({
 
   const { data: currentUser, isAuthenticated } = useCurrentUser();
 
-  const isAuthor = isAuthenticated && post.authorId === currentUserId;
+  const isAuthor = isAuthenticated && post.authorId === currentUser?.id;
 
   const isLiked =
     isAuthenticated &&
@@ -69,7 +70,17 @@ export function PostCard({
   ).replace(/^@/, "");
 
   const handleLikeToggle = async () => {
-    if (!isAuthenticated || toggleLike.isPending) return;
+    if (!isAuthenticated) {
+      toast.error("Please sign in to like this post.");
+      return;
+    }
+
+    if (isAuthor) {
+      toast.error("You cannot like your own post.");
+      return;
+    }
+
+    if (toggleLike.isPending) return;
 
     try {
       await toggleLike.mutateAsync(post.id);
@@ -222,7 +233,7 @@ export function PostCard({
             <button
               type="button"
               onClick={handleLikeToggle}
-              disabled={!isAuthenticated || isLikeLoading}
+              disabled={isLikeLoading}
               className={`flex cursor-pointer items-center gap-1.5 rounded-lg px-2.5 py-1 text-xs font-medium transition-colors disabled:cursor-not-allowed disabled:opacity-75 ${
                 isLiked
                   ? "bg-danger/10 text-danger"
