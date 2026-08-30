@@ -1,6 +1,7 @@
 /** @file Query that loads posts authored by a user. */
 import { useQuery } from "@tanstack/react-query";
 import { GetUserPosts } from "@/api";
+import { assertApiSuccess } from "@/lib/error";
 
 /**
  * @hook useUserPosts
@@ -15,9 +16,7 @@ export function useUserPosts(userId: string) {
     queryFn: async () => {
       const response = await GetUserPosts(userId);
 
-      if (!response.data.success) {
-        throw new Error(response.data.message);
-      }
+      assertApiSuccess(response.data, "Failed to fetch user posts");
 
       return response.data.data;
     },

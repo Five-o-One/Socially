@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { DeleteComment } from "@/api";
 import type { Post } from "@/types";
 import toast from "react-hot-toast";
+import { assertApiSuccess, getErrorMessage } from "@/lib/error";
 
 /**
  * @hook useDeleteComment
@@ -22,9 +23,7 @@ export function useDeleteComment() {
     }) => {
       const response = await DeleteComment(postId, commentId);
 
-      if (!response.data.success) {
-        throw new Error(response.data.message || "Failed to delete comment");
-      }
+      assertApiSuccess(response.data, "Failed to delete comment");
 
       return response.data;
     },
@@ -98,9 +97,7 @@ export function useDeleteComment() {
         }
       }
 
-      toast.error(
-        error instanceof Error ? error.message : "Failed to delete comment",
-      );
+      toast.error(getErrorMessage(error, "Failed to delete comment"));
     },
 
     onSuccess: () => {
