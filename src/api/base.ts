@@ -9,7 +9,7 @@ import { toAppError } from "@/lib/error";
 /** Shared Axios client configured for the Socially backend and cookie sessions. */
 const __BASE__ = axios.create({
   baseURL: "http://localhost:3000",
-  timeout: 5000,
+  // timeout: 5000,
   withCredentials: true,
 });
 

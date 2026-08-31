@@ -101,12 +101,7 @@ export interface User {
   isFollowing?: boolean;
 }
 
-export interface UpdateProfileRequest {
-  name?: string;
-  bio?: string;
-  location?: string;
-  website?: string;
-}
+export type UpdateProfileRequest = Pick<User , "name" | "bio" | "location" | "website">
 
 export interface UserLike {
   id: string;
