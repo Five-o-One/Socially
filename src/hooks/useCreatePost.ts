@@ -4,12 +4,9 @@ import { CreatePost } from "@/api";
 import type { Post, User } from "@/types";
 import toast from "react-hot-toast";
 import { assertApiSuccess, getErrorMessage } from "@/lib/error";
+import type { CreatePostMutationContext } from "@/types";
 
 /** Previous feed state retained for optimistic post rollback. */
-interface CreatePostMutationContext {
-  previousPosts: Post[] | undefined;
-}
-
 /**
  * @hook useCreatePost
  * @description Creates a post, optimistically inserts it into the feed, and reconciles the cached data after success.

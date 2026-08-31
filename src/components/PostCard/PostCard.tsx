@@ -8,7 +8,6 @@ import { AppButton } from "@/components/AppButton";
 import { AppSpinner } from "@/components";
 import AppIcon from "@/components/AppIcon/AppIcon";
 import { ConfirmModal } from "@/components/AppModal/ConfirmModal";
-import type { Post } from "@/types";
 import { useToggleLike } from "@/hooks/useToggleLike";
 import { useAddComment } from "@/hooks/useAddComment";
 import { useDeletePost } from "@/hooks/useDeletePost";
@@ -16,6 +15,7 @@ import { useDeleteComment } from "@/hooks/useDeleteComment";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { SearchUsers } from "@/api";
 import { formatRelativeTime } from "@/utils/formatRelativeTime";
+import type { PostCardProps } from "@/types";
 
 /**
  * @component PostCard
@@ -23,11 +23,7 @@ import { formatRelativeTime } from "@/utils/formatRelativeTime";
  * @prop {Post} post - Post data rendered by the card
  * @prop {string} [currentUserId] - ID used to determine ownership and interaction state
  */
-interface PostCardProps {
-  post: Post;
-  currentUserId?: string;
-  className?: string;
-}
+
 
 export function PostCard({
   post,

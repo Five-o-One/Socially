@@ -1,3 +1,4 @@
+import type { AppSearchProps } from "@/types";
 /** @file Responsive live user search with debounced results. */
 import { useEffect, useRef, useState } from "react";
 import { useNavigate } from "react-router";
@@ -10,11 +11,7 @@ const DEBOUNCE_MS = 400;
 const MIN_QUERY_LENGTH = 2;
 const DESKTOP_SEARCH_WIDTH = 260;
 
-interface AppSearchProps {
-  className?: string;
-  placeholder?: string;
-  onNavigate?: () => void;
-}
+
 
 export function AppSearch({
   className = "",

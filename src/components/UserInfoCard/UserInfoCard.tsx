@@ -1,3 +1,4 @@
+import type { UserSummaryProps } from "@/types";
 import { useState } from "react";
 import { Link } from "react-router";
 import { AppCard } from "@/components/AppCard";
@@ -5,19 +6,7 @@ import { AppImage } from "@/components/AppImage";
 import AppIcon from "@/components/AppIcon/AppIcon";
 import FollowListModal from "../AppModal/FollowListModal";
 
-interface UserSummaryProps {
-  user: {
-    id: string;
-    imageURL?: string | null;
-    username: string;
-    name: string;
-    followers: number;
-    following: number;
-    location?: string | null;
-    website?: string | null;
-  };
-  className?: string;
-}
+
 
 export function UserInfoCard({ user, className = "" }: UserSummaryProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);

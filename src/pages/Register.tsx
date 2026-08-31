@@ -3,7 +3,7 @@ import { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import { useForm } from "react-hook-form";
 import { AppCard, AppButton } from "@/components";
-import type { RegisterRequest } from "@/types/Authentication";
+import type { RegisterRequest } from "@/types";
 import { Register as RegisterUser } from "@/api/Authentication/POST";
 import toast from "react-hot-toast";
 import { assertApiSuccess, getErrorMessage } from "@/lib/error";

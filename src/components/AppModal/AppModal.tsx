@@ -1,5 +1,6 @@
 /** @file Base modal panel with portal rendering and dismissal behavior. */
-import { type ReactNode, useEffect } from "react";
+import { useEffect } from "react";
+import type { AppModalProps } from "@/types";
 import AppIcon from "@/components/AppIcon/AppIcon";
 import AppPortal from "@/components/AppPortal/AppPortal";
 
@@ -15,16 +16,7 @@ import AppPortal from "@/components/AppPortal/AppPortal";
  * @prop {boolean} [showCloseButton=true] - Shows the close button
  * @prop {string} [className] - Additional panel classes
  */
-interface AppModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  children: ReactNode;
-  title?: string;
-  footer?: ReactNode;
-  closeOnOutsideClick?: boolean;
-  showCloseButton?: boolean;
-  className?: string;
-}
+
 
 export function AppModal({
   isOpen,

@@ -3,7 +3,7 @@ import { useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { AppModal } from "./AppModal";
 import { AppButton } from "@/components/AppButton";
-import type { UpdateUserProfileDto } from "@/types";
+import type { UpdateUserProfileDto, UserInfoModalProps } from "@/types";
 
 /**
  * @component UserInfoModal
@@ -14,13 +14,7 @@ import type { UpdateUserProfileDto } from "@/types";
  * @prop {() => void} onClose - Closes and resets the form
  * @prop {boolean} [isLoading=false] - Shows the saving state
  */
-interface UserInfoModalProps {
-  isOpen: boolean;
-  initialData?: UpdateUserProfileDto;
-  onSubmit: (data: UpdateUserProfileDto) => void;
-  onClose: () => void;
-  isLoading?: boolean;
-}
+
 
 export function UserInfoModal({
   isOpen,

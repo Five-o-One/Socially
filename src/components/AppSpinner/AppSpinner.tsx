@@ -1,3 +1,4 @@
+import type { AppSpinnerProps } from "@/types";
 /** @file Compact loading spinner based on the shared icon component. */
 import AppIcon from "@/components/AppIcon/AppIcon";
 
@@ -7,10 +8,7 @@ import AppIcon from "@/components/AppIcon/AppIcon";
  * @prop {number} [size=24] - Spinner size in pixels
  * @prop {string} [className='text-brand'] - Additional CSS classes
  */
-interface AppSpinnerProps {
-  size?: number;
-  className?: string;
-}
+
 
 export default function AppSpinner({
   size = 24,
