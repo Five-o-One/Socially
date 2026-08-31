@@ -5,6 +5,7 @@ import { AppCard } from "@/components/AppCard";
 import { AppImage } from "@/components/AppImage";
 import AppIcon from "@/components/AppIcon/AppIcon";
 import FollowListModal from "../AppModal/FollowListModal";
+import { DIC } from "@/constants";
 
 
 
@@ -82,7 +83,7 @@ export function UserInfoCard({ user, className = "" }: UserSummaryProps) {
               className="text-text-tertiary"
             />
 
-            <span>{user.location || "No location"}</span>
+            <span>{user.location || DIC.profile.noLocation}</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -102,7 +103,7 @@ export function UserInfoCard({ user, className = "" }: UserSummaryProps) {
                 {user.website.replace(/^https?:\/\//, "")}
               </a>
             ) : (
-              <span>No website</span>
+              <span>{DIC.profile.noWebsite}</span>
             )}
           </div>
         </div>

@@ -8,6 +8,7 @@ import { AppButton } from "@/components/AppButton";
 import { useAppStore } from "@/store";
 import { useNotifications } from "@/hooks";
 import AppSearch from "@/components/AppSearch/AppSearch";
+import { DIC } from "@/constants";
 
 
 
@@ -77,7 +78,7 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
           {/* Primary navigation */}
           <NavLink to="/" className={navItemClass}>
             <AppIcon nameIcon="Home" size={18} />
-            <span>Home</span>
+            <span>{DIC.navigation.home}</span>
           </NavLink>
 
           {/* Search */}
@@ -91,13 +92,13 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
 
                 {hasUnreadNotifications && (
                   <span
-                    aria-label="Unread notifications"
+                    aria-label={DIC.navigation.unreadNotifications}
                     className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-danger ring-2 ring-header"
                   />
                 )}
               </span>
 
-              <span>Notifications</span>
+              <span>{DIC.navigation.notifications}</span>
             </NavLink>
           )}
 
@@ -108,7 +109,7 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
               className={navItemClass}
             >
               <AppIcon nameIcon="Person" size={18} />
-              <span>Profile</span>
+              <span>{DIC.navigation.profile}</span>
             </NavLink>
           )}
 
@@ -116,7 +117,7 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
           <button
             type="button"
             onClick={toggleTheme}
-            aria-label="Toggle theme"
+            aria-label={DIC.navigation.toggleTheme}
             className="flex h-9 w-9 shrink-0 cursor-pointer items-center justify-center rounded-lg border border-border bg-card/70 text-text backdrop-blur-sm transition-colors hover:bg-border/30"
           >
             <AppIcon nameIcon={isDarkMode ? "Moon" : "Light"} size={18} />
@@ -147,7 +148,7 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
           <button
             type="button"
             onClick={toggleTheme}
-            aria-label="Toggle theme"
+            aria-label={DIC.navigation.toggleTheme}
             className="flex h-9 w-9 items-center justify-center rounded-lg border border-border bg-card/70 text-text backdrop-blur-sm"
           >
             <AppIcon nameIcon={isDarkMode ? "Moon" : "Light"} size={18} />
@@ -159,7 +160,7 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
             variant="ghost"
             onClick={() => setIsMenuOpen(true)}
             className="border border-border"
-            aria-label="Open menu"
+            aria-label={DIC.navigation.openMenu}
           />
         </div>
       </div>
@@ -189,12 +190,12 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
           >
             {/* Drawer Header */}
             <div className="flex items-center justify-between border-b border-border pb-6">
-              <span className="font-bold text-text">Menu</span>
+              <span className="font-bold text-text">{DIC.navigation.menu}</span>
 
               <button
                 type="button"
                 onClick={closeMenu}
-                aria-label="Close menu"
+                aria-label={DIC.navigation.closeMenu}
                 className="cursor-pointer rounded-lg p-1 text-text-secondary transition-colors hover:bg-border/30 hover:text-text"
               >
                 <AppIcon nameIcon="Close" size={20} />
@@ -210,7 +211,7 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
             <nav className="mt-6 flex flex-col gap-3">
               <NavLink to="/" onClick={closeMenu} className={navItemClass}>
                 <AppIcon nameIcon="Home" size={18} />
-                <span>Home</span>
+                <span>{DIC.navigation.home}</span>
               </NavLink>
 
               {isLoggedIn ? (
@@ -225,13 +226,13 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
 
                       {hasUnreadNotifications && (
                         <span
-                          aria-label="Unread notifications"
+                          aria-label={DIC.navigation.unreadNotifications}
                           className="absolute -right-1 -top-1 h-2.5 w-2.5 rounded-full bg-danger ring-2 ring-header"
                         />
                       )}
                     </span>
 
-                    <span>Notifications</span>
+                    <span>{DIC.navigation.notifications}</span>
                   </NavLink>
 
                   <NavLink
@@ -240,7 +241,7 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
                     className={navItemClass}
                   >
                     <AppIcon nameIcon="Person" size={18} />
-                    <span>Profile</span>
+                    <span>{DIC.navigation.profile}</span>
                   </NavLink>
 
                   <button
@@ -252,7 +253,7 @@ export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
                     className="mt-2 flex cursor-pointer items-center gap-2 rounded-lg px-3 py-2 text-left text-sm font-medium text-danger transition-colors hover:bg-danger/10"
                   >
                     <AppIcon nameIcon="LogOut" size={18} />
-                    <span>Log Out</span>
+                    <span>{DIC.navigation.logOut}</span>
                   </button>
                 </>
               ) : (

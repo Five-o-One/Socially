@@ -6,6 +6,7 @@ import { AppImage } from "@/components/AppImage";
 import AppIcon from "@/components/AppIcon/AppIcon";
 import AppSpinner from "@/components/AppSpinner/AppSpinner";
 import { useUserSearch } from "@/hooks";
+import { DIC } from "@/constants";
 
 const DEBOUNCE_MS = 400;
 const MIN_QUERY_LENGTH = 2;
@@ -15,7 +16,7 @@ const DESKTOP_SEARCH_WIDTH = 260;
 
 export function AppSearch({
   className = "",
-  placeholder = "Search users...",
+  placeholder = DIC.search.placeholder,
   onNavigate,
 }: AppSearchProps) {
   const [query, setQuery] = useState("");
@@ -133,7 +134,7 @@ export function AppSearch({
           <button
             type="button"
             onClick={openSearch}
-            aria-label="Search users"
+            aria-label={DIC.search.users}
             aria-expanded={isOpen}
             className={`absolute right-0 top-0 z-10 flex h-10 w-10 cursor-pointer items-center justify-center rounded-lg text-text-secondary transition-colors duration-200 hover:bg-border/30 hover:text-text ${
               isOpen ? "pointer-events-none opacity-0" : "opacity-100"
@@ -153,7 +154,7 @@ export function AppSearch({
             <button
               type="button"
               onClick={closeSearch}
-              aria-label="Close search"
+                aria-label={DIC.navigation.closeMenu}
               className="absolute right-0 top-0 z-10 flex h-10 w-10 cursor-pointer items-center justify-center rounded-r-lg text-text-tertiary transition-colors hover:text-text"
             >
               <AppIcon nameIcon="Close" size={16} />

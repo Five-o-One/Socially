@@ -1,4 +1,5 @@
 import axios from "axios";
+import { UI_STRINGS } from "@/constants";
 
 /**
  * Application-level error used throughout the frontend.
@@ -26,7 +27,7 @@ export class AppError extends Error {
  */
 export function getErrorMessage(
   error: unknown,
-  fallback = "Something went wrong",
+  fallback: string = UI_STRINGS.errors.generic,
 ): string {
   if (error instanceof AppError) {
     return error.message;
@@ -40,15 +41,15 @@ export function getErrorMessage(
     }
 
     if (error.code === "ECONNABORTED") {
-      return "Request timed out. Please try again.";
+      return UI_STRINGS.errors.timeout;
     }
 
     if (!error.response) {
-      return "Network error. Please check your connection.";
+      return UI_STRINGS.errors.network;
     }
 
     if (error.response.status >= 500) {
-      return "Server error. Please try again later.";
+      return UI_STRINGS.errors.server;
     }
 
     return error.message || fallback;
@@ -70,7 +71,7 @@ export function getErrorMessage(
  */
 export function toAppError(
   error: unknown,
-  fallback = "Something went wrong",
+  fallback: string = UI_STRINGS.errors.generic,
 ): AppError {
   if (error instanceof AppError) {
     return error;
@@ -96,7 +97,7 @@ export function assertApiSuccess<
   T extends { success: boolean; message?: string },
 >(
   response: T,
-  fallback = "Request failed",
+  fallback: string = UI_STRINGS.errors.requestFailed,
 ): asserts response is T & { success: true } {
   if (!response.success) {
     throw new AppError(response.message?.trim() || fallback);

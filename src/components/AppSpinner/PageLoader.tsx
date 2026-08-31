@@ -1,6 +1,7 @@
 import type { AppPageSpinnerProps } from "@/types";
 /** @file Page-level loading state with primary and secondary messages. */
 import AppSpinner from "./AppSpinner";
+import { UI_STRINGS } from "@/constants";
 
 /**
  * @component AppPageSpinner
@@ -12,8 +13,8 @@ import AppSpinner from "./AppSpinner";
 
 
 export default function AppPageSpinner({
-  message = "Loading...",
-  subMessage = "Please wait",
+  message = UI_STRINGS.loading.default,
+  subMessage = UI_STRINGS.loading.pleaseWait,
   className = "",
 }: AppPageSpinnerProps) {
   return (
