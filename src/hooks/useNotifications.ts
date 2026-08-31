@@ -3,12 +3,9 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { GetNotifications, MarkNotificationsAsRead } from "@/api";
 import type { Notification } from "@/types/Notifications";
 import { assertApiSuccess } from "@/lib/error";
+import type { MarkNotificationsContext } from "@/types";
 
 /** Previous notification state retained for optimistic read updates. */
-interface MarkNotificationsContext {
-  previousNotifications: Notification[] | undefined;
-}
-
 /**
  * @hook useNotifications
  * @description Loads notifications for the current user.

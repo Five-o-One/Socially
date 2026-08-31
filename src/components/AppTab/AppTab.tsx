@@ -1,14 +1,9 @@
 /** @file Tab navigation component and the tab item contract. */
 import AppIcon from "@/components/AppIcon/AppIcon";
-import type { NameIcon } from "@/types";
+import type { AppTabProps, TabItem } from "@/types";
 
 /** Configuration for one selectable tab. */
-export interface TabItem {
-  id: string;
-  label: string;
-  icon?: NameIcon;
-  count?: number;
-}
+export type { TabItem };
 
 /**
  * @component AppTab
@@ -18,12 +13,7 @@ export interface TabItem {
  * @prop {(tabId: string) => void} onChange - Called with the selected tab ID
  * @prop {string} [className] - Additional CSS classes
  */
-interface AppTabProps {
-  tabs: TabItem[];
-  activeTab: string;
-  onChange: (tabId: string) => void;
-  className?: string;
-}
+
 
 export function AppTab({
   tabs,

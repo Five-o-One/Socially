@@ -3,11 +3,7 @@ import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { GetUserById, GetUserByUsername, GetFollowers } from "@/api";
 import { assertApiSuccess } from "@/lib/error";
 import type { User } from "@/types";
-
-interface UseUserProfileOptions {
-  id?: string;
-  username?: string;
-}
+import type { UseUserProfileOptions } from "@/types";
 
 /**
  * @hook useUserProfile

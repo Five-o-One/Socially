@@ -1,15 +1,11 @@
 /** @file Profile update mutation with optimistic session and profile synchronization. */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UpdateProfile } from "@/api";
-import type { UpdateProfileRequest, User } from "@/types";
+import type { CachedSession, UpdateProfileRequest, User } from "@/types";
 import toast from "react-hot-toast";
 import { assertApiSuccess, getErrorMessage } from "@/lib/error";
 
 /** Minimal cached session shape used during profile updates. */
-interface SessionData {
-  user?: User;
-}
-
 /**
  * @hook useUpdateProfile
  * @description Updates profile fields and synchronizes every relevant
@@ -57,7 +53,7 @@ export function useUpdateProfile() {
 
       const previousUser = queryClient.getQueryData<User>(["user", userId]);
 
-      const previousSession = queryClient.getQueryData<SessionData>([
+      const previousSession = queryClient.getQueryData<CachedSession>([
         "session",
       ]);
 
@@ -101,7 +97,7 @@ export function useUpdateProfile() {
       /*
        * Update the authenticated session cache.
        */
-      queryClient.setQueryData<SessionData>(["session"], (session) => {
+      queryClient.setQueryData<CachedSession>(["session"], (session) => {
         if (!session?.user || session.user.id !== userId) {
           return session;
         }
@@ -138,7 +134,7 @@ export function useUpdateProfile() {
         context.previousUser,
       );
 
-      queryClient.setQueryData<SessionData | undefined>(
+      queryClient.setQueryData<CachedSession | undefined>(
         ["session"],
         context.previousSession,
       );
@@ -181,7 +177,7 @@ export function useUpdateProfile() {
       /*
        * Synchronize authenticated session.
        */
-      queryClient.setQueryData<SessionData>(["session"], (session) => {
+      queryClient.setQueryData<CachedSession>(["session"], (session) => {
         if (!session?.user || session.user.id !== userId) {
           return session;
         }

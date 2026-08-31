@@ -1,5 +1,6 @@
 /** @file Image component with loading, error, and generated placeholder states. */
 import { useState } from "react";
+import type { AppImageProps } from "@/types";
 
 /**
  * @component AppImage
@@ -13,16 +14,7 @@ import { useState } from "react";
  * @prop {boolean} [showRealImage=true] - Attempts to render the source image
  * @prop {'solid' | 'gradient'} [placeholderStyle='gradient'] - Placeholder style
  */
-interface AppImageProps {
-  src?: string | null;
-  alt: string;
-  variant?: "circle" | "rounded" | "square";
-  size?: "xs" | "sm" | "md" | "lg" | "xl" | "full";
-  className?: string;
-  lazyLoad?: boolean;
-  showRealImage?: boolean;
-  placeholderStyle?: "solid" | "gradient";
-}
+
 
 const placeholderColors = [
   "bg-emerald-100 text-emerald-700",

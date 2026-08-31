@@ -1,3 +1,4 @@
+import type { AppNavbarProps } from "@/types";
 /** @file Responsive application navigation for guest and authenticated users. */
 import { useState, useEffect } from "react";
 import AppPortal from "@/components/AppPortal/AppPortal";
@@ -8,11 +9,7 @@ import { useAppStore } from "@/store";
 import { useNotifications } from "@/hooks";
 import AppSearch from "@/components/AppSearch/AppSearch";
 
-interface AppNavbarProps {
-  isLoggedIn: boolean;
-  userId?: string;
-  onLogout?: () => void;
-}
+
 
 export function AppNavbar({ isLoggedIn, userId, onLogout }: AppNavbarProps) {
   const [isMenuOpen, setIsMenuOpen] = useState(false);

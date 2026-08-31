@@ -2,7 +2,7 @@
 import { Link } from "react-router";
 import { AppImage } from "@/components/AppImage";
 import AppIcon from "@/components/AppIcon/AppIcon";
-import type { NameIcon } from "@/types";
+import type { NameIcon, NotificationCardProps } from "@/types";
 
 /**
  * @component NotificationCard
@@ -16,16 +16,7 @@ import type { NameIcon } from "@/types";
  * @prop {string | null} [postText] - Related post excerpt
  * @prop {string | null} [commentText] - Related comment excerpt
  */
-interface NotificationCardProps {
-  type: "like" | "comment" | "follow";
-  isRead?: boolean;
-  userId: string;
-  name: string;
-  avatarSrc?: string | null;
-  time: string;
-  postText?: string | null;
-  commentText?: string | null;
-}
+
 
 const NOTIFICATION_ICONS: Record<
   string,
