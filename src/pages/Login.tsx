@@ -5,7 +5,7 @@ import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppCard, AppButton } from "@/components";
 import { Login as LoginUser } from "@/api/Authentication/POST";
-import type { LoginRequest } from "@/types/Authentication";
+import type { LoginRequest } from "@/types";
 import toast from "react-hot-toast";
 import { assertApiSuccess, getErrorMessage } from "@/lib/error";
 

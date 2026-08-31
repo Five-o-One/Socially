@@ -1,5 +1,8 @@
 /** Collects the shared API, authentication, user, post, notification, and UI types. */
-export * from "./domain";
-export * from "./ui";
-export * from "./state";
-export * from "./mutations";
+export * from "./api";
+export * from "./AppIcon";
+export * from "./Authentication";
+export * from "./Modals"
+export * from "./Notifications";
+export * from "./post";
+export * from "./Users";
