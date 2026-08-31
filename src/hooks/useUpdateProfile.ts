@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { UpdateProfile } from "@/api";
 import type { UpdateProfileRequest, User } from "@/types";
 import toast from "react-hot-toast";
+import { assertApiSuccess, getErrorMessage } from "@/lib/error";
 
 /** Minimal cached session shape used during profile updates. */
 interface SessionData {
@@ -11,7 +12,8 @@ interface SessionData {
 
 /**
  * @hook useUpdateProfile
- * @description Updates profile fields and refreshes the current-user cache.
+ * @description Updates profile fields and synchronizes every relevant
+ * user/profile cache so changes appear immediately across the application.
  * @returns Profile update mutation result
  */
 export function useUpdateProfile() {
@@ -27,9 +29,7 @@ export function useUpdateProfile() {
     }) => {
       const response = await UpdateProfile(userId, data);
 
-      if (!response.data.success) {
-        throw new Error(response.data.message);
-      }
+      assertApiSuccess(response.data, "Failed to update profile");
 
       return response.data.data;
     },
@@ -37,7 +37,7 @@ export function useUpdateProfile() {
     onMutate: async ({ userId, data }) => {
       await Promise.all([
         queryClient.cancelQueries({
-          queryKey: ["user-profile", userId],
+          queryKey: ["user-profile"],
         }),
         queryClient.cancelQueries({
           queryKey: ["user", userId],
@@ -47,10 +47,13 @@ export function useUpdateProfile() {
         }),
       ]);
 
-      const previousProfile = queryClient.getQueryData<User>([
-        "user-profile",
-        userId,
-      ]);
+      /*
+       * Keep the previous state of every profile query so the whole
+       * optimistic update can be rolled back if the request fails.
+       */
+      const previousProfiles = queryClient.getQueriesData<User>({
+        queryKey: ["user-profile"],
+      });
 
       const previousUser = queryClient.getQueryData<User>(["user", userId]);
 
@@ -59,7 +62,9 @@ export function useUpdateProfile() {
       ]);
 
       const updateUser = (user: User | undefined): User | undefined => {
-        if (!user) return user;
+        if (!user || user.id !== userId) {
+          return user;
+        }
 
         return {
           ...user,
@@ -67,18 +72,39 @@ export function useUpdateProfile() {
         };
       };
 
-      queryClient.setQueryData<User>(
-        ["user-profile", userId],
-        updateUser(previousProfile),
-      );
+      /*
+       * Optimistically update EVERY cached profile query belonging
+       * to this user.
+       *
+       * This fixes the main issue:
+       *
+       * ["user-profile", id, username]
+       *
+       * is different from:
+       *
+       * ["user-profile", userId]
+       */
+      for (const [queryKey, profile] of previousProfiles) {
+        if (!profile || profile.id !== userId) continue;
 
+        queryClient.setQueryData<User>(queryKey, updateUser(profile));
+      }
+
+      /*
+       * Update the user's direct cache used by the sidebar.
+       */
       queryClient.setQueryData<User>(
         ["user", userId],
         updateUser(previousUser),
       );
 
+      /*
+       * Update the authenticated session cache.
+       */
       queryClient.setQueryData<SessionData>(["session"], (session) => {
-        if (!session?.user) return session;
+        if (!session?.user || session.user.id !== userId) {
+          return session;
+        }
 
         return {
           ...session,
@@ -90,7 +116,7 @@ export function useUpdateProfile() {
       });
 
       return {
-        previousProfile,
+        previousProfiles,
         previousUser,
         previousSession,
       };
@@ -99,35 +125,52 @@ export function useUpdateProfile() {
     onError: (error, { userId }, context) => {
       if (!context) return;
 
-      queryClient.setQueryData(
-        ["user-profile", userId],
-        context.previousProfile,
+      /*
+       * Restore every profile query exactly as it was before
+       * the optimistic update.
+       */
+      for (const [queryKey, profile] of context.previousProfiles) {
+        queryClient.setQueryData<User | undefined>(queryKey, profile);
+      }
+
+      queryClient.setQueryData<User | undefined>(
+        ["user", userId],
+        context.previousUser,
       );
 
-      queryClient.setQueryData(["user", userId], context.previousUser);
-
-      queryClient.setQueryData(["session"], context.previousSession);
-
-      toast.error(
-        error instanceof Error ? error.message : "Failed to update profile",
+      queryClient.setQueryData<SessionData | undefined>(
+        ["session"],
+        context.previousSession,
       );
+
+      toast.error(getErrorMessage(error, "Failed to update profile"));
     },
 
     onSuccess: (updatedUser, { userId }) => {
-      queryClient.setQueryData<User>(
-        ["user-profile", userId],
-        (currentUser) => {
-          if (!currentUser) return updatedUser;
+      /*
+       * Synchronize EVERY profile cache with the authoritative
+       * response from the server.
+       */
+      const profileQueries = queryClient.getQueriesData<User>({
+        queryKey: ["user-profile"],
+      });
 
-          return {
-            ...currentUser,
-            ...updatedUser,
-          };
-        },
-      );
+      for (const [queryKey, profile] of profileQueries) {
+        if (!profile || profile.id !== userId) continue;
 
+        queryClient.setQueryData<User>(queryKey, {
+          ...profile,
+          ...updatedUser,
+        });
+      }
+
+      /*
+       * Synchronize direct user cache.
+       */
       queryClient.setQueryData<User>(["user", userId], (currentUser) => {
-        if (!currentUser) return updatedUser;
+        if (!currentUser) {
+          return updatedUser;
+        }
 
         return {
           ...currentUser,
@@ -135,8 +178,13 @@ export function useUpdateProfile() {
         };
       });
 
+      /*
+       * Synchronize authenticated session.
+       */
       queryClient.setQueryData<SessionData>(["session"], (session) => {
-        if (!session?.user) return session;
+        if (!session?.user || session.user.id !== userId) {
+          return session;
+        }
 
         return {
           ...session,
@@ -146,6 +194,7 @@ export function useUpdateProfile() {
           },
         };
       });
+
       toast.success("Profile updated successfully");
     },
   });

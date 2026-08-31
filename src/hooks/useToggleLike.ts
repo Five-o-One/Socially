@@ -3,6 +3,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ToggleLikePost } from "@/api";
 import type { Post } from "@/types";
 import toast from "react-hot-toast";
+import { assertApiSuccess, getErrorMessage } from "@/lib/error";
 
 /** Previous post state retained for optimistic like rollback. */
 interface LikeMutationContext {
@@ -24,9 +25,7 @@ export function useToggleLike(currentUserId: string) {
     mutationFn: async (postId: string) => {
       const response = await ToggleLikePost(postId);
 
-      if (!response.data.success) {
-        throw new Error(response.data.message);
-      }
+      assertApiSuccess(response.data, "Failed to update like");
 
       return response.data;
     },
@@ -70,7 +69,7 @@ export function useToggleLike(currentUserId: string) {
             : [...post.likes, { userId: currentUserId }],
           _count: {
             ...(post._count ?? {
-              likes: likesCount,
+              likes: 0,
               comments: post.comments?.length ?? 0,
             }),
             likes: likesCount + (isLiked ? -1 : 1),
@@ -107,9 +106,7 @@ export function useToggleLike(currentUserId: string) {
         queryClient.setQueryData(queryKey, data);
       });
 
-      toast.error(
-        error instanceof Error ? error.message : "Failed to update like",
-      );
+      toast.error(getErrorMessage(error, "Failed to update like"));
     },
 
     onSuccess: (data) => {

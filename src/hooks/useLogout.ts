@@ -1,6 +1,7 @@
 /** @file Logout mutation that removes the cached authentication session. */
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { Logout } from "@/api";
+import { assertApiSuccess, getErrorMessage } from "@/lib/error";
 import toast from "react-hot-toast";
 
 /**
@@ -15,9 +16,7 @@ export function useLogout() {
     mutationFn: async () => {
       const response = await Logout();
 
-      if (!response.data.success) {
-        throw new Error(response.data.message);
-      }
+      assertApiSuccess(response.data, "Logout failed");
 
       return response.data;
     },
@@ -29,7 +28,7 @@ export function useLogout() {
     },
 
     onError: (error) => {
-      toast.error(error instanceof Error ? error.message : "Logout failed");
+      toast.error(getErrorMessage(error, "Logout failed"));
     },
   });
 }

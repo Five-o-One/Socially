@@ -1,4 +1,5 @@
-/** @file Persisted client state for theme preferences and follow relationships. */
+/** @file Persisted client-only application state. */
+
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
@@ -8,23 +9,20 @@ type Theme = "light" | "dark";
 interface AppStore {
   theme: Theme;
 
-  followingUserIds: string[];
-
   toggleTheme: () => void;
   setTheme: (theme: Theme) => void;
-
-  followUser: (userId: string) => void;
-  unfollowUser: (userId: string) => void;
-  isFollowingUser: (userId: string) => boolean;
 }
 
-/** Global Zustand store for theme state and theme actions. */
+/**
+ * Global Zustand store for client-only application state.
+ *
+ * Server state such as users, posts, follows, likes, comments,
+ * sessions, and notifications is managed by TanStack Query.
+ */
 export const useAppStore = create<AppStore>()(
   persist(
-    (set, get) => ({
+    (set) => ({
       theme: "light",
-
-      followingUserIds: [],
 
       toggleTheme: () =>
         set((state) => ({
@@ -32,26 +30,6 @@ export const useAppStore = create<AppStore>()(
         })),
 
       setTheme: (theme) => set({ theme }),
-
-      followUser: (userId) =>
-        set((state) => {
-          if (state.followingUserIds.includes(userId)) {
-            return state;
-          }
-
-          return {
-            followingUserIds: [...state.followingUserIds, userId],
-          };
-        }),
-
-      unfollowUser: (userId) =>
-        set((state) => ({
-          followingUserIds: state.followingUserIds.filter(
-            (id) => id !== userId,
-          ),
-        })),
-
-      isFollowingUser: (userId) => get().followingUserIds.includes(userId),
     }),
     {
       name: "socially-app",

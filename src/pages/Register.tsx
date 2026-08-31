@@ -6,6 +6,7 @@ import { AppCard, AppButton } from "@/components";
 import type { RegisterRequest } from "@/types/Authentication";
 import { Register as RegisterUser } from "@/api/Authentication/POST";
 import toast from "react-hot-toast";
+import { assertApiSuccess, getErrorMessage } from "@/lib/error";
 
 /**
  * @component Register
@@ -13,6 +14,7 @@ import toast from "react-hot-toast";
  */
 export default function Register() {
   const navigate = useNavigate();
+
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
@@ -28,18 +30,13 @@ export default function Register() {
 
       const response = await RegisterUser(data);
 
-      if (!response.data.success) {
-        throw new Error(response.data.message);
-      }
+      assertApiSuccess(response.data, "Registration failed. Please try again.");
 
       toast.success("Account created successfully");
-
-      navigate("/login");
-    } catch (error) {
+      navigate("/");
+    } catch (error: unknown) {
       toast.error(
-        error instanceof Error
-          ? error.message
-          : "Registration failed. Please try again.",
+        getErrorMessage(error, "Registration failed. Please try again."),
       );
     } finally {
       setIsLoading(false);
@@ -57,9 +54,11 @@ export default function Register() {
           >
             Socially
           </Link>
+
           <h1 className="mt-3 text-xl font-bold text-text">
             Create an account
           </h1>
+
           <p className="mt-1 text-sm text-text-secondary">
             Join the developer community on Socially
           </p>
@@ -71,12 +70,16 @@ export default function Register() {
             {/* Full Name */}
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-text">Full Name</label>
+
               <input
-                {...register("name", { required: "Full name is required" })}
+                {...register("name", {
+                  required: "Full name is required",
+                })}
                 type="text"
                 placeholder="Farshad Hosseini"
                 className="w-full rounded-lg border border-border bg-transparent px-3.5 py-2 text-sm text-text placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
               />
+
               {errors.name && (
                 <p className="text-xs text-danger">{errors.name.message}</p>
               )}
@@ -85,6 +88,7 @@ export default function Register() {
             {/* Email */}
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-text">Email</label>
+
               <input
                 {...register("email", {
                   required: "Email is required",
@@ -97,6 +101,7 @@ export default function Register() {
                 placeholder="name@example.com"
                 className="w-full rounded-lg border border-border bg-transparent px-3.5 py-2 text-sm text-text placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
               />
+
               {errors.email && (
                 <p className="text-xs text-danger">{errors.email.message}</p>
               )}
@@ -105,6 +110,7 @@ export default function Register() {
             {/* Password */}
             <div className="space-y-1.5">
               <label className="text-sm font-medium text-text">Password</label>
+
               <div className="relative">
                 <input
                   {...register("password", {
@@ -118,11 +124,12 @@ export default function Register() {
                   placeholder="••••••••"
                   className="w-full rounded-lg border border-border bg-transparent px-3.5 py-2 pr-10 text-sm text-text placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
                 />
+
                 <button
                   type="button"
-                  onClick={() => setShowPassword(!showPassword)}
+                  onClick={() => setShowPassword((previous) => !previous)}
                   aria-label={showPassword ? "Hide password" : "Show password"}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-text-tertiary hover:text-text cursor-pointer p-1"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer p-1 text-text-tertiary hover:text-text"
                 >
                   {showPassword ? (
                     <svg
@@ -137,7 +144,7 @@ export default function Register() {
                     >
                       <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
                       <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
-                      <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
+                      <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7 10-7 10-7-3-7-10-7a9.74 9.74 0 0 0-5.39 1.61" />
                       <line x1="2" x2="22" y1="2" y2="22" />
                     </svg>
                   ) : (
@@ -157,6 +164,7 @@ export default function Register() {
                   )}
                 </button>
               </div>
+
               {errors.password && (
                 <p className="text-xs text-danger">{errors.password.message}</p>
               )}

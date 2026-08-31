@@ -1,5 +1,6 @@
 import { useQuery } from "@tanstack/react-query";
 import { GetAllPosts } from "@/api";
+import { assertApiSuccess } from "@/lib/error";
 
 /**
  * @hook usePosts
@@ -15,9 +16,7 @@ export function usePosts() {
 
       console.log("GET ALL POSTS RAW RESPONSE:", response.data);
 
-      if (!response.data.success) {
-        throw new Error(response.data.message);
-      }
+      assertApiSuccess(response.data, "Failed to fetch posts");
 
       console.log("GET ALL POSTS DATA:", response.data.data);
 
