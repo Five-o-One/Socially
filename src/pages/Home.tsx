@@ -11,6 +11,7 @@ import { usePosts } from "@/hooks/usePosts";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCreatePost } from "@/hooks/useCreatePost";
 import { getErrorMessage } from "@/lib/error";
+import { DIC } from "@/constants";
 
 /**
  * @component Home
@@ -69,7 +70,7 @@ export default function Home() {
               <textarea
                 value={postContent}
                 onChange={(e) => setPostContent(e.target.value)}
-                placeholder="What's on your mind?"
+                placeholder={DIC.post.composerPlaceholder}
                 rows={3}
                 className="flex-1 resize-none bg-transparent pt-1 text-sm text-text placeholder:text-text-secondary focus:outline-none"
               />

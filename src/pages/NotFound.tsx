@@ -1,6 +1,7 @@
 /** @file Fallback page rendered for unmatched application routes. */
 import { Link } from "react-router";
 import { AppButton } from "@/components/AppButton";
+import { UI_STRINGS } from "@/constants";
 
 /**
  * @component NotFound
@@ -12,15 +13,15 @@ export default function NotFound() {
       <div className="text-center">
         <p className="text-base font-semibold text-brand">404</p>
         <h1 className="mt-4 text-4xl font-bold tracking-tight text-text sm:text-6xl">
-          Page not found
+          {UI_STRINGS.notFound.title}
         </h1>
         <p className="mt-4 text-base text-text-secondary">
-          Sorry, we couldn’t find the page you’re looking for.
+          {UI_STRINGS.notFound.description}
         </p>
         <div className="mt-8 flex justify-center">
           <Link to="/">
             <AppButton variant="primary" size="md">
-              Go back home
+              {UI_STRINGS.notFound.goHome}
             </AppButton>
           </Link>
         </div>

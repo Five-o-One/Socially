@@ -14,11 +14,7 @@ export function usePosts() {
     queryFn: async () => {
       const response = await GetAllPosts();
 
-      console.log("GET ALL POSTS RAW RESPONSE:", response.data);
-
       assertApiSuccess(response.data, "Failed to fetch posts");
-
-      console.log("GET ALL POSTS DATA:", response.data.data);
 
       return response.data.data;
     },
