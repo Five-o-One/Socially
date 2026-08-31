@@ -1,9 +1,11 @@
+/** Display messages keyed by notification type. */
 export const NOTIFICATION_MESSAGES = {
   follow: (name: string) => `${name} followed you`,
   like: (name: string) => `${name} liked your post`,
   comment: (name: string) => `${name} commented on your post`,
 };
 
+/** Icon names keyed by notification type. */
 export const ICON_BY_TYPE: Record<
   "follow" | "like" | "comment",
   { icon: "Person" | "Heart" | "Chat"; className: string }

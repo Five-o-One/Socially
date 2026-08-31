@@ -1,21 +1,20 @@
+/** @file Image component with loading, error, and generated placeholder states. */
 import { useState } from "react";
+import type { AppImageProps } from "@/types";
 
 /**
  * @component AppImage
- * @description Reusable image component with dynamic avatar placeholders,
- * gradient support, multiple sizes and image loading states.
+ * @description Displays an image or an initial-letter placeholder when the image is unavailable.
+ * @prop {string} [src] - Image URL
+ * @prop {string} alt - Accessible label and placeholder seed
+ * @prop {'circle' | 'rounded' | 'square'} [variant='rounded'] - Image shape
+ * @prop {'xs' | 'sm' | 'md' | 'lg' | 'xl' | 'full'} [size='md'] - Image size
+ * @prop {string} [className] - Additional CSS classes
+ * @prop {boolean} [lazyLoad=true] - Enables lazy loading
+ * @prop {boolean} [showRealImage=true] - Attempts to render the source image
+ * @prop {'solid' | 'gradient'} [placeholderStyle='gradient'] - Placeholder style
  */
 
-interface AppImageProps {
-  src: string;
-  alt: string;
-  variant?: "circle" | "rounded" | "square";
-  size?: "xs" | "sm" | "md" | "lg" | "xl" | "full";
-  className?: string;
-  lazyLoad?: boolean;
-  showRealImage?: boolean;
-  placeholderStyle?: "solid" | "gradient";
-}
 
 const placeholderColors = [
   "bg-emerald-100 text-emerald-700",
@@ -36,11 +35,9 @@ const placeholderGradients = [
 
 function getColorIndex(value: string, colorsLength: number) {
   let hash = 0;
-
   for (let index = 0; index < value.length; index++) {
     hash = value.charCodeAt(index) + ((hash << 5) - hash);
   }
-
   return Math.abs(hash) % colorsLength;
 }
 
@@ -51,7 +48,7 @@ export function AppImage({
   size = "md",
   className = "",
   lazyLoad = true,
-  showRealImage = false,
+  showRealImage = true,
   placeholderStyle = "gradient",
 }: AppImageProps) {
   const [hasError, setHasError] = useState(false);
@@ -73,11 +70,13 @@ export function AppImage({
   };
 
   const sizeClass = size === "full" ? "w-full h-auto" : sizeClasses[size];
+  const firstLetter = alt ? alt.trim().charAt(0).toUpperCase() : "?";
 
-  const firstLetter = alt ? alt.charAt(0).toUpperCase() : "?";
-
-  const colorIndex = getColorIndex(alt, placeholderColors.length);
-  const gradientIndex = getColorIndex(alt, placeholderGradients.length);
+  const colorIndex = getColorIndex(alt || "user", placeholderColors.length);
+  const gradientIndex = getColorIndex(
+    alt || "user",
+    placeholderGradients.length,
+  );
 
   const placeholderColor =
     placeholderStyle === "gradient"
@@ -85,8 +84,8 @@ export function AppImage({
       : placeholderColors[colorIndex];
 
   const placeholderClasses = `
-    flex items-center justify-center
-    font-bold
+    flex items-center justify-center flex-shrink-0
+    font-bold select-none
     ${placeholderColor}
     ${variantClasses[variant]}
     ${sizeClass}
@@ -104,7 +103,7 @@ export function AppImage({
   }
 
   const imageClasses = `
-    object-cover
+    object-cover flex-shrink-0
     bg-border/30
     transition-opacity duration-300
     ${isLoaded ? "opacity-100" : "opacity-0"}

@@ -1,153 +1,125 @@
 # Socially
 
-A social media frontend project built as the final project of a frontend bootcamp.
+Socially is a responsive social-media frontend built with React, TypeScript, and Vite. It includes the core flows you would expect from a small social network: authentication, a post feed, likes, comments, profiles, follows, notifications, and light/dark themes.
 
-Socially is inspired by platforms such as X and focuses on building a professional, responsive, data-driven social media experience. The project is divided into two phases: first, implementing the UI from the provided design; second, connecting that UI to a real backend API and implementing application behavior.
+The project was created as the final project for Quera’s Frontend Bootcamp. It connects to a remote demonstration API, so data-dependent features require that service to be available.
 
-## Features
+## What you can do
 
-### Authentication
+- Create an account, sign in, restore a session, and sign out
+- Browse the home feed and publish or delete posts
+- Like posts and add or delete comments
+- Open profiles by username or user ID
+- View a user’s posts and liked posts
+- Follow and unfollow users
+- Edit your name, bio, location, and website
+- Search for users and browse follow recommendations
+- View like, comment, and follow notifications
+- Mark notifications as read
+- Switch between light and dark themes
+- Use the responsive desktop and mobile layouts
 
-* User registration
-* User login
-* User logout
-* Session handling
-* Authentication-aware application flow
+## Routes
 
-### Posts
+| Path | Purpose |
+| --- | --- |
+| `/` | Home feed and post composer |
+| `/login` | Sign in |
+| `/register` | Create an account |
+| `/notifications` | View and manage notifications |
+| `/profile/:username` | View a profile by username |
+| `/profile/id/:id` | View a profile by user ID |
+| `*` | Not-found page |
 
-* View posts in the feed
-* Create posts
-* Delete posts
-* Like / unlike posts
-* Comment on posts
+## Tech stack
 
-### Users
+- React 19 and React Router
+- TypeScript
+- Vite
+- Tailwind CSS 4
+- TanStack Query for server state, caching, and mutations
+- Zustand for persisted client preferences such as theme
+- Axios for API requests
+- React Hook Form for authentication and profile forms
+- ESLint, Lucide React, and react-hot-toast
 
-* View user profiles
-* View a user's posts
-* View posts liked by a user
-* Follow / unfollow users
-* Update user profile
-* Discover recommended users
-
-### Notifications
-
-* View notifications
-* Mark notifications as read
-
-### UI / UX
-
-* Responsive layouts
-* Light and dark themes
-* Reusable UI components
-* Loading states
-* Error states
-* Empty states
-* Confirmation modals
-* User information modals
-* Skeleton/spinner states where appropriate
-
----
-
-## Pages
-
-The project requires the following primary pages:
-
-| Page          | Description                        |
-| ------------- | ---------------------------------- |
-| Login         | Authenticate an existing user      |
-| Register      | Create a new account               |
-| Home / Feed   | Display posts from users           |
-| Notifications | Display user notifications         |
-| Profile       | Display user information and posts |
-
-Additional UI components and flows support interactions such as comments, following users, editing profiles, and confirmation dialogs.
-
----
-
-## Tech Stack
-
-### Core
-
-* **React 19**
-* **TypeScript**
-* **Vite**
-* **React Router**
-* **Tailwind CSS**
-
-### State & Data
-
-* **TanStack Query / React Query** — server state and API data
-* **Zustand** — client/application state
-
-### UI & Utilities
-
-* **react-hot-toast** — toast notifications
-* **Tailwind CSS v4** — styling
-* **ESLint** — code quality
-
-The current project uses React Router for routing and does **not** use TanStack Router.
-
----
-
-## Getting Started
+## Run locally
 
 ### Prerequisites
 
-Make sure you have a recent version of Node.js installed.
+- Node.js (a current LTS release is recommended)
+- pnpm
 
-### Installation
-
-Clone the repository and install dependencies:
+### Install
 
 ```bash
 git clone <repository-url>
 cd socially
-npm install
+pnpm install
 ```
 
-### Development
-
-Start the Vite development server:
+### Start the development server
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
-### Production Build
+Vite prints the local URL, normally `http://localhost:5173`.
 
-Create a production build:
+### Other commands
 
 ```bash
-npm run build
+pnpm build    # Type-check and create a production build in dist/
+pnpm preview  # Serve the production build locally
+pnpm lint     # Run ESLint
 ```
 
-### Preview Production Build
+## Backend
 
-```bash
-npm run preview
+The frontend currently uses the following remote API:
+
+```text
+https://socially-nextjs-six.vercel.app
 ```
 
-### Lint
+The Axios client is defined in [`src/api/base.ts`](src/api/base.ts). Requests include cookies with `withCredentials`, which allows the backend to maintain authenticated sessions.
 
-Run ESLint:
+The API provides endpoints for:
 
-```bash
-npm run lint
+- Authentication and session management
+- Posts, likes, and comments
+- User lookup, search, recommendations, and profiles
+- Following relationships
+- Notifications and read status
+
+The API URL is currently hard-coded and there is no separate environment-variable configuration. The service is intended for development and demonstration, and may be unavailable or change without notice.
+
+## Project structure
+
+```text
+src/
+├── api/          Typed backend request functions
+├── assets/       Images and SVG icons
+├── components/   Reusable UI components
+├── constants/    Shared application configuration
+├── hooks/        Query and mutation hooks
+├── layout/       Navigation, sidebars, and routed layout
+├── lib/          Shared libraries and error handling
+├── pages/        Route-level screens
+├── store/        Persisted Zustand client state
+├── types/        Shared TypeScript contracts
+└── utils/        Small reusable utilities
 ```
 
----
+The application flow is intentionally layered:
 
-## Available Scripts
+1. Pages and components use hooks from `src/hooks/`.
+2. Hooks call the typed request functions in `src/api/`.
+3. TanStack Query caches server data and coordinates loading, error, and mutation states.
+4. Zustand stores client-only preferences, such as the selected theme.
 
-| Command           | Description                          |
-| ----------------- | ------------------------------------ |
-| `npm run dev`     | Start the development server         |
-| `npm run build`   | Type-check and build the application |
-| `npm run lint`    | Run ESLint                           |
-| `npm run preview` | Preview the production build         |
+## License
 
----
+Socially is available under the [MIT License](LICENSE).
 
-## [License](LICENSE)
+Copyright (c) 2026 Five-o-One.

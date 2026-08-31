@@ -1,8 +1,9 @@
+/* File: Global Tailwind theme tokens, layout defaults, and light/dark variables. */
 @import "tailwindcss";
 
 :root {
   /* Layout */
-  --bg: oklch(100% 0.00011 271.152);
+  --bg: oklch(98.511% 0.00011 271.152);
   --header: oklch(100% 0.00011 271.152 / 0.6);
   --card: oklch(100% 0.00011 271.152);
   --border: oklch(92.191% 0.0001 271.152);
@@ -40,7 +41,7 @@
   /* Layout */
   --bg: oklch(14.479% 0.00002 271.152);
   --header: oklch(14.479% 0.00002 271.152 / 0.6);
-  --card: oklch(14.479% 0.00002 271.152);
+  --card: oklch(20.463% 0.00002 271.152);
   --border: oklch(26.862% 0.00003 271.152);
 
   /* Text */
@@ -64,9 +65,9 @@
   --btn-primary-text-disabled: oklch(20.463% 0.00002 271.152 / 0.5);
 
   /* Button Secondary */
-  --btn-secondary-bg: oklch(14.479% 0.00002 271.152);
+  --btn-secondary-bg: oklch(20.463% 0.00002 271.152);
   --btn-secondary-text: oklch(100% 0.00011 271.152);
-  --btn-secondary-bg-hover: oklch(20.463% 0.00002 271.152);
+  --btn-secondary-bg-hover: oklch(26.862% 0.00003 271.152);
   --btn-secondary-text-hover: oklch(98.511% 0.00011 271.152);
   --btn-secondary-bg-disabled: oklch(20.463% 0.00002 271.152 / 0.5);
   --btn-secondary-text-disabled: oklch(63.676% 0.00007 271.152);
@@ -101,10 +102,34 @@
   --color-btn-secondary-text-hover: var(--btn-secondary-text-hover);
   --color-btn-secondary-bg-disabled: var(--btn-secondary-bg-disabled);
   --color-btn-secondary-text-disabled: var(--btn-secondary-text-disabled);
+
+  --shadow-card:
+    0px 1px 3px 0px rgba(0, 0, 0, 0.1), 0px 1px 2px -1px rgba(0, 0, 0, 0.1);
 }
 
 @layer base {
-  html {
-    font-family: Arial, sans-serif;
+  html,
+  body {
+    overflow-x: clip;
+    max-width: 100%;
+    font-family:
+      Inter,
+      system-ui,
+      -apple-system,
+      sans-serif;
   }
+}
+
+html,
+body {
+  overflow-x: clip;
+}
+
+body.scroll-locked {
+  overflow: hidden !important;
+  height: 100%;
+}
+
+html.scroll-locked {
+  overflow: hidden !important;
 }

@@ -1,5 +1,24 @@
-import AppIcon from "../AppIcon/AppIcon";
+import type { AppSpinnerProps } from "@/types";
+/** @file Compact loading spinner based on the shared icon component. */
+import AppIcon from "@/components/AppIcon/AppIcon";
 
-export default function AppSpinner() {
-  return <AppIcon nameIcon="Loader" className="animate-spin text-text" size={24} />;
+/**
+ * @component AppSpinner
+ * @description Compact loading indicator.
+ * @prop {number} [size=24] - Spinner size in pixels
+ * @prop {string} [className='text-brand'] - Additional CSS classes
+ */
+
+
+export default function AppSpinner({
+  size = 24,
+  className = "text-brand",
+}: AppSpinnerProps) {
+  return (
+    <AppIcon
+      nameIcon="Loader"
+      size={size}
+      className={`animate-spin ${className}`}
+    />
+  );
 }

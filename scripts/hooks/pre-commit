@@ -1,4 +1,5 @@
 #!/bin/sh
+# File: Prevents commits directly on protected branches.
 
 branch_name=$(git branch --show-current)
 
