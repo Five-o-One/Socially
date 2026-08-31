@@ -1,6 +1,7 @@
 /** @file Recommended-user query used by the authenticated sidebar. */
 import { useQuery } from "@tanstack/react-query";
 import { GetRecommendedUsers } from "@/api";
+import { assertApiSuccess } from "@/lib/error";
 
 /**
  * @hook useRecommendedUsers
@@ -15,11 +16,7 @@ export function useRecommendedUsers(enabled = true) {
     queryFn: async () => {
       const response = await GetRecommendedUsers();
 
-      if (!response.data.success) {
-        throw new Error(
-          response.data.message || "Failed to fetch recommended users",
-        );
-      }
+      assertApiSuccess(response.data, "Failed to fetch recommended users");
 
       return response.data.data;
     },

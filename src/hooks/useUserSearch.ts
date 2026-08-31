@@ -1,6 +1,7 @@
 /** @file User search query hook. */
 import { useQuery } from "@tanstack/react-query";
 import { SearchUsers } from "@/api";
+import { assertApiSuccess } from "@/lib/error";
 
 /**
  * @hook useUserSearch
@@ -13,9 +14,7 @@ export function useUserSearch(query: string) {
     queryFn: async () => {
       const response = await SearchUsers(query);
 
-      if (!response.data.success) {
-        throw new Error(response.data.message);
-      }
+      assertApiSuccess(response.data, "Failed to search users");
 
       return response.data.data;
     },

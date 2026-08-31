@@ -1,6 +1,7 @@
 /** @file Query that loads and unwraps posts liked by a user. */
 import { useQuery } from "@tanstack/react-query";
 import { GetUserLikedPosts } from "@/api";
+import { assertApiSuccess } from "@/lib/error";
 
 /**
  * @hook useUserLikedPosts
@@ -15,9 +16,7 @@ export function useUserLikedPosts(userId: string) {
     queryFn: async () => {
       const response = await GetUserLikedPosts(userId);
 
-      if (!response.data.success) {
-        throw new Error(response.data.message);
-      }
+      assertApiSuccess(response.data, "Failed to fetch liked posts");
 
       return response.data.data
         .map((like) => like.post)

@@ -2,6 +2,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { GetNotifications, MarkNotificationsAsRead } from "@/api";
 import type { Notification } from "@/types/Notifications";
+import { assertApiSuccess } from "@/lib/error";
 
 /** Previous notification state retained for optimistic read updates. */
 interface MarkNotificationsContext {
@@ -16,15 +17,15 @@ interface MarkNotificationsContext {
 export function useNotifications(enabled = true) {
   return useQuery<Notification[]>({
     queryKey: ["notifications"],
+
     queryFn: async () => {
       const response = await GetNotifications();
 
-      if (!response.data.success) {
-        throw new Error(response.data.message);
-      }
+      assertApiSuccess(response.data, "Failed to fetch notifications");
 
       return response.data.data;
     },
+
     retry: false,
     enabled,
   });
@@ -42,9 +43,7 @@ export function useMarkNotificationsAsRead() {
     mutationFn: async (ids: string[]) => {
       const response = await MarkNotificationsAsRead({ ids });
 
-      if (!response.data.success) {
-        throw new Error(response.data.message);
-      }
+      assertApiSuccess(response.data, "Failed to mark notifications as read");
 
       return response.data;
     },

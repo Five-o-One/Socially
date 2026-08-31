@@ -10,7 +10,7 @@ import {
 import { usePosts } from "@/hooks/usePosts";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { useCreatePost } from "@/hooks/useCreatePost";
-import toast from "react-hot-toast";
+import { getErrorMessage } from "@/lib/error";
 
 /**
  * @component Home
@@ -33,14 +33,9 @@ export default function Home() {
 
     try {
       await createPost.mutateAsync(content);
-
       setPostContent("");
-
-      toast.success("Post created successfully");
-    } catch (error) {
-      toast.error(
-        error instanceof Error ? error.message : "Failed to create post",
-      );
+    } catch {
+      // useCreatePost handles and displays the error.
     }
   };
 
@@ -52,7 +47,7 @@ export default function Home() {
     return (
       <AppCard>
         <p className="text-center text-red-500">
-          {error instanceof Error ? error.message : "Failed to load posts."}
+          {getErrorMessage(error, "Failed to load posts.")}
         </p>
       </AppCard>
     );

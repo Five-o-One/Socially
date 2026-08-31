@@ -36,33 +36,35 @@ export function UserInfoCard({ user, className = "" }: UserSummaryProps) {
     <>
       <AppCard className={className}>
         <Link
-          to={`/profile/${cleanUsername}`}
-          className="flex flex-col items-center gap-1 text-center group cursor-pointer"
+          to={`/profile/id/${encodeURIComponent(user.id)}`}
+          className="group flex cursor-pointer flex-col items-center gap-1 text-center"
         >
           <AppImage
             src={user.imageURL || ""}
-            alt={user.name || user.username}
+            alt={user.name || cleanUsername}
             variant="circle"
             size="xl"
           />
-          <h3 className="mt-2 text-lg font-bold text-text truncate max-w-full group-hover:underline">
+
+          <h3 className="mt-2 max-w-full truncate text-lg font-bold text-text group-hover:underline">
             {user.name}
           </h3>
-          <p className="text-sm text-text-secondary truncate max-w-full">
+
+          <p className="max-w-full truncate text-sm text-text-secondary">
             @{cleanUsername}
           </p>
         </Link>
 
-        {/* Following / Followers Clickable Stats */}
         <div className="mt-4 flex items-center justify-around border-t border-border pt-4">
           <button
             type="button"
             onClick={() => handleOpenModal("following")}
-            className="flex flex-col items-center cursor-pointer transition-transform active:scale-95 hover:opacity-80"
+            className="flex cursor-pointer flex-col items-center transition-transform hover:opacity-80 active:scale-95"
           >
             <span className="text-base font-bold text-text">
               {user.following}
             </span>
+
             <span className="text-xs text-text-secondary hover:underline">
               Following
             </span>
@@ -71,11 +73,12 @@ export function UserInfoCard({ user, className = "" }: UserSummaryProps) {
           <button
             type="button"
             onClick={() => handleOpenModal("followers")}
-            className="flex flex-col items-center cursor-pointer transition-transform active:scale-95 hover:opacity-80"
+            className="flex cursor-pointer flex-col items-center transition-transform hover:opacity-80 active:scale-95"
           >
             <span className="text-base font-bold text-text">
               {user.followers}
             </span>
+
             <span className="text-xs text-text-secondary hover:underline">
               Followers
             </span>
@@ -89,10 +92,13 @@ export function UserInfoCard({ user, className = "" }: UserSummaryProps) {
               size={14}
               className="text-text-tertiary"
             />
+
             <span>{user.location || "No location"}</span>
           </div>
+
           <div className="flex items-center gap-2">
             <AppIcon nameIcon="Link" size={14} className="text-text-tertiary" />
+
             {user.website ? (
               <a
                 href={
@@ -113,7 +119,6 @@ export function UserInfoCard({ user, className = "" }: UserSummaryProps) {
         </div>
       </AppCard>
 
-      {/* Network Modal */}
       <FollowListModal
         isOpen={isModalOpen}
         onClose={() => setIsModalOpen(false)}
