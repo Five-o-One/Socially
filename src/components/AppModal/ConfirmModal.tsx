@@ -1,3 +1,4 @@
+import type { ConfirmModalProps } from "@/types";
 /** @file Confirmation dialog built on the base modal component. */
 import { AppModal } from "./AppModal";
 import { AppButton } from "@/components/AppButton";
@@ -14,16 +15,7 @@ import { AppButton } from "@/components/AppButton";
  * @prop {() => void} onClose - Closes the dialog
  * @prop {boolean} [isLoading=false] - Disables actions while processing
  */
-interface ConfirmModalProps {
-  isOpen: boolean;
-  title?: string;
-  description?: string;
-  confirmText?: string;
-  cancelText?: string;
-  onConfirm: () => void;
-  onClose: () => void;
-  isLoading?: boolean;
-}
+
 
 export function ConfirmModal({
   isOpen,

@@ -1,5 +1,5 @@
 /** @file Reusable content card with optional header and footer regions. */
-import { type ReactNode } from "react";
+import type { AppCardProps } from "@/types";
 
 /**
  * @component AppCard
@@ -13,16 +13,7 @@ import { type ReactNode } from "react";
  * @prop {() => void} [onClick] - Card click handler
  * @prop {string} [className] - Additional CSS classes
  */
-interface AppCardProps {
-  children: ReactNode;
-  header?: ReactNode;
-  footer?: ReactNode;
-  hoverable?: boolean;
-  noPadding?: boolean;
-  borderless?: boolean;
-  onClick?: () => void;
-  className?: string;
-}
+
 
 export function AppCard({
   children,

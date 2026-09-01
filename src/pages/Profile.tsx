@@ -25,6 +25,12 @@ import { getErrorMessage } from "@/lib/error";
 import type { UpdateUserProfileDto } from "@/types";
 import type { TabItem } from "@/components/AppTab/AppTab";
 
+/**
+ * Renders profile details, follow actions, profile editing, and post tabs.
+ *
+ * @param props - Optional profile ID or username used to locate the profile.
+ * @returns The profile page content and related dialogs.
+ */
 function ProfileContent({ id, username }: { id?: string; username?: string }) {
   const [activeTab, setActiveTab] = useState("posts");
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
@@ -324,6 +330,11 @@ function ProfileContent({ id, username }: { id?: string; username?: string }) {
   );
 }
 
+/**
+ * Resolves the profile route parameters and renders the profile content.
+ *
+ * @returns The routed profile page.
+ */
 export default function Profile() {
   const { id, username } = useParams();
 

@@ -3,15 +3,8 @@
  * @description Provides typed request bodies and functions for creating posts and comments.
  */
 import type { AxiosResponse } from "axios";
-import type { ApiMessageResponse } from "../../types/api";
-import type { ApiResponse } from "../../types/api";
-import type { Post } from "../../types/post";
+import type { AddCommentRequest, ApiMessageResponse, ApiResponse, CreatePostRequest, Post } from "../../types";
 import __BASE__ from "../base";
-
-/** Request body for creating a post. */
-export interface CreatePostRequest {
-  content: string;
-}
 
 /** Creates a post from the supplied request body. */
 export const CreatePost = async (
@@ -21,11 +14,6 @@ export const CreatePost = async (
 
   return response;
 };
-
-/** Request body for adding a comment to a post. */
-export interface AddCommentRequest {
-  content: string;
-}
 
 /** Adds a comment to a post. */
 export const AddComment = async (

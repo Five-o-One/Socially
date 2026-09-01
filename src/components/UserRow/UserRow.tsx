@@ -1,17 +1,9 @@
+import type { UserRowProps } from "@/types";
 import { Link } from "react-router";
 import { AppButton } from "@/components/AppButton";
 import { AppImage } from "@/components/AppImage";
 
-interface UserRowProps {
-  id: string;
-  username?: string;
-  name: string;
-  avatarSrc: string | null;
-  followers: number;
-  isFollowing: boolean;
-  onToggleFollow: () => void;
-  isFollowLoading?: boolean;
-}
+
 
 export function UserRow({
   id,

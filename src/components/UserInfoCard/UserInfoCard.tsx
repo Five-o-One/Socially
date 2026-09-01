@@ -1,23 +1,13 @@
+import type { UserSummaryProps } from "@/types";
 import { useState } from "react";
 import { Link } from "react-router";
 import { AppCard } from "@/components/AppCard";
 import { AppImage } from "@/components/AppImage";
 import AppIcon from "@/components/AppIcon/AppIcon";
 import FollowListModal from "../AppModal/FollowListModal";
+import { DIC } from "@/constants";
 
-interface UserSummaryProps {
-  user: {
-    id: string;
-    imageURL?: string | null;
-    username: string;
-    name: string;
-    followers: number;
-    following: number;
-    location?: string | null;
-    website?: string | null;
-  };
-  className?: string;
-}
+
 
 export function UserInfoCard({ user, className = "" }: UserSummaryProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -93,7 +83,7 @@ export function UserInfoCard({ user, className = "" }: UserSummaryProps) {
               className="text-text-tertiary"
             />
 
-            <span>{user.location || "No location"}</span>
+            <span>{user.location || DIC.profile.noLocation}</span>
           </div>
 
           <div className="flex items-center gap-2">
@@ -113,7 +103,7 @@ export function UserInfoCard({ user, className = "" }: UserSummaryProps) {
                 {user.website.replace(/^https?:\/\//, "")}
               </a>
             ) : (
-              <span>No website</span>
+              <span>{DIC.profile.noWebsite}</span>
             )}
           </div>
         </div>

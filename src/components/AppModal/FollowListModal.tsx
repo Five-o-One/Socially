@@ -1,6 +1,7 @@
+import type { FollowListModalProps, FollowListContentProps, TabItem } from "@/types";
 import { useState, useMemo } from "react";
 import { AppModal } from "./AppModal";
-import { AppTab, type TabItem } from "@/components/AppTab/AppTab";
+import { AppTab } from "@/components/AppTab/AppTab";
 import AppSpinner from "../AppSpinner/AppSpinner";
 import UserRow from "../UserRow/UserRow";
 import {
@@ -10,19 +11,9 @@ import {
   useCurrentUser,
 } from "@/hooks";
 
-interface FollowListModalProps {
-  isOpen: boolean;
-  onClose: () => void;
-  userId: string;
-  initialTab?: "followers" | "following";
-  userName?: string;
-}
 
-interface FollowListContentProps {
-  userId: string;
-  initialTab: "followers" | "following";
-  onClose: () => void;
-}
+
+
 
 function FollowListContent({
   userId,

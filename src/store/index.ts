@@ -2,16 +2,7 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-
-/** Supported application themes. */
-type Theme = "light" | "dark";
-
-interface AppStore {
-  theme: Theme;
-
-  toggleTheme: () => void;
-  setTheme: (theme: Theme) => void;
-}
+import type { AppStore } from "@/types";
 
 /**
  * Global Zustand store for client-only application state.

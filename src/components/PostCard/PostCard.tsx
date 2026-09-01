@@ -8,7 +8,6 @@ import { AppButton } from "@/components/AppButton";
 import { AppSpinner } from "@/components";
 import AppIcon from "@/components/AppIcon/AppIcon";
 import { ConfirmModal } from "@/components/AppModal/ConfirmModal";
-import type { Post } from "@/types";
 import { useToggleLike } from "@/hooks/useToggleLike";
 import { useAddComment } from "@/hooks/useAddComment";
 import { useDeletePost } from "@/hooks/useDeletePost";
@@ -16,6 +15,8 @@ import { useDeleteComment } from "@/hooks/useDeleteComment";
 import { useCurrentUser } from "@/hooks/useCurrentUser";
 import { SearchUsers } from "@/api";
 import { formatRelativeTime } from "@/utils/formatRelativeTime";
+import type { PostCardProps } from "@/types";
+import { DIC } from "@/constants";
 
 /**
  * @component PostCard
@@ -23,11 +24,7 @@ import { formatRelativeTime } from "@/utils/formatRelativeTime";
  * @prop {Post} post - Post data rendered by the card
  * @prop {string} [currentUserId] - ID used to determine ownership and interaction state
  */
-interface PostCardProps {
-  post: Post;
-  currentUserId?: string;
-  className?: string;
-}
+
 
 export function PostCard({
   post,
@@ -71,12 +68,12 @@ export function PostCard({
 
   const handleLikeToggle = async () => {
     if (!isAuthenticated) {
-      toast.error("Please sign in to like this post.");
+      toast.error(DIC.post.signInToLike);
       return;
     }
 
     if (isAuthor) {
-      toast.error("You cannot like your own post.");
+      toast.error(DIC.post.ownPostLike);
       return;
     }
 
@@ -84,8 +81,8 @@ export function PostCard({
 
     try {
       await toggleLike.mutateAsync(post.id);
-    } catch (error) {
-      console.error("Failed to toggle like:", error);
+    } catch {
+      // The mutation hook handles and displays the error.
     }
   };
 
@@ -103,8 +100,8 @@ export function PostCard({
       });
 
       setCommentText("");
-    } catch (error) {
-      console.error("Failed to add comment:", error);
+    } catch {
+      // The mutation hook handles and displays the error.
     }
   };
 
@@ -130,7 +127,6 @@ export function PostCard({
       const response = await SearchUsers(email);
 
       if (!response.data.success) {
-        console.error("Failed to find comment author:", response.data.message);
         return;
       }
 
@@ -139,7 +135,6 @@ export function PostCard({
       );
 
       if (!user) {
-        console.error("Comment author not found:", email);
         return;
       }
 
@@ -149,8 +144,8 @@ export function PostCard({
       }));
 
       navigate(`/profile/id/${user.id}`);
-    } catch (error) {
-      console.error("Failed to resolve comment author:", error);
+    } catch {
+      // The lookup failure leaves the author link inactive.
     }
   };
 
@@ -160,8 +155,8 @@ export function PostCard({
     try {
       await deletePost.mutateAsync(post.id);
       setIsDeleteModalOpen(false);
-    } catch (error) {
-      console.error("Failed to delete post:", error);
+    } catch {
+      // The mutation hook handles and displays the error.
     }
   };
 
@@ -175,8 +170,8 @@ export function PostCard({
       });
 
       setCommentToDeleteId(null);
-    } catch (error) {
-      console.error("Failed to delete comment:", error);
+    } catch {
+      // The mutation hook handles and displays the error.
     }
   };
 
@@ -218,7 +213,7 @@ export function PostCard({
                 type="button"
                 onClick={() => setIsDeleteModalOpen(true)}
                 className="cursor-pointer rounded-lg p-1.5 text-text-tertiary opacity-0 transition-opacity hover:bg-danger/10 hover:text-danger group-hover:opacity-100"
-                aria-label="Delete Post"
+                        aria-label={DIC.post.deletePost}
               >
                 <AppIcon nameIcon="Trash" size={18} />
               </button>
@@ -338,7 +333,7 @@ export function PostCard({
                                 type="button"
                                 onClick={() => setCommentToDeleteId(comment.id)}
                                 className="cursor-pointer rounded p-1 text-text-tertiary opacity-0 transition-opacity hover:bg-danger/10 hover:text-danger group-hover:opacity-100"
-                                aria-label="Delete Comment"
+                                aria-label={DIC.post.deleteComment}
                               >
                                 <AppIcon nameIcon="Trash" size={14} />
                               </button>
@@ -369,7 +364,7 @@ export function PostCard({
                       <textarea
                         value={commentText}
                         onChange={(e) => setCommentText(e.target.value)}
-                        placeholder="Write a comment..."
+                        placeholder={DIC.post.commentPlaceholder}
                         rows={2}
                         className="w-full resize-none bg-transparent text-sm text-text placeholder:text-text-tertiary outline-none"
                       />
@@ -416,8 +411,8 @@ export function PostCard({
 
       <ConfirmModal
         isOpen={isDeleteModalOpen}
-        title="Delete Post"
-        description="This action cannot be undone."
+        title={DIC.post.deletePost}
+        description={DIC.post.deleteDescription}
         confirmText="Delete"
         onConfirm={handleConfirmDelete}
         onClose={() => setIsDeleteModalOpen(false)}
@@ -425,8 +420,8 @@ export function PostCard({
 
       <ConfirmModal
         isOpen={Boolean(commentToDeleteId)}
-        title="Delete Comment"
-        description="Are you sure you want to delete this comment?"
+        title={DIC.post.deleteComment}
+        description={DIC.post.deleteCommentDescription}
         confirmText="Delete"
         onConfirm={handleConfirmDeleteComment}
         onClose={() => setCommentToDeleteId(null)}

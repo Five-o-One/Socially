@@ -2,14 +2,9 @@
 import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { ToggleFollow } from "@/api";
 import type { User } from "@/types";
+import type { FollowMutationContext } from "@/types";
 import toast from "react-hot-toast";
 import { assertApiSuccess, getErrorMessage } from "@/lib/error";
-
-interface FollowMutationContext {
-  previousRecommendedUsers?: User[];
-  previousProfiles: Array<[readonly unknown[], User | undefined]>;
-  previousCurrentUser?: User;
-}
 
 /**
  * @hook useToggleFollow

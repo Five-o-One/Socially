@@ -1,6 +1,5 @@
 /** @file Reusable button component and its visual interaction states. */
-import { type ReactNode } from "react";
-import type { NameIcon } from "@/types";
+import type { AppButtonProps } from "@/types";
 import AppIcon from "@/components/AppIcon/AppIcon";
 
 /**
@@ -18,18 +17,7 @@ import AppIcon from "@/components/AppIcon/AppIcon";
  * @prop {'button' | 'submit' | 'reset'} [type='button'] - Button HTML type
  * @prop {string} [className] - Additional CSS classes for customization
  */
-interface AppButtonProps {
-  children?: ReactNode;
-  icon?: NameIcon;
-  variant?: "primary" | "secondary" | "danger" | "ghost";
-  size?: "sm" | "md" | "lg";
-  fullWidth?: boolean;
-  disabled?: boolean;
-  isLoading?: boolean;
-  onClick?: () => void;
-  type?: "button" | "submit" | "reset";
-  className?: string;
-}
+
 
 export function AppButton({
   children,

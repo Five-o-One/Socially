@@ -5,9 +5,10 @@ import { useForm } from "react-hook-form";
 import { useQueryClient } from "@tanstack/react-query";
 import { AppCard, AppButton } from "@/components";
 import { Login as LoginUser } from "@/api/Authentication/POST";
-import type { LoginRequest } from "@/types/Authentication";
+import type { LoginRequest } from "@/types";
 import toast from "react-hot-toast";
 import { assertApiSuccess, getErrorMessage } from "@/lib/error";
+import { UI_STRINGS } from "@/constants";
 
 /**
  * @component Login
@@ -34,17 +35,17 @@ export default function Login() {
     try {
       const response = await LoginUser(data);
 
-      assertApiSuccess(response.data, "Login failed. Please try again.");
+      assertApiSuccess(response.data, UI_STRINGS.auth.loginError);
 
       await queryClient.invalidateQueries({
         queryKey: ["session"],
       });
 
-      toast.success("Welcome back!");
+      toast.success(UI_STRINGS.auth.welcomeToast);
 
       navigate("/");
     } catch (error) {
-      setLoginError(getErrorMessage(error, "Login failed. Please try again."));
+      setLoginError(getErrorMessage(error, UI_STRINGS.auth.loginError));
     } finally {
       setIsLoading(false);
     }
@@ -59,13 +60,13 @@ export default function Login() {
             to="/"
             className="text-2xl font-mono font-bold tracking-tight text-text"
           >
-            Socially
+            {UI_STRINGS.appName}
           </Link>
 
-          <h1 className="mt-3 text-xl font-bold text-text">Welcome back</h1>
+          <h1 className="mt-3 text-xl font-bold text-text">{UI_STRINGS.auth.welcomeBack}</h1>
 
           <p className="mt-1 text-sm text-text-secondary">
-            Enter your credentials to access your account
+            {UI_STRINGS.auth.loginSubtitle}
           </p>
         </div>
 
@@ -81,18 +82,18 @@ export default function Login() {
 
             {/* Email Field */}
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-text">Email</label>
+              <label className="text-sm font-medium text-text">{UI_STRINGS.auth.email}</label>
 
               <input
                 {...register("email", {
-                  required: "Email is required",
+                  required: UI_STRINGS.auth.emailRequired,
                   pattern: {
                     value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,}$/i,
-                    message: "Invalid email address",
+                    message: UI_STRINGS.auth.invalidEmail,
                   },
                 })}
                 type="email"
-                placeholder="name@example.com"
+                placeholder={UI_STRINGS.auth.emailPlaceholder}
                 className="w-full rounded-lg border border-border bg-transparent px-3.5 py-2.5 text-sm text-text placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
               />
 
@@ -103,26 +104,26 @@ export default function Login() {
 
             {/* Password Field */}
             <div className="space-y-1.5">
-              <label className="text-sm font-medium text-text">Password</label>
+              <label className="text-sm font-medium text-text">{UI_STRINGS.auth.password}</label>
 
               <div className="relative">
                 <input
                   {...register("password", {
-                    required: "Password is required",
+                    required: UI_STRINGS.auth.passwordRequired,
                     minLength: {
                       value: 6,
-                      message: "Password must be at least 6 characters",
+                      message: UI_STRINGS.auth.passwordMinLength,
                     },
                   })}
                   type={showPassword ? "text" : "password"}
-                  placeholder="••••••••"
+                  placeholder={UI_STRINGS.auth.passwordPlaceholder}
                   className="w-full rounded-lg border border-border bg-transparent px-3.5 py-2.5 pr-10 text-sm text-text placeholder:text-text-tertiary focus:border-brand focus:outline-none focus:ring-1 focus:ring-brand transition-colors"
                 />
 
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  aria-label={showPassword ? "Hide password" : "Show password"}
+                  aria-label={showPassword ? UI_STRINGS.auth.hidePassword : UI_STRINGS.auth.showPassword}
                   className="absolute right-3 top-1/2 -translate-y-1/2 cursor-pointer p-1 text-text-tertiary hover:text-text"
                 >
                   {showPassword ? (
@@ -172,19 +173,19 @@ export default function Login() {
                 fullWidth
                 isLoading={isLoading}
               >
-                Sign In
+                {UI_STRINGS.auth.login}
               </AppButton>
             </div>
           </form>
 
           {/* Switch to Signup */}
           <div className="mt-6 border-t border-border pt-4 text-center text-sm text-text-secondary">
-            Don't have an account?{" "}
+            {UI_STRINGS.auth.signUpPrompt}{" "}
             <Link
               to="/register"
               className="font-semibold text-brand hover:underline"
             >
-              Sign up
+              {UI_STRINGS.auth.signUp}
             </Link>
           </div>
         </AppCard>

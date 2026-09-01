@@ -2,17 +2,13 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { AddComment } from "@/api";
 import toast from "react-hot-toast";
 import { assertApiSuccess, getErrorMessage } from "@/lib/error";
+import type { AddCommentVariables } from "@/types";
 
 /**
  * @hook useAddComment
  * @description Adds a comment to a post and refetches the active posts query.
  * @returns TanStack Query mutation result for adding a comment.
  */
-interface AddCommentVariables {
-  postId: string;
-  content: string;
-}
-
 export function useAddComment() {
   const queryClient = useQueryClient();
 
